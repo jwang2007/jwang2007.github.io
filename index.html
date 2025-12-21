@@ -32,7 +32,7 @@
         h1 {
             color: #333;
         }
-        #proof {
+        #proof, #thermo {
             display: none;
             margin-top: 15px;
             background-color: #e9f7e9;
@@ -67,8 +67,16 @@
     </section>
 
     <section id="physics">
-        <h1>Physics</h1>
-        <p>Here I post Physics notes.</p>
+        <h1>Physics: Thermodynamical Processes</h1>
+        <p>Here is my Thermodynamical Processes document:</p>
+        <button onclick="toggleThermo()">Show Thermodynamical Processes</button>
+        <div id="thermo">
+            <p>
+                <a href="ThermodynamicalProcesses.pdf" target="_blank">
+                    Click here to view Thermodynamical Processes
+                </a>
+            </p>
+        </div>
     </section>
 
     <section id="cs">
@@ -89,13 +97,15 @@
     <script>
         function toggleProof() {
             var proof = document.getElementById("proof");
-            if (proof.style.display === "none") {
-                proof.style.display = "block";
-            } else {
-                proof.style.display = "none";
-            }
+            proof.style.display = (proof.style.display === "none") ? "block" : "none";
+        }
+
+        function toggleThermo() {
+            var thermo = document.getElementById("thermo");
+            thermo.style.display = (thermo.style.display === "none") ? "block" : "none";
         }
     </script>
 
 </body>
 </html>
+
