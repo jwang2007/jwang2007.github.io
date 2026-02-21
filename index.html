@@ -67,29 +67,41 @@
     </section>
 
     <section id="physics">
-        <h1>Physics</h1>
+    <h1>Physics</h1>
 
-        <p>Here is my Thermodynamical Processes document:</p>
-        <button onclick="toggleThermo()">Expand</button>
-        <div id="thermo">
-            <p>
-                <a href="ThermodynamicalProcesses.pdf" target="_blank">
-                    Click here to view Thermodynamical Processes
-                </a>
-            </p>
-        </div>
+    <p>Thermodynamical Processes:</p>
+    <button onclick="toggleThermo()">Expand</button>
+    <div id="thermo">
+        <p>
+            <a href="ThermodynamicalProcesses.pdf" target="_blank">
+                Click here to view Thermodynamical Processes
+            </a>
+        </p>
+    </div>
 
-        <br>
+    <br>
 
-        <p>Electrostatic Potential Energy derivation:</p>
-        <button onclick="toggleElectro()">Expand</button>
-        <div id="electro">
-            <p>
-                <a href="Electrostatic_Potential.pdf" target="_blank">
-                    Click here to view Electrostatic Potential Energy Derivation
-                </a>
-            </p>
-        </div>
+    <p>Charges in a Cube (Purcell problem):</p>
+    <button onclick="toggleCube()">Expand</button>
+    <div id="cube">
+        <p>
+            <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank">
+                Click here to view the Problem
+            </a>
+        </p>
+    </div>
+
+    <br>
+
+    <p>Sigma-Notation Proof (Derivation):</p>
+    <button onclick="toggleSigma()">Expand</button>
+    <div id="sigma">
+        <p>
+            <a href="Electrostatic_Potential.pdf" target="_blank">
+                Click here to view the Sigma-Notation Proof
+            </a>
+        </p>
+    </div>
     </section>
 
     <section id="cs">
@@ -107,22 +119,27 @@
         <p>Here I post Biology notes.</p>
     </section>
 
-    <script>
-        function toggleProof() {
-            var proof = document.getElementById("proof");
-            proof.style.display = (proof.style.display === "none") ? "block" : "none";
-        }
+<script>
+    function toggleProof() {
+        var x = document.getElementById("proof");
+        x.style.display = (x.style.display === "none") ? "block" : "none";
+    }
 
-        function toggleThermo() {
-            var thermo = document.getElementById("thermo");
-            thermo.style.display = (thermo.style.display === "none") ? "block" : "none";
-        }
+    function toggleThermo() {
+        var x = document.getElementById("thermo");
+        x.style.display = (x.style.display === "none") ? "block" : "none";
+    }
 
-        function toggleElectro() {
-            var el = document.getElementById("electro");
-            el.style.display = (el.style.display === "none") ? "block" : "none";
-        }
-    </script>
+    function toggleCube() {
+        var x = document.getElementById("cube");
+        x.style.display = (x.style.display === "none") ? "block" : "none";
+    }
+
+    function toggleSigma() {
+        var x = document.getElementById("sigma");
+        x.style.display = (x.style.display === "none") ? "block" : "none";
+    }
+</script>
 
 </body>
 </html>
