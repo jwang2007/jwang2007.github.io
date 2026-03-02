@@ -32,7 +32,8 @@
         h1 {
             color: #333;
         }
-        #proof, #thermo, #electro {
+        /* Added #cube, #sigma, and #egmo to ensure they are hidden by default */
+        #proof, #egmo, #thermo, #cube, #sigma {
             display: none;
             margin-top: 15px;
             background-color: #e9f7e9;
@@ -59,17 +60,25 @@
 
     <section id="math">
         <h1>Math</h1>
-        <p>Euclidean Algorithm derivation </p>
+        <p>Euclidean Algorithm derivation</p>
         <button onclick="toggleProof()">Expand</button>
         <div id="proof">
             <p><a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank">click to view pdf</a></p>
+        </div>
+
+        <br>
+
+        <p>EGMO 2016 Day 1 Problem 1 Proof</p>
+        <button onclick="toggleEGMO()">Expand</button>
+        <div id="egmo">
+            <p><a href="https://jwang2007.github.io/EGMO2016D1P1.pdf" target="_blank">click to view pdf</a></p>
         </div>
     </section>
 
     <section id="physics">
     <h1>Physics</h1>
 
-    <p>Thermodynamical Processes derivation </p>
+    <p>Thermodynamical Processes derivation</p>
     <button onclick="toggleThermo()">Expand</button>
     <div id="thermo">
         <p>
@@ -122,22 +131,28 @@
 <script>
     function toggleProof() {
         var x = document.getElementById("proof");
-        x.style.display = (x.style.display === "none") ? "block" : "none";
+        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
+    }
+
+    // New function for EGMO
+    function toggleEGMO() {
+        var x = document.getElementById("egmo");
+        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
     }
 
     function toggleThermo() {
         var x = document.getElementById("thermo");
-        x.style.display = (x.style.display === "none") ? "block" : "none";
+        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
     }
 
     function toggleCube() {
         var x = document.getElementById("cube");
-        x.style.display = (x.style.display === "none") ? "block" : "none";
+        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
     }
 
     function toggleSigma() {
         var x = document.getElementById("sigma");
-        x.style.display = (x.style.display === "none") ? "block" : "none";
+        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
     }
 </script>
 
