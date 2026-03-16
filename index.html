@@ -32,13 +32,39 @@
         h1 {
             color: #333;
         }
-        /* Added #cube, #sigma, and #egmo to ensure they are hidden by default */
-        #proof, #egmo, #thermo, #cube, #sigma {
-            display: none;
-            margin-top: 15px;
-            background-color: #e9f7e9;
-            padding: 15px;
+        h2 {
+            color: #800000;
+            margin-top: 0;
+        }
+        /* New button styling to replace the JS toggle */
+        .pdf-btn {
+            display: inline-block;
+            background-color: #800000;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
             border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .pdf-btn:hover {
+            background-color: #5c0000;
+        }
+        /* Styling to space out the individual items */
+        .item-container {
+            margin-bottom: 20px;
+        }
+        .item-container p {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        /* The "folder" bracket for specific sections */
+        .folder {
+            border: 2px solid #800000;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+            background-color: #fcf4f4;
         }
     </style>
 </head>
@@ -55,62 +81,74 @@
 
     <section id="home">
         <h1>Welcome to My Website</h1>
-        <p>This is the home page of my website. Here you'll find links to various subjects and my notes. I want to thank the people from the CodeSupport discord for teaching me the basics and helping me setup my website, along with reviewing my initial proofs. </p>
+        <p>This is the home page of my website. Here you'll find links to various subjects and my notes. I want to thank the people from the CodeSupport discord for teaching me the basics and helping me setup my website, along with reviewing my initial proofs.</p>
     </section>
 
     <section id="math">
         <h1>Math</h1>
-        <p>Euclidean Algorithm derivation</p>
-        <button onclick="toggleProof()">Expand</button>
-        <div id="proof">
-            <p><a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank">click to view pdf</a></p>
+        
+        <div class="item-container">
+            <p>Euclidean Algorithm derivation</p>
+            <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <br>
+        <div class="item-container">
+            <p>EGMO 2016 Day 1 Problem 1 Proof</p>
+            <a href="https://jwang2007.github.io/EGMO2016D1P1.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
 
-        <p>EGMO 2016 Day 1 Problem 1 Proof</p>
-        <button onclick="toggleEGMO()">Expand</button>
-        <div id="egmo">
-            <p><a href="https://jwang2007.github.io/EGMO2016D1P1.pdf" target="_blank">click to view pdf</a></p>
+        <div class="folder">
+            <h2>MIT Integration Bee</h2>
+            
+            <div class="item-container">
+                <p>2023 Problem 1</p>
+                <a href="integration_bee_2023_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
+            </div>
+
+            <div class="item-container">
+                <p>2023 Problem 2</p>
+                <a href="integration_bee_2023_p2.pdf" target="_blank" class="pdf-btn">View PDF</a>
+            </div>
+
+            <div class="item-container">
+                <p>2023 Problem 3</p>
+                <a href="integration_bee_2023_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
+            </div>
+
+            <div class="item-container">
+                <p>2025 Problem 1</p>
+                <a href="integration_bee_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
+            </div>
+
+            <div class="item-container">
+                <p>2025 Problem 6</p>
+                <a href="integration_bee_2025_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
+            </div>
+
+            <div class="item-container">
+                <p>2025 Problem 14</p>
+                <a href="integration_bee_2025_14.pdf" target="_blank" class="pdf-btn">View PDF</a>
+            </div>
         </div>
     </section>
 
     <section id="physics">
-    <h1>Physics</h1>
+        <h1>Physics</h1>
 
-    <p>Thermodynamical Processes derivation</p>
-    <button onclick="toggleThermo()">Expand</button>
-    <div id="thermo">
-        <p>
-            <a href="ThermodynamicalProcesses.pdf" target="_blank">
-                click to view pdf
-            </a>
-        </p>
-    </div>
+        <div class="item-container">
+            <p>Thermodynamical Processes derivation</p>
+            <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
 
-    <br>
+        <div class="item-container">
+            <p>Charges in a Cube (Purcell problem)</p>
+            <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
 
-    <p>Charges in a Cube (Purcell problem):</p>
-    <button onclick="toggleCube()">Expand</button>
-    <div id="cube">
-        <p>
-            <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank">
-                click to view pdf
-            </a>
-        </p>
-    </div>
-
-    <br>
-
-    <p>Electrostatic Potential derivation</p>
-    <button onclick="toggleSigma()">Expand</button>
-    <div id="sigma">
-        <p>
-            <a href="Electrostatic_Potential.pdf" target="_blank">
-                Click here to view the Sigma-Notation Proof
-            </a>
-        </p>
-    </div>
+        <div class="item-container">
+            <p>Electrostatic Potential derivation</p>
+            <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
     </section>
 
     <section id="cs">
@@ -127,34 +165,6 @@
         <h1>Biology</h1>
         <p>Here I post Biology notes.</p>
     </section>
-
-<script>
-    function toggleProof() {
-        var x = document.getElementById("proof");
-        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
-    }
-
-    // New function for EGMO
-    function toggleEGMO() {
-        var x = document.getElementById("egmo");
-        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
-    }
-
-    function toggleThermo() {
-        var x = document.getElementById("thermo");
-        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
-    }
-
-    function toggleCube() {
-        var x = document.getElementById("cube");
-        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
-    }
-
-    function toggleSigma() {
-        var x = document.getElementById("sigma");
-        x.style.display = (x.style.display === "none" || x.style.display === "") ? "block" : "none";
-    }
-</script>
 
 </body>
 </html>
