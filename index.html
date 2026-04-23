@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>jwang07</title>
+    
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,7 +48,7 @@
             color: #800000;
             margin-top: 0;
         }
-        /* New button styling to replace the JS toggle */
+        /* Button styling */
         .pdf-btn {
             display: inline-block;
             background-color: #800000;
@@ -86,6 +98,9 @@
 
     <section id="math">
         <h1>Math</h1>
+        
+        <p><em>Testing LaTeX: Here is an inline equation $e^{i\pi} + 1 = 0$, and here is a display equation:</em></p>
+        <p>$$\int_{a}^{b} x^2 \,dx = \frac{b^3 - a^3}{3}$$</p>
         
         <div class="item-container">
             <p>Proof of the Infinitude of Primes</p>
@@ -179,6 +194,11 @@
     <section id="cs">
         <h1>Computer Science</h1>
         <p>Here I post Computer Science notes.</p>
+        
+        <div class="item-container">
+            <p>Topological Sort (DFS Algorithm)</p>
+            <a href="topsort.cpp" target="_blank" class="pdf-btn">View Code</a>
+        </div>
     </section>
 
     <section id="chemistry">
