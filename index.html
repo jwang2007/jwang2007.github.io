@@ -90,6 +90,16 @@
             margin-bottom: 20px;
         }
 
+        .tag-filter-group {
+            margin-bottom: 10px;
+        }
+
+        .tag-filter-label {
+            font-weight: bold;
+            margin-right: 8px;
+            color: #333;
+        }
+
         .tag-filter-btn {
             background-color: white;
             color: #800000;
@@ -109,14 +119,23 @@
 
         .tag {
             display: inline-block;
-            background-color: #f1dede;
-            color: #800000;
-            border: 1px solid #800000;
             border-radius: 999px;
             padding: 3px 8px;
             margin: 0 4px 8px 0;
             font-size: 12px;
             font-weight: normal;
+        }
+
+        .technique-tag {
+            background-color: #f1dede;
+            color: #800000;
+            border: 1px solid #800000;
+        }
+
+        .source-tag {
+            background-color: #eeeeee;
+            color: #333;
+            border: 1px solid #666;
         }
     </style>
 </head>
@@ -141,77 +160,110 @@
         <h1>Math</h1>
 
         <div class="tag-filter-container">
-            <button class="tag-filter-btn active" onclick="filterMath('all', this)">All</button>
-            <button class="tag-filter-btn" onclick="filterMath('linearity-of-expectation', this)">Linearity of Expectation</button>
+            <div class="tag-filter-group">
+                <span class="tag-filter-label">Technique:</span>
+                <button class="tag-filter-btn active" onclick="filterMath('technique', 'all', this)">All</button>
+                <button class="tag-filter-btn" onclick="filterMath('technique', 'linearity-of-expectation', this)">Linearity of Expectation</button>
+            </div>
+
+            <div class="tag-filter-group">
+                <span class="tag-filter-label">Source:</span>
+                <button class="tag-filter-btn active" onclick="filterMath('source', 'all', this)">All</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'aime', this)">AIME</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'usamo', this)">USAMO</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'egmo', this)">EGMO</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'mit-integration-bee', this)">MIT Integration Bee</button>
+            </div>
         </div>
         
-        <div class="item-container math-item" data-tags="">
+        <div class="item-container math-item" data-techniques="" data-sources="">
             <p>Proof of the Infinitude of Primes</p>
             <a href="infinite_primes.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-tags="">
+        <div class="item-container math-item" data-techniques="" data-sources="">
             <p>Euclidean Algorithm</p>
             <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-tags="">
+        <div class="item-container math-item" data-techniques="" data-sources="egmo">
             <p>EGMO 2016 Problem 1</p>
+            <span class="tag source-tag">EGMO</span>
+            <br>
             <a href="egmo_2016_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-tags="">
+        <div class="item-container math-item" data-techniques="" data-sources="egmo">
             <p>EGMO 2025 Problem 1</p>
+            <span class="tag source-tag">EGMO</span>
+            <br>
             <a href="egmo_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-tags="linearity-of-expectation expectation aime">
+        <div class="item-container math-item" data-techniques="linearity-of-expectation" data-sources="aime">
             <p>AIME 2006 Problem 6</p>
-            <span class="tag">Linearity of Expectation</span>
+            <span class="tag source-tag">AIME</span>
+            <span class="tag technique-tag">Linearity of Expectation</span>
             <br>
             <a href="aime_2006_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-tags="">
+        <div class="item-container math-item" data-techniques="" data-sources="usamo">
             <p>USAMO 2010 Problem 1</p>
+            <span class="tag source-tag">USAMO</span>
+            <br>
             <a href="usamo_2010_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-tags="">
+        <div class="item-container math-item" data-techniques="" data-sources="usamo">
             <p>USAMO 1976 Problem 3</p>
+            <span class="tag source-tag">USAMO</span>
+            <br>
             <a href="usamo_1976_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
         <div class="folder">
             <h2>MIT Integration Bee</h2>
             
-            <div class="item-container math-item" data-tags="">
+            <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
                 <p>2023 Problem 1</p>
+                <span class="tag source-tag">MIT Integration Bee</span>
+                <br>
                 <a href="integration_bee_2023_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container math-item" data-tags="">
+            <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
                 <p>2023 Problem 2</p>
+                <span class="tag source-tag">MIT Integration Bee</span>
+                <br>
                 <a href="integration_bee_2023_p2.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container math-item" data-tags="">
+            <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
                 <p>2023 Problem 3</p>
+                <span class="tag source-tag">MIT Integration Bee</span>
+                <br>
                 <a href="integration_bee_2023_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container math-item" data-tags="">
+            <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
                 <p>2025 Problem 1</p>
+                <span class="tag source-tag">MIT Integration Bee</span>
+                <br>
                 <a href="integration_bee_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container math-item" data-tags="">
+            <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
                 <p>2025 Problem 6</p>
+                <span class="tag source-tag">MIT Integration Bee</span>
+                <br>
                 <a href="integration_bee_2025_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container math-item" data-tags="">
+            <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
                 <p>2025 Problem 14</p>
+                <span class="tag source-tag">MIT Integration Bee</span>
+                <br>
                 <a href="integration_bee_2025_14.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
         </div>
@@ -262,17 +314,39 @@
     </section>
 
     <script>
-        function filterMath(tag, button) {
-            const items = document.querySelectorAll('.math-item');
-            const buttons = document.querySelectorAll('.tag-filter-btn');
+        const activeFilters = {
+            technique: "all",
+            source: "all"
+        };
 
-            buttons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+        function filterMath(type, value, button) {
+            activeFilters[type] = value;
+
+            const group = button.closest(".tag-filter-group");
+            const buttons = group.querySelectorAll(".tag-filter-btn");
+
+            buttons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+
+            applyMathFilters();
+        }
+
+        function applyMathFilters() {
+            const items = document.querySelectorAll(".math-item");
 
             items.forEach(item => {
-                const tags = item.dataset.tags || "";
+                const techniques = item.dataset.techniques || "";
+                const sources = item.dataset.sources || "";
 
-                if (tag === "all" || tags.includes(tag)) {
+                const techniqueMatches =
+                    activeFilters.technique === "all" ||
+                    techniques.split(" ").includes(activeFilters.technique);
+
+                const sourceMatches =
+                    activeFilters.source === "all" ||
+                    sources.split(" ").includes(activeFilters.source);
+
+                if (techniqueMatches && sourceMatches) {
                     item.style.display = "block";
                 } else {
                     item.style.display = "none";
