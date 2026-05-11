@@ -23,17 +23,20 @@
             padding: 0;
             background-color: #800000;
         }
+
         nav {
             background-color: #800000;
             padding: 10px;
             text-align: center;
         }
+
         nav a {
             color: white;
             margin: 0 15px;
             text-decoration: none;
             font-size: 18px;
         }
+
         section {
             padding: 20px;
             margin: 20px;
@@ -41,14 +44,16 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             color: #333;
         }
+
         h2 {
             color: #800000;
             margin-top: 0;
         }
-        /* Button styling */
+
         .pdf-btn {
             display: inline-block;
             background-color: #800000;
@@ -59,18 +64,20 @@
             font-size: 14px;
             transition: background-color 0.2s;
         }
+
         .pdf-btn:hover {
             background-color: #5c0000;
         }
-        /* Styling to space out the individual items */
+
         .item-container {
             margin-bottom: 20px;
         }
+
         .item-container p {
             margin-bottom: 8px;
             font-weight: bold;
         }
-        /* The "folder" bracket for specific sections */
+
         .folder {
             border: 2px solid #800000;
             border-radius: 8px;
@@ -78,8 +85,42 @@
             margin-top: 30px;
             background-color: #fcf4f4;
         }
+
+        .tag-filter-container {
+            margin-bottom: 20px;
+        }
+
+        .tag-filter-btn {
+            background-color: white;
+            color: #800000;
+            border: 1px solid #800000;
+            border-radius: 999px;
+            padding: 6px 12px;
+            margin: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tag-filter-btn:hover,
+        .tag-filter-btn.active {
+            background-color: #800000;
+            color: white;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #f1dede;
+            color: #800000;
+            border: 1px solid #800000;
+            border-radius: 999px;
+            padding: 3px 8px;
+            margin: 0 4px 8px 0;
+            font-size: 12px;
+            font-weight: normal;
+        }
     </style>
 </head>
+
 <body>
 
     <nav>
@@ -93,79 +134,83 @@
 
     <section id="home">
         <h1>Welcome to My Website</h1>
-        <p>Here is my website. I will often post notes about topics / problems I'm interested in. Sometimes I will also write, but that will probably be included on my substack. My resume and about me will also be posted here. </p>
+        <p>Here is my website. I will often post notes about topics / problems I'm interested in. Sometimes I will also write, but that will probably be included on my substack. My resume and about me will also be posted here.</p>
     </section>
 
     <section id="math">
         <h1>Math</h1>
+
+        <div class="tag-filter-container">
+            <button class="tag-filter-btn active" onclick="filterMath('all', this)">All</button>
+            <button class="tag-filter-btn" onclick="filterMath('linearity-of-expectation', this)">Linearity of Expectation</button>
+        </div>
         
-        <p><em>Testing LaTeX: Here is an inline equation $e^{i\pi} + 1 = 0$, and here is a display equation:</em></p>
-        <p>$$\int_{a}^{b} x^2 \,dx = \frac{b^3 - a^3}{3}$$</p>
-        
-        <div class="item-container">
+        <div class="item-container math-item" data-tags="">
             <p>Proof of the Infinitude of Primes</p>
             <a href="infinite_primes.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container">
-            <p>Euclidean Algorithm </p>
+        <div class="item-container math-item" data-tags="">
+            <p>Euclidean Algorithm</p>
             <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container">
-            <p>EGMO 2016 Problem 1 </p>
+        <div class="item-container math-item" data-tags="">
+            <p>EGMO 2016 Problem 1</p>
             <a href="egmo_2016_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container">
-            <p>EGMO 2025 Problem 1 </p>
+        <div class="item-container math-item" data-tags="">
+            <p>EGMO 2025 Problem 1</p>
             <a href="egmo_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container">
+        <div class="item-container math-item" data-tags="linearity-of-expectation expectation aime">
             <p>AIME 2006 Problem 6</p>
+            <span class="tag">Linearity of Expectation</span>
+            <br>
             <a href="aime_2006_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container">
-            <p>USAMO 2010 Problem 1 </p>
+        <div class="item-container math-item" data-tags="">
+            <p>USAMO 2010 Problem 1</p>
             <a href="usamo_2010_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container">
-            <p>USAMO 1976 Problem 3 </p>
+        <div class="item-container math-item" data-tags="">
+            <p>USAMO 1976 Problem 3</p>
             <a href="usamo_1976_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
         <div class="folder">
             <h2>MIT Integration Bee</h2>
             
-            <div class="item-container">
+            <div class="item-container math-item" data-tags="">
                 <p>2023 Problem 1</p>
                 <a href="integration_bee_2023_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container">
+            <div class="item-container math-item" data-tags="">
                 <p>2023 Problem 2</p>
                 <a href="integration_bee_2023_p2.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container">
+            <div class="item-container math-item" data-tags="">
                 <p>2023 Problem 3</p>
                 <a href="integration_bee_2023_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container">
+            <div class="item-container math-item" data-tags="">
                 <p>2025 Problem 1</p>
                 <a href="integration_bee_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container">
+            <div class="item-container math-item" data-tags="">
                 <p>2025 Problem 6</p>
                 <a href="integration_bee_2025_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
 
-            <div class="item-container">
+            <div class="item-container math-item" data-tags="">
                 <p>2025 Problem 14</p>
                 <a href="integration_bee_2025_14.pdf" target="_blank" class="pdf-btn">View PDF</a>
             </div>
@@ -176,17 +221,17 @@
         <h1>Physics</h1>
 
         <div class="item-container">
-            <p>Thermodynamical Processes </p>
+            <p>Thermodynamical Processes</p>
             <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
         <div class="item-container">
-            <p>Charges in a Cube (Purcell) </p>
+            <p>Charges in a Cube (Purcell)</p>
             <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
         <div class="item-container">
-            <p>Electrostatic Potential </p>
+            <p>Electrostatic Potential</p>
             <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
@@ -215,6 +260,26 @@
         <h1>Biology</h1>
         <p>Here I post Biology notes.</p>
     </section>
+
+    <script>
+        function filterMath(tag, button) {
+            const items = document.querySelectorAll('.math-item');
+            const buttons = document.querySelectorAll('.tag-filter-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            items.forEach(item => {
+                const tags = item.dataset.tags || "";
+
+                if (tag === "all" || tags.includes(tag)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
