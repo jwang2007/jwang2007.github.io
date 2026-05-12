@@ -129,6 +129,12 @@
             color: #333;
             border: 1px solid #666;
         }
+
+        .field-tag {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #0d47a1;
+        }
     </style>
 </head>
 
@@ -166,33 +172,39 @@
                 <button class="tag-filter-btn" onclick="filterMath('source', 'egmo', this)">EGMO</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'mit-integration-bee', this)">MIT Integration Bee</button>
             </div>
+
+            <div class="tag-filter-group">
+                <span class="tag-filter-label">Field:</span>
+                <button class="tag-filter-btn active" onclick="filterMath('field', 'all', this)">All</button>
+                <button class="tag-filter-btn" onclick="filterMath('field', 'calculus', this)">Calculus</button>
+            </div>
         </div>
         
-        <div class="item-container math-item" data-techniques="" data-sources="">
+        <div class="item-container math-item" data-techniques="" data-sources="" data-fields="">
             <p>Proof of the Infinitude of Primes</p>
             <a href="infinite_primes.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="">
+        <div class="item-container math-item" data-techniques="" data-sources="" data-fields="">
             <p>Euclidean Algorithm</p>
             <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="egmo">
+        <div class="item-container math-item" data-techniques="" data-sources="egmo" data-fields="">
             <p>EGMO 2016 Problem 1</p>
             <span class="tag source-tag">EGMO</span>
             <br>
             <a href="egmo_2016_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="egmo">
+        <div class="item-container math-item" data-techniques="" data-sources="egmo" data-fields="">
             <p>EGMO 2025 Problem 1</p>
             <span class="tag source-tag">EGMO</span>
             <br>
             <a href="egmo_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="linearity-of-expectation" data-sources="aime">
+        <div class="item-container math-item" data-techniques="linearity-of-expectation" data-sources="aime" data-fields="">
             <p>AIME 2006 Problem 6</p>
             <span class="tag source-tag">AIME</span>
             <span class="tag technique-tag">Linearity of Expectation</span>
@@ -200,60 +212,67 @@
             <a href="aime_2006_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="usamo">
-            <p>USAMO 2010 Problem 1</p>
+        <div class="item-container math-item" data-techniques="" data-sources="usamo" data-fields="">
+            <p>USAMO 2015 Problem 1</p>
             <span class="tag source-tag">USAMO</span>
             <br>
             <a href="usamo_2010_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="usamo">
+        <div class="item-container math-item" data-techniques="" data-sources="usamo" data-fields="">
             <p>USAMO 1976 Problem 3</p>
             <span class="tag source-tag">USAMO</span>
             <br>
             <a href="usamo_1976_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
+        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2023 Problem 1</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2023_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
+        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2023 Problem 2</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2023_p2.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
+        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2023 Problem 3</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2023_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
+        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 1</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
+        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 6</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee">
+        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 14</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_14.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
+
+        <div class="item-container math-item" data-techniques="" data-sources="" data-fields="calculus">
+            <p>Expected Uses of Probability Lemma 3.2</p>
+            <span class="tag field-tag">Calculus</span>
+            <br>
+            <a href="lemma_3_2.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
     </section>
 
@@ -304,7 +323,8 @@
     <script>
         const activeFilters = {
             technique: "all",
-            source: "all"
+            source: "all",
+            field: "all"
         };
 
         function filterMath(type, value, button) {
@@ -325,6 +345,7 @@
             items.forEach(item => {
                 const techniques = item.dataset.techniques || "";
                 const sources = item.dataset.sources || "";
+                const fields = item.dataset.fields || "";
 
                 const techniqueMatches =
                     activeFilters.technique === "all" ||
@@ -334,7 +355,14 @@
                     activeFilters.source === "all" ||
                     sources.split(" ").includes(activeFilters.source);
 
-                item.style.display = techniqueMatches && sourceMatches ? "block" : "none";
+                const fieldMatches =
+                    activeFilters.field === "all" ||
+                    fields.split(" ").includes(activeFilters.field);
+
+                item.style.display =
+                    techniqueMatches && sourceMatches && fieldMatches
+                    ? "block"
+                    : "none";
             });
         }
     </script>
