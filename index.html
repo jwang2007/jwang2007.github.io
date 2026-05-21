@@ -170,6 +170,8 @@
                 <button class="tag-filter-btn" onclick="filterMath('technique', 'linearity-of-expectation', this)">Linearity of Expectation</button>
                 <button class="tag-filter-btn" onclick="filterMath('technique', 'bounding-sums-by-integrals', this)">Bounding Sums by Integrals</button>
                 <button class="tag-filter-btn" onclick="filterMath('technique', 'infinite-descent', this)">Infinite Descent</button>
+                <button class="tag-filter-btn" onclick="filterMath('technique', 'halls-lemma', this)">Hall's Lemma</button>
+                <button class="tag-filter-btn" onclick="filterMath('technique', 'proof-by-contradiction', this)">Proof by Contradiction</button>
             </div>
 
             <div class="tag-filter-group">
@@ -182,6 +184,7 @@
                 <button class="tag-filter-btn" onclick="filterMath('source', 'mit-integration-bee', this)">MIT Integration Bee</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'mit-ocw', this)">MIT OCW</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'handout', this)">Handout</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'sjsu', this)">SJSU</button>
             </div>
 
             <div class="tag-filter-group">
@@ -195,6 +198,7 @@
                 <span class="tag-filter-label">Field:</span>
                 <button class="tag-filter-btn active" onclick="filterMath('field', 'all', this)">All</button>
                 <button class="tag-filter-btn" onclick="filterMath('field', 'probability', this)">Probability</button>
+                <button class="tag-filter-btn" onclick="filterMath('field', 'graph-theory', this)">Graph Theory</button>
             </div>
         </div>
         
@@ -246,6 +250,20 @@
             <span class="tag technique-tag">Infinite Descent</span>
             <br>
             <a href="BMO2_2020_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
+
+        <div class="item-container math-item" 
+             data-types="problem" 
+             data-techniques="halls-lemma proof-by-contradiction" 
+             data-sources="sjsu" 
+             data-fields="graph-theory">
+            <p>SJSU M179 Midterm Problem</p>
+            <span class="tag source-tag">SJSU</span>
+            <span class="tag field-tag">Graph Theory</span>
+            <span class="tag technique-tag">Hall's Lemma</span>
+            <span class="tag technique-tag">Proof by Contradiction</span>
+            <br>
+            <a href="SJSU.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
         <div class="item-container math-item" data-types="problem" data-techniques="linearity-of-expectation" data-sources="aime" data-fields="">
