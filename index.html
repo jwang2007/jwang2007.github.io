@@ -135,6 +135,12 @@
             color: #0d47a1;
             border: 1px solid #0d47a1;
         }
+
+        .result-tag {
+            background-color: #fff3cd;
+            color: #7a4f00;
+            border: 1px solid #b7791f;
+        }
     </style>
 </head>
 
@@ -163,16 +169,25 @@
                 <button class="tag-filter-btn active" onclick="filterMath('technique', 'all', this)">All</button>
                 <button class="tag-filter-btn" onclick="filterMath('technique', 'linearity-of-expectation', this)">Linearity of Expectation</button>
                 <button class="tag-filter-btn" onclick="filterMath('technique', 'bounding-sums-by-integrals', this)">Bounding Sums by Integrals</button>
+                <button class="tag-filter-btn" onclick="filterMath('technique', 'infinite-descent', this)">Infinite Descent</button>
             </div>
 
             <div class="tag-filter-group">
                 <span class="tag-filter-label">Source:</span>
                 <button class="tag-filter-btn active" onclick="filterMath('source', 'all', this)">All</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'aime', this)">AIME</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'bmo', this)">BMO</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'usamo', this)">USAMO</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'egmo', this)">EGMO</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'mit-integration-bee', this)">MIT Integration Bee</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'handout', this)">Handout</button>
+            </div>
+
+            <div class="tag-filter-group">
+                <span class="tag-filter-label">Type:</span>
+                <button class="tag-filter-btn active" onclick="filterMath('type', 'all', this)">All</button>
+                <button class="tag-filter-btn" onclick="filterMath('type', 'problem', this)">Problem</button>
+                <button class="tag-filter-btn" onclick="filterMath('type', 'result', this)">Result</button>
             </div>
 
             <div class="tag-filter-group">
@@ -182,31 +197,43 @@
             </div>
         </div>
         
-        <div class="item-container math-item" data-techniques="" data-sources="" data-fields="">
+        <div class="item-container math-item" data-types="result" data-techniques="" data-sources="" data-fields="">
             <p>Proof of the Infinitude of Primes</p>
+            <span class="tag result-tag">Result</span>
+            <br>
             <a href="infinite_primes.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="" data-fields="">
+        <div class="item-container math-item" data-types="result" data-techniques="" data-sources="" data-fields="">
             <p>Euclidean Algorithm</p>
+            <span class="tag result-tag">Result</span>
+            <br>
             <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="egmo" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="egmo" data-fields="">
             <p>EGMO 2016 Problem 1</p>
             <span class="tag source-tag">EGMO</span>
             <br>
             <a href="egmo_2016_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="egmo" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="egmo" data-fields="">
             <p>EGMO 2025 Problem 1</p>
             <span class="tag source-tag">EGMO</span>
             <br>
             <a href="egmo_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="linearity-of-expectation" data-sources="aime" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="infinite-descent" data-sources="bmo" data-fields="">
+            <p>BMO2 2020 Problem 1</p>
+            <span class="tag source-tag">BMO</span>
+            <span class="tag technique-tag">Infinite Descent</span>
+            <br>
+            <a href="BMO2_2020_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
+
+        <div class="item-container math-item" data-types="problem" data-techniques="linearity-of-expectation" data-sources="aime" data-fields="">
             <p>AIME 2006 Problem 6</p>
             <span class="tag source-tag">AIME</span>
             <span class="tag technique-tag">Linearity of Expectation</span>
@@ -214,70 +241,71 @@
             <a href="aime_2006_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="usamo" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="usamo" data-fields="">
             <p>USAMO 2015 Problem 1</p>
             <span class="tag source-tag">USAMO</span>
             <br>
             <a href="usamo_2015_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="usamo" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="infinite-descent" data-sources="usamo" data-fields="">
             <p>USAMO 1976 Problem 3</p>
             <span class="tag source-tag">USAMO</span>
+            <span class="tag technique-tag">Infinite Descent</span>
             <br>
             <a href="usamo_1976_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2023 Problem 1</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2023_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2023 Problem 2</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2023_p2.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2023 Problem 3</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2023_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 5</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_p5.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 1</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 4</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_p4.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 6</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
             <a href="integration_bee_2025_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
-        <div class="item-container math-item" data-techniques="" data-sources="mit-integration-bee" data-fields="">
+        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
             <p>MIT Integration Bee 2025 Problem 14</p>
             <span class="tag source-tag">MIT Integration Bee</span>
             <br>
@@ -285,7 +313,7 @@
         </div>
 
         <div class="item-container math-item" 
-             data-techniques="bounding-sums-by-integrals" 
+             data-types="problem" data-techniques="bounding-sums-by-integrals" 
              data-sources="handout" 
              data-fields="probability">
             <p>Expected Uses of Probability Lemma 3.2</p>
@@ -345,6 +373,7 @@
         const activeFilters = {
             technique: "all",
             source: "all",
+            type: "all",
             field: "all"
         };
 
@@ -366,6 +395,7 @@
             items.forEach(item => {
                 const techniques = item.dataset.techniques || "";
                 const sources = item.dataset.sources || "";
+                const types = item.dataset.types || "";
                 const fields = item.dataset.fields || "";
 
                 const techniqueMatches =
@@ -376,12 +406,16 @@
                     activeFilters.source === "all" ||
                     sources.split(" ").includes(activeFilters.source);
 
+                const typeMatches =
+                    activeFilters.type === "all" ||
+                    types.split(" ").includes(activeFilters.type);
+
                 const fieldMatches =
                     activeFilters.field === "all" ||
                     fields.split(" ").includes(activeFilters.field);
 
                 item.style.display =
-                    techniqueMatches && sourceMatches && fieldMatches
+                    techniqueMatches && sourceMatches && typeMatches && fieldMatches
                     ? "block"
                     : "none";
             });
