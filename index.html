@@ -180,6 +180,7 @@
                 <button class="tag-filter-btn" onclick="filterMath('source', 'usamo', this)">USAMO</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'egmo', this)">EGMO</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'mit-integration-bee', this)">MIT Integration Bee</button>
+                <button class="tag-filter-btn" onclick="filterMath('source', 'mit-ocw', this)">MIT OCW</button>
                 <button class="tag-filter-btn" onclick="filterMath('source', 'handout', this)">Handout</button>
             </div>
 
@@ -209,6 +210,20 @@
             <span class="tag result-tag">Result</span>
             <br>
             <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
+        </div>
+
+        <div class="item-container math-item" 
+             data-types="result" 
+             data-techniques="linearity-of-expectation" 
+             data-sources="mit-ocw" 
+             data-fields="probability">
+            <p>Linearity of Expectation</p>
+            <span class="tag source-tag">MIT OCW</span>
+            <span class="tag result-tag">Result</span>
+            <span class="tag field-tag">Probability</span>
+            <span class="tag technique-tag">Linearity of Expectation</span>
+            <br>
+            <a href="MIT_RES_6_012_L05_11_Linearity_of_Expectations.pdf" target="_blank" class="pdf-btn">View PDF</a>
         </div>
 
         <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="egmo" data-fields="">
@@ -313,7 +328,8 @@
         </div>
 
         <div class="item-container math-item" 
-             data-types="problem" data-techniques="bounding-sums-by-integrals" 
+             data-types="problem" 
+             data-techniques="bounding-sums-by-integrals" 
              data-sources="handout" 
              data-fields="probability">
             <p>Expected Uses of Probability Lemma 3.2</p>
