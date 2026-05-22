@@ -17,15 +17,22 @@
   </script>
 
   <style>
+    :root {
+      --maroon: #800000;
+      --maroon-dark: #5c0000;
+      --soft-border: #e6e6e6;
+      --soft-bg: #fafafa;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #800000;
+      background-color: var(--maroon);
     }
 
     nav {
-      background-color: #800000;
+      background-color: var(--maroon);
       padding: 10px;
       text-align: center;
     }
@@ -37,12 +44,16 @@
       font-size: 18px;
     }
 
+    nav a:hover {
+      text-decoration: underline;
+    }
+
     section {
       padding: 20px;
       margin: 20px;
       background-color: white;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.10);
     }
 
     h1 {
@@ -53,18 +64,20 @@
 
     .pdf-btn {
       display: inline-block;
-      background-color: #800000;
+      background-color: var(--maroon);
       color: white;
-      padding: 8px 15px;
+      padding: 9px 16px;
       text-decoration: none;
       border-radius: 5px;
       font-size: 14px;
-      transition: background-color 0.2s;
-      margin-top: 10px;
+      font-weight: bold;
+      transition: background-color 0.2s, transform 0.2s;
+      margin-top: 12px;
     }
 
     .pdf-btn:hover {
-      background-color: #5c0000;
+      background-color: var(--maroon-dark);
+      transform: translateY(-1px);
     }
 
     .item-container {
@@ -85,7 +98,7 @@
       padding: 14px;
       border: 1px solid #eeeeee;
       border-radius: 12px;
-      background-color: #fafafa;
+      background-color: var(--soft-bg);
     }
 
     .filter-title {
@@ -95,13 +108,22 @@
     }
 
     .filter-select {
-      border: 1px solid #800000;
-      color: #800000;
+      min-width: 165px;
+      border: 1px solid #cccccc;
+      color: #333;
       background-color: white;
       border-radius: 999px;
       padding: 8px 14px;
       font-size: 15px;
       cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .filter-select:hover,
+    .filter-select:focus {
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.12);
     }
 
     .math-grid {
@@ -112,12 +134,19 @@
     }
 
     .math-card {
-      border: 1px solid #ddd;
+      border: 1px solid #dddddd;
       border-radius: 12px;
       padding: 16px;
       background-color: white;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
       align-self: start;
+      min-height: 145px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .math-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
     }
 
     .math-card h2 {
@@ -125,6 +154,11 @@
       margin-top: 0;
       margin-bottom: 10px;
       color: black;
+      line-height: 1.15;
+    }
+
+    .tag-row {
+      margin-bottom: 2px;
     }
 
     .tag {
@@ -134,12 +168,19 @@
       margin: 0 4px 8px 0;
       font-size: 12px;
       font-weight: normal;
+      line-height: 1.2;
     }
 
-    .technique-tag {
+    .proof-method-tag {
       background-color: #f1dede;
       color: #800000;
       border: 1px solid #800000;
+    }
+
+    .technique-tag {
+      background-color: #ede7f6;
+      color: #4527a0;
+      border: 1px solid #6a4bc3;
     }
 
     .source-tag {
@@ -158,6 +199,12 @@
       background-color: #fff3cd;
       color: #7a4f00;
       border: 1px solid #b7791f;
+    }
+
+    .empty-message {
+      color: #555;
+      font-style: italic;
+      padding: 10px 0;
     }
   </style>
 </head>
@@ -233,9 +280,18 @@
   <script>
     let mathItems = [];
 
-    const categories = ["technique", "source", "type", "field"];
+    const categories = ["proofMethod", "technique", "source", "type", "field"];
+
+    const categoryLabels = {
+      proofMethod: "Proof Method",
+      technique: "Technique",
+      source: "Source",
+      type: "Type",
+      field: "Field"
+    };
 
     const activeFilters = {
+      proofMethod: "All",
       technique: "All",
       source: "All",
       type: "All",
@@ -245,7 +301,15 @@
     fetch("data.json")
       .then(response => response.json())
       .then(data => {
-        mathItems = data;
+        mathItems = data.map(item => ({
+          ...item,
+          proofMethod: item.proofMethod || [],
+          technique: item.technique || [],
+          source: item.source || [],
+          type: item.type || [],
+          field: item.field || []
+        }));
+
         renderFilters();
         renderMathItems();
       });
@@ -262,13 +326,14 @@
       categories.forEach(category => {
         const select = document.createElement("select");
         select.className = "filter-select";
+        select.setAttribute("aria-label", categoryLabels[category]);
 
         const tags = getTags(category);
 
         tags.forEach(tag => {
           const option = document.createElement("option");
           option.value = tag;
-          option.textContent = capitalize(category) + ": " + tag;
+          option.textContent = categoryLabels[category] + ": " + tag;
 
           if (activeFilters[category] === tag) {
             option.selected = true;
@@ -312,6 +377,14 @@
         });
       });
 
+      if (filtered.length === 0) {
+        const message = document.createElement("p");
+        message.className = "empty-message";
+        message.textContent = "No matching items.";
+        list.appendChild(message);
+        return;
+      }
+
       filtered.forEach(item => {
         const card = document.createElement("div");
         card.className = "math-card";
@@ -320,13 +393,16 @@
         title.textContent = item.title;
         card.appendChild(title);
 
-        addTags(card, item.source, "source-tag");
-        addTags(card, item.type, "type-tag");
-        addTags(card, item.field, "field-tag");
-        addTags(card, item.technique, "technique-tag");
+        const tagRow = document.createElement("div");
+        tagRow.className = "tag-row";
 
-        const br = document.createElement("br");
-        card.appendChild(br);
+        addTags(tagRow, item.source, "source-tag");
+        addTags(tagRow, item.type, "type-tag");
+        addTags(tagRow, item.field, "field-tag");
+        addTags(tagRow, item.proofMethod, "proof-method-tag");
+        addTags(tagRow, item.technique, "technique-tag");
+
+        card.appendChild(tagRow);
 
         const link = document.createElement("a");
         link.href = item.file;
@@ -339,17 +415,13 @@
       });
     }
 
-    function addTags(card, tags, className) {
+    function addTags(parent, tags, className) {
       tags.forEach(tag => {
         const span = document.createElement("span");
         span.className = "tag " + className;
         span.textContent = tag;
-        card.appendChild(span);
+        parent.appendChild(span);
       });
-    }
-
-    function capitalize(word) {
-      return word.charAt(0).toUpperCase() + word.slice(1);
     }
   </script>
 
