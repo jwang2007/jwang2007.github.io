@@ -1,0 +1,154 @@
+[
+  {
+    "title": "Proof of the Infinitude of Primes",
+    "file": "infinite_primes.pdf",
+    "type": ["Result"],
+    "source": [],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "Euclidean Algorithm",
+    "file": "EuclideanAlgorithm.pdf",
+    "type": ["Result"],
+    "source": [],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "Linearity of Expectation",
+    "file": "MIT_RES_6_012_L05_11_Linearity_of_Expectations.pdf",
+    "type": ["Result"],
+    "source": ["MIT OCW"],
+    "field": ["Probability"],
+    "technique": ["Linearity of Expectation"]
+  },
+  {
+    "title": "EGMO 2016 Problem 1",
+    "file": "egmo_2016_p1.pdf",
+    "type": ["Problem"],
+    "source": ["EGMO"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "EGMO 2025 Problem 1",
+    "file": "egmo_2025_p1.pdf",
+    "type": ["Problem"],
+    "source": ["EGMO"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "BMO2 2020 Problem 1",
+    "file": "BMO2_2020_p1.pdf",
+    "type": ["Problem"],
+    "source": ["BMO"],
+    "field": [],
+    "technique": ["Infinite Descent"]
+  },
+  {
+    "title": "SJSU M179 Midterm Problem",
+    "file": "SJSU.pdf",
+    "type": ["Problem"],
+    "source": ["SJSU"],
+    "field": ["Graph Theory"],
+    "technique": ["Hall's Lemma", "Proof by Contradiction"]
+  },
+  {
+    "title": "AIME 2006 Problem 6",
+    "file": "aime_2006_p6.pdf",
+    "type": ["Problem"],
+    "source": ["AIME"],
+    "field": [],
+    "technique": ["Linearity of Expectation"]
+  },
+  {
+    "title": "USAMO 2015 Problem 1",
+    "file": "usamo_2015_p1.pdf",
+    "type": ["Problem"],
+    "source": ["USAMO"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "USAMO 1976 Problem 3",
+    "file": "usamo_1976_p3.pdf",
+    "type": ["Problem"],
+    "source": ["USAMO"],
+    "field": [],
+    "technique": ["Infinite Descent"]
+  },
+  {
+    "title": "MIT Integration Bee 2023 Problem 1",
+    "file": "integration_bee_2023_p1.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2023 Problem 2",
+    "file": "integration_bee_2023_p2.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2023 Problem 3",
+    "file": "integration_bee_2023_p3.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 5",
+    "file": "integration_bee_2025_p5.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 1",
+    "file": "integration_bee_2025_p1.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 4",
+    "file": "integration_bee_2025_p4.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 6",
+    "file": "integration_bee_2025_p6.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 14",
+    "file": "integration_bee_2025_14.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": [],
+    "technique": []
+  },
+  {
+    "title": "Expected Uses of Probability Lemma 3.2",
+    "file": "lemma_3_2.pdf",
+    "type": ["Problem"],
+    "source": ["Handout"],
+    "field": ["Probability"],
+    "technique": ["Bounding Sums by Integrals"]
+  }
+]
