@@ -47,6 +47,8 @@
 
     h1 {
       color: #333;
+      font-size: 42px;
+      margin-top: 0;
     }
 
     .pdf-btn {
@@ -74,41 +76,39 @@
       font-weight: bold;
     }
 
-    .tag-filter-container {
-      margin-bottom: 24px;
+    .filter-panel {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding: 14px;
+      border: 1px solid #eeeeee;
+      border-radius: 12px;
+      background-color: #fafafa;
     }
 
-    .tag-filter-group {
-      margin-bottom: 10px;
-    }
-
-    .tag-filter-label {
+    .filter-title {
       font-weight: bold;
-      margin-right: 8px;
       color: #333;
+      margin-right: 4px;
     }
 
-    .tag-filter-btn {
-      background-color: white;
-      color: #800000;
+    .filter-select {
       border: 1px solid #800000;
+      color: #800000;
+      background-color: white;
       border-radius: 999px;
-      padding: 6px 12px;
-      margin: 4px;
+      padding: 8px 14px;
+      font-size: 15px;
       cursor: pointer;
-      font-size: 14px;
-    }
-
-    .tag-filter-btn:hover,
-    .tag-filter-btn.active {
-      background-color: #800000;
-      color: white;
     }
 
     .math-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 18px;
+      align-items: start;
     }
 
     .math-card {
@@ -117,6 +117,7 @@
       padding: 16px;
       background-color: white;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      align-self: start;
     }
 
     .math-card h2 {
@@ -180,7 +181,7 @@
   <section id="math">
     <h1>Math</h1>
 
-    <div id="math-filters" class="tag-filter-container"></div>
+    <div id="math-filters" class="filter-panel"></div>
 
     <div id="math-list" class="math-grid"></div>
   </section>
@@ -253,36 +254,35 @@
       const filters = document.getElementById("math-filters");
       filters.innerHTML = "";
 
-      categories.forEach(category => {
-        const group = document.createElement("div");
-        group.className = "tag-filter-group";
+      const title = document.createElement("span");
+      title.className = "filter-title";
+      title.textContent = "Filters:";
+      filters.appendChild(title);
 
-        const label = document.createElement("span");
-        label.className = "tag-filter-label";
-        label.textContent = capitalize(category) + ":";
-        group.appendChild(label);
+      categories.forEach(category => {
+        const select = document.createElement("select");
+        select.className = "filter-select";
 
         const tags = getTags(category);
 
         tags.forEach(tag => {
-          const button = document.createElement("button");
-          button.className = "tag-filter-btn";
-          button.textContent = tag;
+          const option = document.createElement("option");
+          option.value = tag;
+          option.textContent = capitalize(category) + ": " + tag;
 
           if (activeFilters[category] === tag) {
-            button.classList.add("active");
+            option.selected = true;
           }
 
-          button.onclick = () => {
-            activeFilters[category] = tag;
-            renderFilters();
-            renderMathItems();
-          };
-
-          group.appendChild(button);
+          select.appendChild(option);
         });
 
-        filters.appendChild(group);
+        select.onchange = () => {
+          activeFilters[category] = select.value;
+          renderMathItems();
+        };
+
+        filters.appendChild(select);
       });
     }
 
