@@ -1,460 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jwang07</title>
-    
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        }
-      };
-    </script>
-    <script id="MathJax-script" async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jwang07</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #800000;
-        }
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+  </script>
 
-        nav {
-            background-color: #800000;
-            padding: 10px;
-            text-align: center;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #800000;
+    }
 
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 18px;
-        }
+    nav {
+      background-color: #800000;
+      padding: 10px;
+      text-align: center;
+    }
 
-        section {
-            padding: 20px;
-            margin: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-size: 18px;
+    }
 
-        h1 {
-            color: #333;
-        }
+    section {
+      padding: 20px;
+      margin: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        h2 {
-            color: #800000;
-            margin-top: 0;
-        }
+    h1 {
+      color: #333;
+    }
 
-        .pdf-btn {
-            display: inline-block;
-            background-color: #800000;
-            color: white;
-            padding: 8px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
+    .pdf-btn {
+      display: inline-block;
+      background-color: #800000;
+      color: white;
+      padding: 8px 15px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      margin-top: 10px;
+    }
 
-        .pdf-btn:hover {
-            background-color: #5c0000;
-        }
+    .pdf-btn:hover {
+      background-color: #5c0000;
+    }
 
-        .item-container {
-            margin-bottom: 20px;
-        }
+    .item-container {
+      margin-bottom: 20px;
+    }
 
-        .item-container p {
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+    .item-container p {
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
 
-        .tag-filter-container {
-            margin-bottom: 20px;
-        }
+    .tag-filter-container {
+      margin-bottom: 24px;
+    }
 
-        .tag-filter-group {
-            margin-bottom: 10px;
-        }
+    .tag-filter-group {
+      margin-bottom: 10px;
+    }
 
-        .tag-filter-label {
-            font-weight: bold;
-            margin-right: 8px;
-            color: #333;
-        }
+    .tag-filter-label {
+      font-weight: bold;
+      margin-right: 8px;
+      color: #333;
+    }
 
-        .tag-filter-btn {
-            background-color: white;
-            color: #800000;
-            border: 1px solid #800000;
-            border-radius: 999px;
-            padding: 6px 12px;
-            margin: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+    .tag-filter-btn {
+      background-color: white;
+      color: #800000;
+      border: 1px solid #800000;
+      border-radius: 999px;
+      padding: 6px 12px;
+      margin: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-        .tag-filter-btn:hover,
-        .tag-filter-btn.active {
-            background-color: #800000;
-            color: white;
-        }
+    .tag-filter-btn:hover,
+    .tag-filter-btn.active {
+      background-color: #800000;
+      color: white;
+    }
 
-        .tag {
-            display: inline-block;
-            border-radius: 999px;
-            padding: 3px 8px;
-            margin: 0 4px 8px 0;
-            font-size: 12px;
-            font-weight: normal;
-        }
+    .math-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
 
-        .technique-tag {
-            background-color: #f1dede;
-            color: #800000;
-            border: 1px solid #800000;
-        }
+    .math-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      background-color: white;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    }
 
-        .source-tag {
-            background-color: #eeeeee;
-            color: #333;
-            border: 1px solid #666;
-        }
+    .math-card h2 {
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: black;
+    }
 
-        .field-tag {
-            background-color: #e3f2fd;
-            color: #0d47a1;
-            border: 1px solid #0d47a1;
-        }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 8px;
+      margin: 0 4px 8px 0;
+      font-size: 12px;
+      font-weight: normal;
+    }
 
-        .result-tag {
-            background-color: #fff3cd;
-            color: #7a4f00;
-            border: 1px solid #b7791f;
-        }
-    </style>
+    .technique-tag {
+      background-color: #f1dede;
+      color: #800000;
+      border: 1px solid #800000;
+    }
+
+    .source-tag {
+      background-color: #eeeeee;
+      color: #333;
+      border: 1px solid #666;
+    }
+
+    .field-tag {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+      border: 1px solid #0d47a1;
+    }
+
+    .type-tag {
+      background-color: #fff3cd;
+      color: #7a4f00;
+      border: 1px solid #b7791f;
+    }
+  </style>
 </head>
 
 <body>
 
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#math">Math</a>
-        <a href="#physics">Physics</a>
-        <a href="#cs">CS</a>
-        <a href="#chemistry">Chemistry</a>
-        <a href="#biology">Biology</a>
-    </nav>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#math">Math</a>
+    <a href="#physics">Physics</a>
+    <a href="#cs">CS</a>
+    <a href="#chemistry">Chemistry</a>
+    <a href="#biology">Biology</a>
+  </nav>
 
-    <section id="home">
-        <h1>Welcome to My Website</h1>
-        <p>Here is my website. I will often post notes about topics / problems I'm interested in. Sometimes I will also write, but that will probably be included on my substack. My resume and about me will also be posted here.</p>
-    </section>
+  <section id="home">
+    <h1>Welcome to My Website</h1>
+    <p>Here is my website. I will often post notes about topics / problems I'm interested in. Sometimes I will also write, but that will probably be included on my substack. My resume and about me will also be posted here.</p>
+  </section>
 
-    <section id="math">
-        <h1>Math</h1>
+  <section id="math">
+    <h1>Math</h1>
 
-        <div class="tag-filter-container">
-            <div class="tag-filter-group">
-                <span class="tag-filter-label">Technique:</span>
-                <button class="tag-filter-btn active" onclick="filterMath('technique', 'all', this)">All</button>
-                <button class="tag-filter-btn" onclick="filterMath('technique', 'linearity-of-expectation', this)">Linearity of Expectation</button>
-                <button class="tag-filter-btn" onclick="filterMath('technique', 'bounding-sums-by-integrals', this)">Bounding Sums by Integrals</button>
-                <button class="tag-filter-btn" onclick="filterMath('technique', 'infinite-descent', this)">Infinite Descent</button>
-                <button class="tag-filter-btn" onclick="filterMath('technique', 'halls-lemma', this)">Hall's Lemma</button>
-                <button class="tag-filter-btn" onclick="filterMath('technique', 'proof-by-contradiction', this)">Proof by Contradiction</button>
-            </div>
+    <div id="math-filters" class="tag-filter-container"></div>
 
-            <div class="tag-filter-group">
-                <span class="tag-filter-label">Source:</span>
-                <button class="tag-filter-btn active" onclick="filterMath('source', 'all', this)">All</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'aime', this)">AIME</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'bmo', this)">BMO</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'usamo', this)">USAMO</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'egmo', this)">EGMO</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'mit-integration-bee', this)">MIT Integration Bee</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'mit-ocw', this)">MIT OCW</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'handout', this)">Handout</button>
-                <button class="tag-filter-btn" onclick="filterMath('source', 'sjsu', this)">SJSU</button>
-            </div>
+    <div id="math-list" class="math-grid"></div>
+  </section>
 
-            <div class="tag-filter-group">
-                <span class="tag-filter-label">Type:</span>
-                <button class="tag-filter-btn active" onclick="filterMath('type', 'all', this)">All</button>
-                <button class="tag-filter-btn" onclick="filterMath('type', 'problem', this)">Problem</button>
-                <button class="tag-filter-btn" onclick="filterMath('type', 'result', this)">Result</button>
-            </div>
+  <section id="physics">
+    <h1>Physics</h1>
 
-            <div class="tag-filter-group">
-                <span class="tag-filter-label">Field:</span>
-                <button class="tag-filter-btn active" onclick="filterMath('field', 'all', this)">All</button>
-                <button class="tag-filter-btn" onclick="filterMath('field', 'probability', this)">Probability</button>
-                <button class="tag-filter-btn" onclick="filterMath('field', 'graph-theory', this)">Graph Theory</button>
-            </div>
-        </div>
-        
-        <div class="item-container math-item" data-types="result" data-techniques="" data-sources="" data-fields="">
-            <p>Proof of the Infinitude of Primes</p>
-            <span class="tag result-tag">Result</span>
-            <br>
-            <a href="infinite_primes.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    <div class="item-container">
+      <p>Thermodynamical Processes</p>
+      <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
+    </div>
 
-        <div class="item-container math-item" data-types="result" data-techniques="" data-sources="" data-fields="">
-            <p>Euclidean Algorithm</p>
-            <span class="tag result-tag">Result</span>
-            <br>
-            <a href="https://jwang2007.github.io/EuclideanAlgorithm.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    <div class="item-container">
+      <p>Charges in a Cube (Purcell)</p>
+      <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
+    </div>
 
-        <div class="item-container math-item" 
-             data-types="result" 
-             data-techniques="linearity-of-expectation" 
-             data-sources="mit-ocw" 
-             data-fields="probability">
-            <p>Linearity of Expectation</p>
-            <span class="tag source-tag">MIT OCW</span>
-            <span class="tag result-tag">Result</span>
-            <span class="tag field-tag">Probability</span>
-            <span class="tag technique-tag">Linearity of Expectation</span>
-            <br>
-            <a href="MIT_RES_6_012_L05_11_Linearity_of_Expectations.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    <div class="item-container">
+      <p>Electrostatic Potential</p>
+      <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
+    </div>
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="egmo" data-fields="">
-            <p>EGMO 2016 Problem 1</p>
-            <span class="tag source-tag">EGMO</span>
-            <br>
-            <a href="egmo_2016_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    <div class="item-container">
+      <p>UCSD 2009 Fall Physics 110a Lagrangian Problem 1</p>
+      <a href="ucsd.pdf" target="_blank" class="pdf-btn">View PDF</a>
+    </div>
+  </section>
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="egmo" data-fields="">
-            <p>EGMO 2025 Problem 1</p>
-            <span class="tag source-tag">EGMO</span>
-            <br>
-            <a href="egmo_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+  <section id="cs">
+    <h1>Computer Science</h1>
+    <p>Here I post Computer Science notes.</p>
 
-        <div class="item-container math-item" data-types="problem" data-techniques="infinite-descent" data-sources="bmo" data-fields="">
-            <p>BMO2 2020 Problem 1</p>
-            <span class="tag source-tag">BMO</span>
-            <span class="tag technique-tag">Infinite Descent</span>
-            <br>
-            <a href="BMO2_2020_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    <div class="item-container">
+      <p>Topological Sort (DFS Algorithm)</p>
+      <a href="topsort.cpp" target="_blank" class="pdf-btn">View Code</a>
+    </div>
+  </section>
 
-        <div class="item-container math-item" 
-             data-types="problem" 
-             data-techniques="halls-lemma proof-by-contradiction" 
-             data-sources="sjsu" 
-             data-fields="graph-theory">
-            <p>SJSU M179 Midterm Problem</p>
-            <span class="tag source-tag">SJSU</span>
-            <span class="tag field-tag">Graph Theory</span>
-            <span class="tag technique-tag">Hall's Lemma</span>
-            <span class="tag technique-tag">Proof by Contradiction</span>
-            <br>
-            <a href="SJSU.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+  <section id="chemistry">
+    <h1>Chemistry</h1>
+    <p>Here I post Chemistry notes.</p>
+  </section>
 
-        <div class="item-container math-item" data-types="problem" data-techniques="linearity-of-expectation" data-sources="aime" data-fields="">
-            <p>AIME 2006 Problem 6</p>
-            <span class="tag source-tag">AIME</span>
-            <span class="tag technique-tag">Linearity of Expectation</span>
-            <br>
-            <a href="aime_2006_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+  <section id="biology">
+    <h1>Biology</h1>
+    <p>Here I post Biology notes.</p>
+  </section>
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="usamo" data-fields="">
-            <p>USAMO 2015 Problem 1</p>
-            <span class="tag source-tag">USAMO</span>
-            <br>
-            <a href="usamo_2015_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+  <script>
+    let mathItems = [];
 
-        <div class="item-container math-item" data-types="problem" data-techniques="infinite-descent" data-sources="usamo" data-fields="">
-            <p>USAMO 1976 Problem 3</p>
-            <span class="tag source-tag">USAMO</span>
-            <span class="tag technique-tag">Infinite Descent</span>
-            <br>
-            <a href="usamo_1976_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    const categories = ["technique", "source", "type", "field"];
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2023 Problem 1</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2023_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    const activeFilters = {
+      technique: "All",
+      source: "All",
+      type: "All",
+      field: "All"
+    };
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2023 Problem 2</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2023_p2.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    fetch("data.json")
+      .then(response => response.json())
+      .then(data => {
+        mathItems = data;
+        renderFilters();
+        renderMathItems();
+      });
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2023 Problem 3</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2023_p3.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+    function renderFilters() {
+      const filters = document.getElementById("math-filters");
+      filters.innerHTML = "";
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2025 Problem 5</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2025_p5.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+      categories.forEach(category => {
+        const group = document.createElement("div");
+        group.className = "tag-filter-group";
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2025 Problem 1</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2025_p1.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+        const label = document.createElement("span");
+        label.className = "tag-filter-label";
+        label.textContent = capitalize(category) + ":";
+        group.appendChild(label);
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2025 Problem 4</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2025_p4.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+        const tags = getTags(category);
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2025 Problem 6</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2025_p6.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
+        tags.forEach(tag => {
+          const button = document.createElement("button");
+          button.className = "tag-filter-btn";
+          button.textContent = tag;
 
-        <div class="item-container math-item" data-types="problem" data-techniques="" data-sources="mit-integration-bee" data-fields="">
-            <p>MIT Integration Bee 2025 Problem 14</p>
-            <span class="tag source-tag">MIT Integration Bee</span>
-            <br>
-            <a href="integration_bee_2025_14.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
-
-        <div class="item-container math-item" 
-             data-types="problem" 
-             data-techniques="bounding-sums-by-integrals" 
-             data-sources="handout" 
-             data-fields="probability">
-            <p>Expected Uses of Probability Lemma 3.2</p>
-            <span class="tag source-tag">Handout</span>
-            <span class="tag field-tag">Probability</span>
-            <span class="tag technique-tag">Bounding Sums by Integrals</span>
-            <br>
-            <a href="lemma_3_2.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
-    </section>
-
-    <section id="physics">
-        <h1>Physics</h1>
-
-        <div class="item-container">
-            <p>Thermodynamical Processes</p>
-            <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
-
-        <div class="item-container">
-            <p>Charges in a Cube (Purcell)</p>
-            <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
-
-        <div class="item-container">
-            <p>Electrostatic Potential</p>
-            <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
-
-        <div class="item-container">
-            <p>UCSD 2009 Fall Physics 110a Lagrangian Problem 1</p>
-            <a href="ucsd.pdf" target="_blank" class="pdf-btn">View PDF</a>
-        </div>
-    </section>
-
-    <section id="cs">
-        <h1>Computer Science</h1>
-        <p>Here I post Computer Science notes.</p>
-        
-        <div class="item-container">
-            <p>Topological Sort (DFS Algorithm)</p>
-            <a href="topsort.cpp" target="_blank" class="pdf-btn">View Code</a>
-        </div>
-    </section>
-
-    <section id="chemistry">
-        <h1>Chemistry</h1>
-        <p>Here I post Chemistry notes.</p>
-    </section>
-
-    <section id="biology">
-        <h1>Biology</h1>
-        <p>Here I post Biology notes.</p>
-    </section>
-
-    <script>
-        const activeFilters = {
-            technique: "all",
-            source: "all",
-            type: "all",
-            field: "all"
-        };
-
-        function filterMath(type, value, button) {
-            activeFilters[type] = value;
-
-            const group = button.closest(".tag-filter-group");
-            const buttons = group.querySelectorAll(".tag-filter-btn");
-
-            buttons.forEach(btn => btn.classList.remove("active"));
+          if (activeFilters[category] === tag) {
             button.classList.add("active");
+          }
 
-            applyMathFilters();
-        }
+          button.onclick = () => {
+            activeFilters[category] = tag;
+            renderFilters();
+            renderMathItems();
+          };
 
-        function applyMathFilters() {
-            const items = document.querySelectorAll(".math-item");
+          group.appendChild(button);
+        });
 
-            items.forEach(item => {
-                const techniques = item.dataset.techniques || "";
-                const sources = item.dataset.sources || "";
-                const types = item.dataset.types || "";
-                const fields = item.dataset.fields || "";
+        filters.appendChild(group);
+      });
+    }
 
-                const techniqueMatches =
-                    activeFilters.technique === "all" ||
-                    techniques.split(" ").includes(activeFilters.technique);
+    function getTags(category) {
+      const tags = new Set();
 
-                const sourceMatches =
-                    activeFilters.source === "all" ||
-                    sources.split(" ").includes(activeFilters.source);
+      mathItems.forEach(item => {
+        item[category].forEach(tag => tags.add(tag));
+      });
 
-                const typeMatches =
-                    activeFilters.type === "all" ||
-                    types.split(" ").includes(activeFilters.type);
+      return ["All", ...Array.from(tags).sort()];
+    }
 
-                const fieldMatches =
-                    activeFilters.field === "all" ||
-                    fields.split(" ").includes(activeFilters.field);
+    function renderMathItems() {
+      const list = document.getElementById("math-list");
+      list.innerHTML = "";
 
-                item.style.display =
-                    techniqueMatches && sourceMatches && typeMatches && fieldMatches
-                    ? "block"
-                    : "none";
-            });
-        }
-    </script>
+      const filtered = mathItems.filter(item => {
+        return categories.every(category => {
+          const active = activeFilters[category];
+
+          if (active === "All") {
+            return true;
+          }
+
+          return item[category].includes(active);
+        });
+      });
+
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "math-card";
+
+        const title = document.createElement("h2");
+        title.textContent = item.title;
+        card.appendChild(title);
+
+        addTags(card, item.source, "source-tag");
+        addTags(card, item.type, "type-tag");
+        addTags(card, item.field, "field-tag");
+        addTags(card, item.technique, "technique-tag");
+
+        const br = document.createElement("br");
+        card.appendChild(br);
+
+        const link = document.createElement("a");
+        link.href = item.file;
+        link.target = "_blank";
+        link.className = "pdf-btn";
+        link.textContent = "View PDF";
+        card.appendChild(link);
+
+        list.appendChild(card);
+      });
+    }
+
+    function addTags(card, tags, className) {
+      tags.forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "tag " + className;
+        span.textContent = tag;
+        card.appendChild(span);
+      });
+    }
+
+    function capitalize(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+  </script>
 
 </body>
 </html>
