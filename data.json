@@ -4,7 +4,8 @@
     "file": "infinite_primes.pdf",
     "type": ["Result"],
     "source": [],
-    "field": [],
+    "field": ["Number Theory"],
+    "proofMethod": ["Proof by Contradiction"],
     "technique": []
   },
   {
@@ -12,7 +13,8 @@
     "file": "EuclideanAlgorithm.pdf",
     "type": ["Result"],
     "source": [],
-    "field": [],
+    "field": ["Number Theory"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -21,7 +23,8 @@
     "type": ["Result"],
     "source": ["MIT OCW"],
     "field": ["Probability"],
-    "technique": ["Linearity of Expectation"]
+    "proofMethod": [],
+    "technique": []
   },
   {
     "title": "EGMO 2016 Problem 1",
@@ -29,6 +32,7 @@
     "type": ["Problem"],
     "source": ["EGMO"],
     "field": [],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -37,6 +41,7 @@
     "type": ["Problem"],
     "source": ["EGMO"],
     "field": [],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -44,8 +49,9 @@
     "file": "BMO2_2020_p1.pdf",
     "type": ["Problem"],
     "source": ["BMO"],
-    "field": [],
-    "technique": ["Infinite Descent"]
+    "field": ["Number Theory"],
+    "proofMethod": ["Infinite Descent"],
+    "technique": []
   },
   {
     "title": "SJSU M179 Midterm Problem",
@@ -53,14 +59,16 @@
     "type": ["Problem"],
     "source": ["SJSU"],
     "field": ["Graph Theory"],
-    "technique": ["Hall's Lemma", "Proof by Contradiction"]
+    "proofMethod": ["Proof by Contradiction"],
+    "technique": ["Hall's Lemma"]
   },
   {
     "title": "AIME 2006 Problem 6",
     "file": "aime_2006_p6.pdf",
     "type": ["Problem"],
     "source": ["AIME"],
-    "field": [],
+    "field": ["Probability"],
+    "proofMethod": [],
     "technique": ["Linearity of Expectation"]
   },
   {
@@ -69,6 +77,7 @@
     "type": ["Problem"],
     "source": ["USAMO"],
     "field": [],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -76,15 +85,17 @@
     "file": "usamo_1976_p3.pdf",
     "type": ["Problem"],
     "source": ["USAMO"],
-    "field": [],
-    "technique": ["Infinite Descent"]
+    "field": ["Number Theory"],
+    "proofMethod": ["Infinite Descent"],
+    "technique": []
   },
   {
     "title": "MIT Integration Bee 2023 Problem 1",
     "file": "integration_bee_2023_p1.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -92,7 +103,8 @@
     "file": "integration_bee_2023_p2.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -100,7 +112,8 @@
     "file": "integration_bee_2023_p3.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -108,7 +121,8 @@
     "file": "integration_bee_2025_p5.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -116,7 +130,8 @@
     "file": "integration_bee_2025_p1.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -124,7 +139,8 @@
     "file": "integration_bee_2025_p4.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -132,7 +148,8 @@
     "file": "integration_bee_2025_p6.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -140,7 +157,8 @@
     "file": "integration_bee_2025_14.pdf",
     "type": ["Problem"],
     "source": ["MIT Integration Bee"],
-    "field": [],
+    "field": ["Calculus"],
+    "proofMethod": [],
     "technique": []
   },
   {
@@ -149,6 +167,7 @@
     "type": ["Problem"],
     "source": ["Handout"],
     "field": ["Probability"],
+    "proofMethod": [],
     "technique": ["Bounding Sums by Integrals"]
   }
 ]
