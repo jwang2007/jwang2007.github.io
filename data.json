@@ -27,6 +27,28 @@
     "technique": []
   },
   {
+    "title": "Proof that $\\sqrt{2}$ is Irrational",
+    "files": [
+      {
+        "file": "sqrt2_1.pdf",
+        "label": "Parity Solution",
+        "proofMethod": ["Proof by Contradiction"],
+        "technique": ["Parity"]
+      },
+      {
+        "file": "sqrt2_2.pdf",
+        "label": "Infinite Descent Solution",
+        "proofMethod": ["Infinite Descent"],
+        "technique": ["Infinite Descent"]
+      }
+    ],
+    "type": ["Result"],
+    "source": [],
+    "field": ["Number Theory"],
+    "proofMethod": ["Proof by Contradiction", "Infinite Descent"],
+    "technique": ["Parity", "Infinite Descent"]
+  },
+  {
     "title": "EGMO 2016 Problem 1",
     "file": "egmo_2016_p1.pdf",
     "type": ["Problem"],
