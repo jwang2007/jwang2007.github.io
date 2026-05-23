@@ -20,7 +20,6 @@
     :root {
       --maroon: #800000;
       --maroon-dark: #5c0000;
-      --soft-border: #e6e6e6;
       --soft-bg: #fafafa;
     }
 
@@ -72,7 +71,7 @@
       font-size: 14px;
       font-weight: bold;
       transition: background-color 0.2s, transform 0.2s;
-      margin-top: 12px;
+      margin-top: 14px;
       margin-right: 6px;
       margin-bottom: 6px;
     }
@@ -151,6 +150,10 @@
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
     }
 
+    .math-card:focus-within {
+      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.10), 0 6px 14px rgba(0, 0, 0, 0.12);
+    }
+
     .math-card h2 {
       font-size: 20px;
       margin-top: 0;
@@ -160,7 +163,12 @@
     }
 
     .tag-row {
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+    }
+
+    .dynamic-tag-row {
+      margin-top: 2px;
+      min-height: 34px;
     }
 
     .tag {
@@ -207,6 +215,58 @@
       color: #555;
       font-style: italic;
       padding: 10px 0;
+    }
+
+    .solution-switcher {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .solution-nav-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid #cccccc;
+      background-color: white;
+      color: #333;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .solution-nav-btn:hover {
+      background-color: #f5f5f5;
+      border-color: var(--maroon);
+      transform: translateY(-1px);
+    }
+
+    .solution-name-box {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid #dddddd;
+      border-radius: 999px;
+      background-color: #fafafa;
+      color: #333;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .solution-count {
+      color: #666;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .solution-hint {
+      color: #777;
+      font-size: 12px;
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -303,20 +363,49 @@
     fetch("data.json")
       .then(response => response.json())
       .then(data => {
-        mathItems = data.map(item => ({
-          ...item,
-          proofMethod: item.proofMethod || [],
-          technique: item.technique || [],
-          source: item.source || [],
-          type: item.type || [],
-          field: item.field || [],
-          file: item.file || null,
-          files: item.files || null
-        }));
-
+        mathItems = data.map(normalizeMathItem);
         renderFilters();
         renderMathItems();
       });
+
+    function unique(arr) {
+      return [...new Set(arr)];
+    }
+
+    function normalizeMathItem(item) {
+      let files = [];
+
+      if (Array.isArray(item.files) && item.files.length > 0) {
+        files = item.files.map(fileItem => ({
+          file: fileItem.file || null,
+          label: fileItem.label || "View PDF",
+          proofMethod: fileItem.proofMethod || [],
+          technique: fileItem.technique || []
+        }));
+      } else if (item.file) {
+        files = [
+          {
+            file: item.file,
+            label: "View PDF",
+            proofMethod: item.proofMethod || [],
+            technique: item.technique || []
+          }
+        ];
+      }
+
+      const derivedProofMethods = unique(files.flatMap(fileItem => fileItem.proofMethod || []));
+      const derivedTechniques = unique(files.flatMap(fileItem => fileItem.technique || []));
+
+      return {
+        ...item,
+        source: item.source || [],
+        type: item.type || [],
+        field: item.field || [],
+        proofMethod: unique([...(item.proofMethod || []), ...derivedProofMethods]),
+        technique: unique([...(item.technique || []), ...derivedTechniques]),
+        files: files
+      };
+    }
 
     function renderFilters() {
       const filters = document.getElementById("math-filters");
@@ -392,23 +481,24 @@
       filtered.forEach(item => {
         const card = document.createElement("div");
         card.className = "math-card";
+        card.tabIndex = 0;
 
         const title = document.createElement("h2");
         title.textContent = item.title;
         card.appendChild(title);
 
-        const tagRow = document.createElement("div");
-        tagRow.className = "tag-row";
+        const staticTagRow = document.createElement("div");
+        staticTagRow.className = "tag-row";
+        addTags(staticTagRow, item.source, "source-tag");
+        addTags(staticTagRow, item.type, "type-tag");
+        addTags(staticTagRow, item.field, "field-tag");
+        card.appendChild(staticTagRow);
 
-        addTags(tagRow, item.source, "source-tag");
-        addTags(tagRow, item.type, "type-tag");
-        addTags(tagRow, item.field, "field-tag");
-        addTags(tagRow, item.proofMethod, "proof-method-tag");
-        addTags(tagRow, item.technique, "technique-tag");
+        const dynamicTagRow = document.createElement("div");
+        dynamicTagRow.className = "tag-row dynamic-tag-row";
+        card.appendChild(dynamicTagRow);
 
-        card.appendChild(tagRow);
-
-        renderPdfButtons(card, item);
+        renderSolutionViewer(card, item, dynamicTagRow);
 
         list.appendChild(card);
       });
@@ -418,32 +508,125 @@
       }
     }
 
-    function renderPdfButtons(card, item) {
-      let files = [];
-
-      if (item.files && Array.isArray(item.files)) {
-        files = item.files;
-      } else if (item.file) {
-        files = [
-          {
-            file: item.file,
-            label: "View PDF"
-          }
-        ];
+    function getInitialSolutionIndex(item) {
+      if (!item.files || item.files.length <= 1) {
+        return 0;
       }
 
-      files.forEach(fileItem => {
-        if (!fileItem.file) {
-          return;
+      const proofMethodFilter = activeFilters.proofMethod;
+      const techniqueFilter = activeFilters.technique;
+
+      const matchIndex = item.files.findIndex(fileItem => {
+        if (proofMethodFilter !== "All" && !fileItem.proofMethod.includes(proofMethodFilter)) {
+          return false;
         }
 
-        const link = document.createElement("a");
-        link.href = fileItem.file;
-        link.target = "_blank";
-        link.className = "pdf-btn";
-        link.textContent = fileItem.label || "View PDF";
-        card.appendChild(link);
+        if (techniqueFilter !== "All" && !fileItem.technique.includes(techniqueFilter)) {
+          return false;
+        }
+
+        return true;
       });
+
+      return matchIndex >= 0 ? matchIndex : 0;
+    }
+
+    function renderSolutionViewer(card, item, dynamicTagRow) {
+      if (!item.files || item.files.length === 0) {
+        return;
+      }
+
+      let currentIndex = getInitialSolutionIndex(item);
+      const solutionCount = item.files.length;
+
+      const mainLink = document.createElement("a");
+      mainLink.target = "_blank";
+      mainLink.className = "pdf-btn";
+
+      function updateDynamicTags(fileItem) {
+        dynamicTagRow.innerHTML = "";
+        addTags(dynamicTagRow, fileItem.proofMethod || [], "proof-method-tag");
+        addTags(dynamicTagRow, fileItem.technique || [], "technique-tag");
+      }
+
+      function updateMainLink(fileItem) {
+        mainLink.href = fileItem.file;
+        mainLink.textContent = fileItem.label || "View PDF";
+      }
+
+      if (solutionCount === 1) {
+        const onlyFile = item.files[0];
+        updateDynamicTags(onlyFile);
+        updateMainLink(onlyFile);
+        card.appendChild(mainLink);
+        return;
+      }
+
+      const switcher = document.createElement("div");
+      switcher.className = "solution-switcher";
+
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "solution-nav-btn";
+      prevBtn.type = "button";
+      prevBtn.setAttribute("aria-label", "Previous solution");
+      prevBtn.textContent = "←";
+
+      const nameBox = document.createElement("div");
+      nameBox.className = "solution-name-box";
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "solution-nav-btn";
+      nextBtn.type = "button";
+      nextBtn.setAttribute("aria-label", "Next solution");
+      nextBtn.textContent = "→";
+
+      const countText = document.createElement("span");
+      countText.className = "solution-count";
+
+      switcher.appendChild(prevBtn);
+      switcher.appendChild(nameBox);
+      switcher.appendChild(nextBtn);
+      switcher.appendChild(countText);
+
+      const hint = document.createElement("div");
+      hint.className = "solution-hint";
+      hint.textContent = "Use the arrows to switch solutions.";
+
+      function updateSolution() {
+        const currentFile = item.files[currentIndex];
+        nameBox.textContent = currentFile.label || `Solution ${currentIndex + 1}`;
+        countText.textContent = `${currentIndex + 1} / ${solutionCount}`;
+        updateDynamicTags(currentFile);
+        updateMainLink(currentFile);
+      }
+
+      prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + solutionCount) % solutionCount;
+        updateSolution();
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % solutionCount;
+        updateSolution();
+      });
+
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          currentIndex = (currentIndex - 1 + solutionCount) % solutionCount;
+          updateSolution();
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          currentIndex = (currentIndex + 1) % solutionCount;
+          updateSolution();
+        }
+      });
+
+      updateSolution();
+
+      card.appendChild(switcher);
+      card.appendChild(hint);
+      card.appendChild(mainLink);
     }
 
     function addTags(parent, tags, className) {
