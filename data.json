@@ -39,7 +39,7 @@
         "file": "sqrt2_2.pdf",
         "label": "Infinite Descent Solution",
         "proofMethod": ["Infinite Descent"],
-        "technique": ["Infinite Descent"]
+        "technique": []
       }
     ],
     "type": ["Result"],
