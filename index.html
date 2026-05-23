@@ -73,6 +73,8 @@
       font-weight: bold;
       transition: background-color 0.2s, transform 0.2s;
       margin-top: 12px;
+      margin-right: 6px;
+      margin-bottom: 6px;
     }
 
     .pdf-btn:hover {
@@ -307,7 +309,9 @@
           technique: item.technique || [],
           source: item.source || [],
           type: item.type || [],
-          field: item.field || []
+          field: item.field || [],
+          file: item.file || null,
+          files: item.files || null
         }));
 
         renderFilters();
@@ -404,14 +408,41 @@
 
         card.appendChild(tagRow);
 
-        const link = document.createElement("a");
-        link.href = item.file;
-        link.target = "_blank";
-        link.className = "pdf-btn";
-        link.textContent = "View PDF";
-        card.appendChild(link);
+        renderPdfButtons(card, item);
 
         list.appendChild(card);
+      });
+
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    function renderPdfButtons(card, item) {
+      let files = [];
+
+      if (item.files && Array.isArray(item.files)) {
+        files = item.files;
+      } else if (item.file) {
+        files = [
+          {
+            file: item.file,
+            label: "View PDF"
+          }
+        ];
+      }
+
+      files.forEach(fileItem => {
+        if (!fileItem.file) {
+          return;
+        }
+
+        const link = document.createElement("a");
+        link.href = fileItem.file;
+        link.target = "_blank";
+        link.className = "pdf-btn";
+        link.textContent = fileItem.label || "View PDF";
+        card.appendChild(link);
       });
     }
 
