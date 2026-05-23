@@ -31,15 +31,11 @@
     "files": [
       {
         "file": "sqrt2_1.pdf",
-        "label": "Parity Solution",
-        "proofMethod": ["Proof by Contradiction"],
-        "technique": ["Parity"]
+        "label": "Parity Solution"
       },
       {
         "file": "sqrt2_2.pdf",
-        "label": "Infinite Descent Solution",
-        "proofMethod": ["Infinite Descent"],
-        "technique": ["Infinite Descent"]
+        "label": "Infinite Descent Solution"
       }
     ],
     "type": ["Result"],
