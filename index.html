@@ -18,8 +18,8 @@
 
   <style>
     :root {
-      --maroon: #800000;
-      --maroon-dark: #5c0000;
+      --indigo: #30277C;
+      --indigo-dark: #21185f;
       --soft-bg: #fafafa;
     }
 
@@ -27,11 +27,11 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: var(--maroon);
+      background-color: var(--indigo);
     }
 
     nav {
-      background-color: var(--maroon);
+      background-color: var(--indigo);
       padding: 10px;
       text-align: center;
     }
@@ -63,7 +63,7 @@
 
     .pdf-btn {
       display: inline-block;
-      background-color: var(--maroon);
+      background-color: var(--indigo);
       color: white;
       padding: 9px 16px;
       text-decoration: none;
@@ -77,7 +77,7 @@
     }
 
     .pdf-btn:hover {
-      background-color: var(--maroon-dark);
+      background-color: var(--indigo-dark);
       transform: translateY(-1px);
     }
 
@@ -123,8 +123,8 @@
 
     .filter-select:hover,
     .filter-select:focus {
-      border-color: var(--maroon);
-      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.12);
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
     }
 
     .math-grid {
@@ -151,7 +151,7 @@
     }
 
     .math-card:focus-within {
-      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.10), 0 6px 14px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.12), 0 6px 14px rgba(0, 0, 0, 0.12);
     }
 
     .math-card h2 {
@@ -182,9 +182,9 @@
     }
 
     .proof-method-tag {
-      background-color: #f1dede;
-      color: #800000;
-      border: 1px solid #800000;
+      background-color: #ece9ff;
+      color: #30277C;
+      border: 1px solid #30277C;
     }
 
     .technique-tag {
@@ -240,7 +240,7 @@
 
     .solution-nav-btn:hover {
       background-color: #f5f5f5;
-      border-color: var(--maroon);
+      border-color: var(--indigo);
       transform: translateY(-1px);
     }
   </style>
@@ -249,18 +249,12 @@
 <body>
 
   <nav>
-    <a href="#home">Home</a>
     <a href="#math">Math</a>
     <a href="#physics">Physics</a>
     <a href="#cs">CS</a>
     <a href="#chemistry">Chemistry</a>
     <a href="#biology">Biology</a>
   </nav>
-
-  <section id="home">
-    <h1>Welcome to My Website</h1>
-    <p>Here is my website. I will often post notes about topics / problems I'm interested in. Sometimes I will also write, but that will probably be included on my substack. My resume and about me will also be posted here.</p>
-  </section>
 
   <section id="math">
     <h1>Math</h1>
@@ -296,7 +290,6 @@
 
   <section id="cs">
     <h1>Computer Science</h1>
-    <p>Here I post Computer Science notes.</p>
 
     <div class="item-container">
       <p>Topological Sort (DFS Algorithm)</p>
@@ -306,12 +299,10 @@
 
   <section id="chemistry">
     <h1>Chemistry</h1>
-    <p>Here I post Chemistry notes.</p>
   </section>
 
   <section id="biology">
     <h1>Biology</h1>
-    <p>Here I post Biology notes.</p>
   </section>
 
   <script>
