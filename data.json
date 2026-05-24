@@ -189,5 +189,14 @@
     "field": ["Probability"],
     "proofMethod": [],
     "technique": ["Bounding Sums by Integrals"]
+  },
+  {
+    "title": "River Crossing",
+    "file": "River_Crossing.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Recursion"]
   }
 ]
