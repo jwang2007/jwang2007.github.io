@@ -198,5 +198,14 @@
     "field": ["Logic"],
     "proofMethod": [],
     "technique": ["Recursion"]
+  },
+  {
+    "title": "Tiger and Sheep",
+    "file": "tigers_and_sheep.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Recursion", "Parity"]
   }
 ]
