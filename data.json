@@ -216,5 +216,14 @@
     "field": ["Logic"],
     "proofMethod": [],
     "technique": ["Elimination"]
+  },
+  {
+    "title": "Horse Race",
+    "file": "horse_race.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Elimination"]
   }
 ]
