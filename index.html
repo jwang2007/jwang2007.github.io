@@ -213,8 +213,8 @@
     }
 
     .folder-card {
-      width: 150px;
-      min-height: 108px;
+      width: 168px;
+      min-height: 138px;
       border: 1px solid #dddddd;
       border-radius: 12px;
       background-color: white;
@@ -245,6 +245,30 @@
       background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
     }
 
+    .folder-card.default-folder-card {
+      background-color: var(--indigo);
+      border-color: var(--indigo);
+      color: white;
+    }
+
+    .folder-card.default-folder-card:hover {
+      background-color: var(--indigo-dark);
+      border-color: #6f5eff;
+      box-shadow: 0 8px 18px rgba(38, 13, 94, 0.24);
+    }
+
+    .folder-card.default-folder-card.active {
+      background: var(--indigo);
+      border-color: #7c6dff;
+      color: white;
+      box-shadow: 0 0 0 4px rgba(124, 109, 255, 0.22);
+    }
+
+    .folder-card.default-folder-card span {
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+
     .source-card-image {
       width: 74px;
       height: 54px;
@@ -253,15 +277,16 @@
     }
 
     .default-folder-image {
-      width: 78px;
-      height: 62px;
+      width: 118px;
+      height: 92px;
       object-fit: contain;
       display: block;
+      border-radius: 8px;
     }
 
     .card-default-folder-thumb {
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
       object-fit: contain;
       flex: 0 0 auto;
       border-radius: 6px;
@@ -768,6 +793,10 @@
 
       if (active) {
         button.classList.add("active");
+      }
+
+      if (visual.classList && visual.classList.contains("default-folder-image")) {
+        button.classList.add("default-folder-card");
       }
 
       button.appendChild(visual);
