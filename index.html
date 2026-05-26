@@ -370,6 +370,98 @@
       padding: 10px 0;
     }
 
+
+    .home-section {
+      margin-bottom: 22px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background-color: var(--soft-bg);
+    }
+
+    .home-section-title {
+      font-size: 24px;
+      margin: 0 0 14px 0;
+      color: #333;
+    }
+
+    .home-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    .home-card {
+      min-height: 126px;
+      border: 1px solid var(--indigo);
+      border-radius: 16px;
+      background-color: var(--indigo);
+      color: white;
+      cursor: pointer;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+    }
+
+    .home-card:hover {
+      transform: translateY(-2px);
+      background-color: var(--indigo-dark);
+      box-shadow: 0 8px 18px rgba(38, 13, 94, 0.22);
+    }
+
+    .library-section-title {
+      font-size: 24px;
+      margin: 0 0 14px 0;
+      color: #333;
+    }
+
+    .subject-grid .folder-card {
+      width: 155px;
+      min-height: 118px;
+      gap: 7px;
+      padding: 12px 10px;
+      font-size: 15px;
+    }
+
+    .subject-grid .default-folder-image {
+      width: 82px;
+      height: 62px;
+    }
+
+    .placeholder-text {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 0 0 16px 0;
+    }
+
+    .link-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .link-pill {
+      display: inline-block;
+      border: 1px solid var(--indigo);
+      color: var(--indigo);
+      background-color: #f5f3ff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .link-pill:hover {
+      background-color: #ece9ff;
+    }
+
     @media (max-width: 700px) {
       .view {
         margin: 10px;
@@ -402,7 +494,17 @@
   <section id="home" class="view active">
     <h1>Library</h1>
 
+    <div class="home-section">
+      <h2 class="home-section-title">Main</h2>
+      <div class="home-card-grid">
+        <button class="home-card subject-folder" type="button" data-target="projects">Projects</button>
+        <button class="home-card subject-folder" type="button" data-target="resume">Resume</button>
+        <button class="home-card subject-folder" type="button" data-target="socials">Socials</button>
+      </div>
+    </div>
+
     <div class="folder-panel">
+      <h2 class="library-section-title">Subjects</h2>
       <div class="subject-grid">
         <button class="folder-card default-folder-card subject-folder" type="button" data-target="math">
           <img src="images/purple_folder.jpg" alt="Math folder" class="default-folder-image">
@@ -429,6 +531,31 @@
           <span>Biology</span>
         </button>
       </div>
+    </div>
+  </section>
+
+
+  <section id="projects" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
+    <h1>Projects</h1>
+    <p class="placeholder-text">Add your projects here later.</p>
+  </section>
+
+  <section id="resume" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
+    <h1>Resume</h1>
+    <p class="placeholder-text">Add your resume PDF here later.</p>
+    <!-- Example: <a href="resume.pdf" target="_blank" class="pdf-btn">View Resume</a> -->
+  </section>
+
+  <section id="socials" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
+    <h1>Socials</h1>
+    <p class="placeholder-text">Add links to your other social media pages here.</p>
+    <div class="link-list">
+      <a class="link-pill" href="#">GitHub</a>
+      <a class="link-pill" href="#">LinkedIn</a>
+      <a class="link-pill" href="#">Other</a>
     </div>
   </section>
 
