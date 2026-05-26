@@ -127,6 +127,123 @@
       box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
     }
 
+
+    .source-card-panel {
+      margin-top: -14px;
+      margin-bottom: 28px;
+      padding: 16px;
+      border: 1px solid #eeeeee;
+      border-radius: 12px;
+      background-color: var(--soft-bg);
+    }
+
+    .source-card-title {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 14px;
+    }
+
+    .source-card-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .source-card {
+      width: 150px;
+      min-height: 108px;
+      border: 1px solid #dddddd;
+      border-radius: 12px;
+      background-color: white;
+      cursor: pointer;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      color: #333;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    }
+
+    .source-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--indigo);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+    }
+
+    .source-card.active {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
+      color: var(--indigo);
+      background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
+    }
+
+    .source-card-image {
+      width: 74px;
+      height: 54px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .source-card-folder {
+      width: 66px;
+      height: 46px;
+      border-radius: 7px;
+      background-color: var(--indigo);
+      position: relative;
+      box-shadow: inset 0 -8px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .source-card-folder::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -11px;
+      width: 34px;
+      height: 16px;
+      border-radius: 7px 7px 0 0;
+      background-color: var(--indigo);
+    }
+
+    .source-card-initials {
+      width: 62px;
+      height: 48px;
+      border-radius: 10px;
+      border: 1px solid #d8d4ef;
+      background-color: #f7f5ff;
+      color: var(--indigo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .card-source-thumb {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      flex: 0 0 auto;
+      border-radius: 6px;
+    }
+
+    .card-title-row h2 {
+      margin-bottom: 0;
+    }
+
+
     .math-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -261,6 +378,8 @@
 
     <div id="math-filters" class="filter-panel"></div>
 
+    <div id="source-card-panel" class="source-card-panel"></div>
+
     <div id="math-list" class="math-grid"></div>
   </section>
 
@@ -326,11 +445,28 @@
       field: "All"
     };
 
+
+    const sourceIcons = {
+      "MIT OCW": {
+        src: "images/mit-ocw.jpg",
+        alt: "MIT OCW"
+      },
+      "MIT Integration Bee": {
+        src: "images/mit-integration-bee.jpg",
+        alt: "MIT Integration Bee"
+      },
+      "Green Book": {
+        src: "images/green-book.jpg",
+        alt: "Green Book"
+      }
+    };
+
     fetch("data.json")
       .then(response => response.json())
       .then(data => {
         mathItems = data.map(normalizeMathItem);
         renderFilters();
+        renderSourceCards();
         renderMathItems();
       });
 
@@ -385,6 +521,7 @@
       categories.forEach(category => {
         const select = document.createElement("select");
         select.className = "filter-select";
+        select.dataset.category = category;
         select.setAttribute("aria-label", categoryLabels[category]);
 
         const tags = getTags(category);
@@ -403,6 +540,11 @@
 
         select.onchange = () => {
           activeFilters[category] = select.value;
+
+          if (category === "source") {
+            renderSourceCards();
+          }
+
           renderMathItems();
         };
 
@@ -419,6 +561,90 @@
 
       return ["All", ...Array.from(tags).sort()];
     }
+
+
+    function renderSourceCards() {
+      const panel = document.getElementById("source-card-panel");
+      panel.innerHTML = "";
+
+      const title = document.createElement("div");
+      title.className = "source-card-title";
+      title.textContent = "Filter by Source:";
+      panel.appendChild(title);
+
+      const row = document.createElement("div");
+      row.className = "source-card-row";
+
+      getTags("source").forEach(sourceName => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "source-card";
+        button.dataset.source = sourceName;
+
+        if (activeFilters.source === sourceName) {
+          button.classList.add("active");
+        }
+
+        button.appendChild(createSourceVisual(sourceName));
+
+        const label = document.createElement("span");
+        label.textContent = sourceName === "All" ? "All Sources" : sourceName;
+        button.appendChild(label);
+
+        button.addEventListener("click", () => {
+          activeFilters.source = sourceName;
+          syncFilterSelect("source");
+          renderSourceCards();
+          renderMathItems();
+        });
+
+        row.appendChild(button);
+      });
+
+      panel.appendChild(row);
+    }
+
+    function createSourceVisual(sourceName, small = false) {
+      if (sourceName !== "All" && sourceIcons[sourceName]) {
+        const img = document.createElement("img");
+        img.src = sourceIcons[sourceName].src;
+        img.alt = sourceIcons[sourceName].alt;
+        img.className = small ? "card-source-thumb" : "source-card-image";
+        return img;
+      }
+
+      if (sourceName === "All") {
+        const folder = document.createElement("span");
+        folder.className = "source-card-folder";
+        folder.setAttribute("aria-hidden", "true");
+        return folder;
+      }
+
+      const initials = document.createElement("span");
+      initials.className = "source-card-initials";
+      initials.textContent = getInitials(sourceName);
+      initials.setAttribute("aria-hidden", "true");
+      return initials;
+    }
+
+    function getInitials(sourceName) {
+      return sourceName
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(word => word[0])
+        .join("")
+        .slice(0, 4)
+        .toUpperCase();
+    }
+
+    function syncFilterSelect(category) {
+      const select = document.querySelector(`.filter-select[data-category="${category}"]`);
+
+      if (select) {
+        select.value = activeFilters[category];
+      }
+    }
+
 
     function renderMathItems() {
       const list = document.getElementById("math-list");
@@ -449,9 +675,18 @@
         card.className = "math-card";
         card.tabIndex = 0;
 
+        const titleRow = document.createElement("div");
+        titleRow.className = "card-title-row";
+
+        if (item.source.length > 0) {
+          titleRow.appendChild(createSourceVisual(item.source[0], true));
+        }
+
         const title = document.createElement("h2");
         title.textContent = item.title;
-        card.appendChild(title);
+        titleRow.appendChild(title);
+
+        card.appendChild(titleRow);
 
         const staticTagRow = document.createElement("div");
         staticTagRow.className = "tag-row";
