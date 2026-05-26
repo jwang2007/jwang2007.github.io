@@ -493,6 +493,7 @@
     <div class="search-panel">
       <span class="search-title">Search:</span>
       <input id="math-search" class="search-input" type="search" placeholder="Search title, source, field, technique...">
+      <button id="toggle-library" class="reset-btn" type="button">Show All</button>
       <button id="reset-filters" class="reset-btn" type="button">Reset</button>
     </div>
 
@@ -544,8 +545,9 @@
 
   <script>
     let mathItems = [];
-    let currentFolder = "root";
+    let currentFolder = "home";
     let searchQuery = "";
+    let libraryVisible = false;
 
     const categories = ["proofMethod", "technique", "source", "type", "field"];
 
@@ -619,10 +621,17 @@
 
     function bindControls() {
       const searchInput = document.getElementById("math-search");
+      const toggleButton = document.getElementById("toggle-library");
       const resetButton = document.getElementById("reset-filters");
 
       searchInput.addEventListener("input", () => {
         searchQuery = searchInput.value.trim().toLowerCase();
+        renderMathItems();
+      });
+
+      toggleButton.addEventListener("click", () => {
+        libraryVisible = !libraryVisible;
+        updateLibraryToggle();
         renderMathItems();
       });
 
@@ -631,12 +640,33 @@
           activeFilters[category] = "All";
         });
 
-        currentFolder = "root";
+        currentFolder = "home";
         searchQuery = "";
+        libraryVisible = false;
         searchInput.value = "";
+        updateLibraryToggle();
         renderFolderPanel();
         renderMathItems();
       });
+
+      updateLibraryToggle();
+    }
+
+    function hasActiveFilters() {
+      return categories.some(category => activeFilters[category] !== "All");
+    }
+
+    function shouldShowLibrary() {
+      return libraryVisible || searchQuery.length > 0 || hasActiveFilters();
+    }
+
+    function updateLibraryToggle() {
+      const toggleButton = document.getElementById("toggle-library");
+      if (!toggleButton) {
+        return;
+      }
+
+      toggleButton.textContent = libraryVisible ? "Hide Library" : "Show All";
     }
 
     function unique(arr) {
@@ -692,45 +722,24 @@
       const panel = document.getElementById("folder-panel");
       panel.innerHTML = "";
 
-      const header = document.createElement("div");
-      header.className = "folder-header";
-
-      const titleBlock = document.createElement("div");
-
-      const title = document.createElement("div");
-      title.className = "folder-title";
-      title.textContent = currentFolder === "root" ? "Master Folder" : categoryLabels[currentFolder];
-
-      const breadcrumb = document.createElement("div");
-      breadcrumb.className = "breadcrumb";
-      breadcrumb.textContent = currentFolder === "root"
-        ? "Choose a folder to filter your library."
-        : "Master Folder / " + categoryLabels[currentFolder];
-
-      titleBlock.appendChild(title);
-      titleBlock.appendChild(breadcrumb);
-      header.appendChild(titleBlock);
-
-      if (currentFolder !== "root") {
-        const backButton = document.createElement("button");
-        backButton.type = "button";
-        backButton.className = "back-btn";
-        backButton.textContent = "← Back";
-        backButton.addEventListener("click", () => {
-          currentFolder = "root";
-          renderFolderPanel();
-        });
-
-        header.appendChild(backButton);
-      }
-
-      panel.appendChild(header);
       renderActiveFilterChips(panel);
 
       const row = document.createElement("div");
       row.className = "folder-row";
 
-      if (currentFolder === "root") {
+      if (currentFolder === "home") {
+        const button = createFolderCard({
+          label: "Master Folder",
+          active: hasActiveFilters(),
+          visual: createFolderIcon(),
+          onClick: () => {
+            currentFolder = "root";
+            renderFolderPanel();
+          }
+        });
+
+        row.appendChild(button);
+      } else if (currentFolder === "root") {
         categories.forEach(category => {
           const button = createFolderCard({
             label: categoryLabels[category],
@@ -745,6 +754,17 @@
           row.appendChild(button);
         });
       } else {
+        const backButton = createFolderCard({
+          label: "Back",
+          active: false,
+          visual: createFolderIcon(),
+          onClick: () => {
+            currentFolder = "root";
+            renderFolderPanel();
+          }
+        });
+        row.appendChild(backButton);
+
         getTags(currentFolder).forEach(tag => {
           const isAll = tag === "All";
           const label = isAll ? "All " + categoryLabels[currentFolder] : tag;
@@ -754,6 +774,8 @@
             visual: createFilterVisual(currentFolder, tag),
             onClick: () => {
               activeFilters[currentFolder] = tag;
+              libraryVisible = false;
+              updateLibraryToggle();
               renderFolderPanel();
               renderMathItems();
             }
@@ -854,6 +876,14 @@
     function renderMathItems() {
       const list = document.getElementById("math-list");
       list.innerHTML = "";
+
+      if (!shouldShowLibrary()) {
+        const message = document.createElement("p");
+        message.className = "empty-message";
+        message.textContent = "Library hidden. Search, choose a folder, or click Show All.";
+        list.appendChild(message);
+        return;
+      }
 
       const filtered = mathItems.filter(item => {
         const matchesFilters = categories.every(category => {
