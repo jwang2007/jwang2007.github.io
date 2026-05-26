@@ -24,71 +24,155 @@
       --border: #e6e6e6;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: var(--indigo);
+      color: #333;
     }
 
-    nav {
-      background-color: var(--indigo);
-      padding: 10px;
-      text-align: center;
-    }
-
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    section {
+    .view {
+      display: none;
       padding: 20px;
       margin: 20px;
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.10);
+      min-height: calc(100vh - 40px);
+    }
+
+    .view.active {
+      display: block;
     }
 
     h1 {
       color: #333;
       font-size: 42px;
       margin-top: 0;
+      margin-bottom: 24px;
     }
 
-    .pdf-btn {
-      display: inline-block;
+    .subject-grid,
+    .folder-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .folder-panel {
+      margin-bottom: 28px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background-color: var(--soft-bg);
+    }
+
+    .folder-card {
+      width: 185px;
+      min-height: 150px;
+      border: 1px solid #dddddd;
+      border-radius: 16px;
+      background-color: white;
+      cursor: pointer;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    }
+
+    .folder-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--indigo);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+    }
+
+    .folder-card.active {
+      border-color: #7c6dff;
+      box-shadow: 0 0 0 4px rgba(124, 109, 255, 0.22);
+    }
+
+    .folder-card.default-folder-card {
       background-color: var(--indigo);
+      border-color: var(--indigo);
       color: white;
-      padding: 9px 16px;
-      text-decoration: none;
-      border-radius: 5px;
+    }
+
+    .folder-card.default-folder-card:hover {
+      background-color: var(--indigo-dark);
+      border-color: #6f5eff;
+      box-shadow: 0 8px 18px rgba(38, 13, 94, 0.24);
+    }
+
+    .folder-card.default-folder-card span {
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+
+    .default-folder-image {
+      width: 126px;
+      height: 96px;
+      object-fit: contain;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .source-card-image {
+      width: 82px;
+      height: 62px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-source-thumb {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      flex: 0 0 auto;
+      border-radius: 6px;
+    }
+
+    .card-default-folder-thumb {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      flex: 0 0 auto;
+      border-radius: 6px;
+    }
+
+    .subject-back-btn,
+    .reset-btn {
+      border: 1px solid var(--indigo);
+      background: white;
+      color: var(--indigo);
+      border-radius: 999px;
+      padding: 9px 14px;
       font-size: 14px;
       font-weight: bold;
+      cursor: pointer;
       transition: background-color 0.2s, transform 0.2s;
-      margin-top: 14px;
-      margin-right: 6px;
-      margin-bottom: 6px;
     }
 
-    .pdf-btn:hover {
-      background-color: var(--indigo-dark);
+    .subject-back-btn {
+      margin-bottom: 18px;
+    }
+
+    .subject-back-btn:hover,
+    .reset-btn:hover {
+      background-color: #f5f3ff;
       transform: translateY(-1px);
-    }
-
-    .item-container {
-      margin-bottom: 20px;
-    }
-
-    .item-container p {
-      margin-bottom: 8px;
-      font-weight: bold;
     }
 
     .search-panel {
@@ -126,69 +210,6 @@
       box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
     }
 
-    .reset-btn {
-      border: 1px solid var(--indigo);
-      background: white;
-      color: var(--indigo);
-      border-radius: 999px;
-      padding: 9px 14px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background-color 0.2s, transform 0.2s;
-    }
-
-    .reset-btn:hover {
-      background-color: #f5f3ff;
-      transform: translateY(-1px);
-    }
-
-    .folder-panel {
-      margin-bottom: 28px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background-color: var(--soft-bg);
-    }
-
-    .folder-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
-    }
-
-    .folder-title {
-      font-weight: bold;
-      color: #333;
-      font-size: 18px;
-    }
-
-    .breadcrumb {
-      color: #666;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .back-btn {
-      border: 1px solid #d7d3ef;
-      background: white;
-      color: var(--indigo);
-      border-radius: 999px;
-      padding: 8px 13px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.2s;
-    }
-
-    .back-btn:hover {
-      background-color: #f5f3ff;
-      transform: translateY(-1px);
-    }
-
     .active-filter-row {
       display: flex;
       flex-wrap: wrap;
@@ -206,146 +227,6 @@
       font-weight: bold;
     }
 
-    .folder-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .folder-card {
-      width: 168px;
-      min-height: 138px;
-      border: 1px solid #dddddd;
-      border-radius: 12px;
-      background-color: white;
-      cursor: pointer;
-      padding: 12px 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      color: #333;
-      font-size: 14px;
-      font-weight: bold;
-      text-align: center;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-    }
-
-    .folder-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--indigo);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
-    }
-
-    .folder-card.active {
-      border-color: var(--indigo);
-      box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
-      color: var(--indigo);
-      background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
-    }
-
-    .folder-card.default-folder-card {
-      background-color: var(--indigo);
-      border-color: var(--indigo);
-      color: white;
-    }
-
-    .folder-card.default-folder-card:hover {
-      background-color: var(--indigo-dark);
-      border-color: #6f5eff;
-      box-shadow: 0 8px 18px rgba(38, 13, 94, 0.24);
-    }
-
-    .folder-card.default-folder-card.active {
-      background: var(--indigo);
-      border-color: #7c6dff;
-      color: white;
-      box-shadow: 0 0 0 4px rgba(124, 109, 255, 0.22);
-    }
-
-    .folder-card.default-folder-card span {
-      color: white;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-    }
-
-    .source-card-image {
-      width: 74px;
-      height: 54px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .default-folder-image {
-      width: 118px;
-      height: 92px;
-      object-fit: contain;
-      display: block;
-      border-radius: 8px;
-    }
-
-    .card-default-folder-thumb {
-      width: 44px;
-      height: 44px;
-      object-fit: contain;
-      flex: 0 0 auto;
-      border-radius: 6px;
-    }
-
-    .folder-icon {
-      width: 66px;
-      height: 46px;
-      border-radius: 7px;
-      background-color: var(--indigo);
-      position: relative;
-      box-shadow: inset 0 -8px 0 rgba(255, 255, 255, 0.08);
-    }
-
-    .folder-icon::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: -11px;
-      width: 34px;
-      height: 16px;
-      border-radius: 7px 7px 0 0;
-      background-color: var(--indigo);
-    }
-
-    .folder-initials {
-      width: 62px;
-      height: 48px;
-      border-radius: 10px;
-      border: 1px solid #d8d4ef;
-      background-color: #f7f5ff;
-      color: var(--indigo);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-
-    .card-title-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .card-source-thumb {
-      width: 38px;
-      height: 38px;
-      object-fit: contain;
-      flex: 0 0 auto;
-      border-radius: 6px;
-    }
-
-    .card-title-row h2 {
-      margin-bottom: 0;
-    }
-
     .math-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -353,7 +234,8 @@
       align-items: start;
     }
 
-    .math-card {
+    .math-card,
+    .item-card {
       border: 1px solid #dddddd;
       border-radius: 12px;
       padding: 16px;
@@ -364,16 +246,21 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .math-card:hover {
+    .math-card:hover,
+    .item-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
     }
 
-    .math-card:focus-within {
-      box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.12), 0 6px 14px rgba(0, 0, 0, 0.12);
+    .card-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    .math-card h2 {
+    .math-card h2,
+    .item-card h2 {
       font-size: 20px;
       margin-top: 0;
       margin-bottom: 10px;
@@ -430,10 +317,24 @@
       border: 1px solid #b7791f;
     }
 
-    .empty-message {
-      color: #555;
-      font-style: italic;
-      padding: 10px 0;
+    .pdf-btn {
+      display: inline-block;
+      background-color: var(--indigo);
+      color: white;
+      padding: 9px 16px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.2s, transform 0.2s;
+      margin-top: 14px;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    .pdf-btn:hover {
+      background-color: var(--indigo-dark);
+      transform: translateY(-1px);
     }
 
     .solution-switcher {
@@ -463,31 +364,76 @@
       transform: translateY(-1px);
     }
 
+    .empty-message {
+      color: #555;
+      font-style: italic;
+      padding: 10px 0;
+    }
+
     @media (max-width: 700px) {
-      .search-panel,
-      .folder-header {
+      .view {
+        margin: 10px;
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      .search-panel {
         align-items: stretch;
         flex-direction: column;
       }
 
       .folder-card {
-        width: 132px;
+        width: 142px;
+        min-height: 126px;
+      }
+
+      .default-folder-image {
+        width: 100px;
+        height: 78px;
       }
     }
   </style>
 </head>
 
 <body>
+  <section id="home" class="view active">
+    <h1>Library</h1>
 
-  <nav>
-    <a href="#math">Math</a>
-    <a href="#physics">Physics</a>
-    <a href="#cs">CS</a>
-    <a href="#chemistry">Chemistry</a>
-    <a href="#biology">Biology</a>
-  </nav>
+    <div class="folder-panel">
+      <div class="subject-grid">
+        <button class="folder-card default-folder-card subject-folder" type="button" data-target="math">
+          <img src="images/purple_folder.jpg" alt="Math folder" class="default-folder-image">
+          <span>Math</span>
+        </button>
 
-  <section id="math">
+        <button class="folder-card default-folder-card subject-folder" type="button" data-target="physics">
+          <img src="images/purple_folder.jpg" alt="Physics folder" class="default-folder-image">
+          <span>Physics</span>
+        </button>
+
+        <button class="folder-card default-folder-card subject-folder" type="button" data-target="cs">
+          <img src="images/purple_folder.jpg" alt="CS folder" class="default-folder-image">
+          <span>CS</span>
+        </button>
+
+        <button class="folder-card default-folder-card subject-folder" type="button" data-target="chemistry">
+          <img src="images/purple_folder.jpg" alt="Chemistry folder" class="default-folder-image">
+          <span>Chemistry</span>
+        </button>
+
+        <button class="folder-card default-folder-card subject-folder" type="button" data-target="biology">
+          <img src="images/purple_folder.jpg" alt="Biology folder" class="default-folder-image">
+          <span>Biology</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="math" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Math</h1>
 
     <div class="search-panel">
@@ -498,49 +444,58 @@
     </div>
 
     <div id="folder-panel" class="folder-panel"></div>
-
     <div id="math-list" class="math-grid"></div>
   </section>
 
-  <section id="physics">
+  <section id="physics" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Physics</h1>
 
-    <div class="item-container">
-      <p>Thermodynamical Processes</p>
-      <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
-    </div>
+    <div class="math-grid">
+      <div class="item-card">
+        <h2>Thermodynamical Processes</h2>
+        <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
+      </div>
 
-    <div class="item-container">
-      <p>Charges in a Cube (Purcell)</p>
-      <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
-    </div>
+      <div class="item-card">
+        <h2>Charges in a Cube (Purcell)</h2>
+        <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
+      </div>
 
-    <div class="item-container">
-      <p>Electrostatic Potential</p>
-      <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
-    </div>
+      <div class="item-card">
+        <h2>Electrostatic Potential</h2>
+        <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
+      </div>
 
-    <div class="item-container">
-      <p>UCSD 2009 Fall Physics 110a Lagrangian Problem 1</p>
-      <a href="ucsd.pdf" target="_blank" class="pdf-btn">View PDF</a>
+      <div class="item-card">
+        <h2>UCSD 2009 Fall Physics 110a Lagrangian Problem 1</h2>
+        <a href="ucsd.pdf" target="_blank" class="pdf-btn">View PDF</a>
+      </div>
     </div>
   </section>
 
-  <section id="cs">
+  <section id="cs" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Computer Science</h1>
 
-    <div class="item-container">
-      <p>Topological Sort (DFS Algorithm)</p>
-      <a href="topsort.cpp" target="_blank" class="pdf-btn">View Code</a>
+    <div class="math-grid">
+      <div class="item-card">
+        <h2>Topological Sort (DFS Algorithm)</h2>
+        <a href="topsort.cpp" target="_blank" class="pdf-btn">View Code</a>
+      </div>
     </div>
   </section>
 
-  <section id="chemistry">
+  <section id="chemistry" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Chemistry</h1>
+    <p class="empty-message">Empty folder.</p>
   </section>
 
-  <section id="biology">
+  <section id="biology" class="view">
+    <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Biology</h1>
+    <p class="empty-message">Empty folder.</p>
   </section>
 
   <script>
@@ -610,6 +565,8 @@
       }
     };
 
+    bindSubjectFolders();
+
     fetch("data.json")
       .then(response => response.json())
       .then(data => {
@@ -617,12 +574,45 @@
         bindControls();
         renderFolderPanel();
         renderMathItems();
+      })
+      .catch(() => {
+        bindControls();
+        renderFolderPanel();
+        renderMathItems();
       });
+
+    function bindSubjectFolders() {
+      document.querySelectorAll(".subject-folder").forEach(button => {
+        button.addEventListener("click", () => {
+          showView(button.dataset.target);
+        });
+      });
+
+      document.querySelectorAll(".subject-back-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          showView("home");
+        });
+      });
+    }
+
+    function showView(target) {
+      document.querySelectorAll(".view").forEach(section => {
+        section.classList.remove("active");
+      });
+
+      const next = document.getElementById(target) || document.getElementById("home");
+      next.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     function bindControls() {
       const searchInput = document.getElementById("math-search");
       const toggleButton = document.getElementById("toggle-library");
       const resetButton = document.getElementById("reset-filters");
+
+      if (!searchInput || !toggleButton || !resetButton) {
+        return;
+      }
 
       searchInput.addEventListener("input", () => {
         searchQuery = searchInput.value.trim().toLowerCase();
@@ -662,11 +652,9 @@
 
     function updateLibraryToggle() {
       const toggleButton = document.getElementById("toggle-library");
-      if (!toggleButton) {
-        return;
+      if (toggleButton) {
+        toggleButton.textContent = libraryVisible ? "Hide Library" : "Show All";
       }
-
-      toggleButton.textContent = libraryVisible ? "Hide Library" : "Show All";
     }
 
     function unique(arr) {
@@ -720,15 +708,18 @@
 
     function renderFolderPanel() {
       const panel = document.getElementById("folder-panel");
-      panel.innerHTML = "";
+      if (!panel) {
+        return;
+      }
 
+      panel.innerHTML = "";
       renderActiveFilterChips(panel);
 
       const row = document.createElement("div");
       row.className = "folder-row";
 
       if (currentFolder === "home") {
-        const button = createFolderCard({
+        row.appendChild(createFolderCard({
           label: "Master Folder",
           active: hasActiveFilters(),
           visual: createFolderIcon(),
@@ -736,12 +727,10 @@
             currentFolder = "root";
             renderFolderPanel();
           }
-        });
-
-        row.appendChild(button);
+        }));
       } else if (currentFolder === "root") {
         categories.forEach(category => {
-          const button = createFolderCard({
+          row.appendChild(createFolderCard({
             label: categoryLabels[category],
             active: activeFilters[category] !== "All",
             visual: createFolderIcon(),
@@ -749,12 +738,10 @@
               currentFolder = category;
               renderFolderPanel();
             }
-          });
-
-          row.appendChild(button);
+          }));
         });
       } else {
-        const backButton = createFolderCard({
+        row.appendChild(createFolderCard({
           label: "Back",
           active: false,
           visual: createFolderIcon(),
@@ -762,13 +749,12 @@
             currentFolder = "root";
             renderFolderPanel();
           }
-        });
-        row.appendChild(backButton);
+        }));
 
         getTags(currentFolder).forEach(tag => {
-          const isAll = tag === "All";
-          const label = isAll ? "All " + categoryLabels[currentFolder] : tag;
-          const button = createFolderCard({
+          const label = tag === "All" ? "All " + categoryLabels[currentFolder] : tag;
+
+          row.appendChild(createFolderCard({
             label,
             active: activeFilters[currentFolder] === tag,
             visual: createFilterVisual(currentFolder, tag),
@@ -779,9 +765,7 @@
               renderFolderPanel();
               renderMathItems();
             }
-          });
-
-          row.appendChild(button);
+          }));
         });
       }
 
@@ -790,7 +774,6 @@
 
     function renderActiveFilterChips(panel) {
       const active = categories.filter(category => activeFilters[category] !== "All");
-
       if (active.length === 0) {
         return;
       }
@@ -863,18 +846,12 @@
       return createFolderIcon(small);
     }
 
-    function getInitials(sourceName) {
-      return sourceName
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(word => word[0])
-        .join("")
-        .slice(0, 4)
-        .toUpperCase();
-    }
-
     function renderMathItems() {
       const list = document.getElementById("math-list");
+      if (!list) {
+        return;
+      }
+
       list.innerHTML = "";
 
       if (!shouldShowLibrary()) {
@@ -888,12 +865,7 @@
       const filtered = mathItems.filter(item => {
         const matchesFilters = categories.every(category => {
           const active = activeFilters[category];
-
-          if (active === "All") {
-            return true;
-          }
-
-          return item[category].includes(active);
+          return active === "All" || item[category].includes(active);
         });
 
         if (!matchesFilters) {
@@ -939,7 +911,6 @@
         const title = document.createElement("h2");
         title.textContent = item.title;
         titleRow.appendChild(title);
-
         card.appendChild(titleRow);
 
         const staticTagRow = document.createElement("div");
@@ -954,7 +925,6 @@
         card.appendChild(dynamicTagRow);
 
         renderSolutionViewer(card, item, dynamicTagRow);
-
         list.appendChild(card);
       });
 
@@ -1052,7 +1022,7 @@
         updateSolution();
       });
 
-      card.addEventListener("keydown", (event) => {
+      card.addEventListener("keydown", event => {
         if (event.key === "ArrowLeft") {
           event.preventDefault();
           currentIndex = (currentIndex - 1 + solutionCount) % solutionCount;
@@ -1065,10 +1035,8 @@
       });
 
       updateSolution();
-
       switcher.appendChild(prevBtn);
       switcher.appendChild(nextBtn);
-
       card.appendChild(switcher);
       card.appendChild(mainLink);
     }
@@ -1082,6 +1050,5 @@
       });
     }
   </script>
-
 </body>
 </html>
