@@ -21,7 +21,6 @@
       --indigo: #30277C;
       --indigo-dark: #21185f;
       --soft-bg: #fafafa;
-      --border: #e6e6e6;
     }
 
     body {
@@ -91,128 +90,66 @@
       font-weight: bold;
     }
 
-    .search-panel {
+    .filter-panel {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 28px;
       padding: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid #eeeeee;
       border-radius: 12px;
       background-color: var(--soft-bg);
     }
 
-    .search-title {
+    .filter-title {
       font-weight: bold;
       color: #333;
-      white-space: nowrap;
+      margin-right: 4px;
     }
 
-    .search-input {
-      width: 100%;
+    .filter-select {
+      min-width: 165px;
       border: 1px solid #cccccc;
       color: #333;
       background-color: white;
       border-radius: 999px;
-      padding: 9px 15px;
+      padding: 8px 14px;
       font-size: 15px;
+      cursor: pointer;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .search-input:hover,
-    .search-input:focus {
+    .filter-select:hover,
+    .filter-select:focus {
       border-color: var(--indigo);
       box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
     }
 
-    .reset-btn {
-      border: 1px solid var(--indigo);
-      background: white;
-      color: var(--indigo);
-      border-radius: 999px;
-      padding: 9px 14px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background-color 0.2s, transform 0.2s;
-    }
 
-    .reset-btn:hover {
-      background-color: #f5f3ff;
-      transform: translateY(-1px);
-    }
-
-    .folder-panel {
+    .source-card-panel {
+      margin-top: -14px;
       margin-bottom: 28px;
       padding: 16px;
-      border: 1px solid var(--border);
+      border: 1px solid #eeeeee;
       border-radius: 12px;
       background-color: var(--soft-bg);
     }
 
-    .folder-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
-    }
-
-    .folder-title {
+    .source-card-title {
       font-weight: bold;
       color: #333;
-      font-size: 18px;
-    }
-
-    .breadcrumb {
-      color: #666;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .back-btn {
-      border: 1px solid #d7d3ef;
-      background: white;
-      color: var(--indigo);
-      border-radius: 999px;
-      padding: 8px 13px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.2s;
-    }
-
-    .back-btn:hover {
-      background-color: #f5f3ff;
-      transform: translateY(-1px);
-    }
-
-    .active-filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
       margin-bottom: 14px;
     }
 
-    .active-filter-chip {
-      border: 1px solid var(--indigo);
-      color: var(--indigo);
-      background-color: #f5f3ff;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .folder-row {
+    .source-card-row {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
     }
 
-    .folder-card {
+    .source-card {
       width: 150px;
       min-height: 108px;
       border: 1px solid #dddddd;
@@ -232,13 +169,13 @@
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     }
 
-    .folder-card:hover {
+    .source-card:hover {
       transform: translateY(-2px);
       border-color: var(--indigo);
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
     }
 
-    .folder-card.active {
+    .source-card.active {
       border-color: var(--indigo);
       box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
       color: var(--indigo);
@@ -252,7 +189,7 @@
       display: block;
     }
 
-    .folder-icon {
+    .source-card-folder {
       width: 66px;
       height: 46px;
       border-radius: 7px;
@@ -261,7 +198,7 @@
       box-shadow: inset 0 -8px 0 rgba(255, 255, 255, 0.08);
     }
 
-    .folder-icon::before {
+    .source-card-folder::before {
       content: "";
       position: absolute;
       left: 0;
@@ -272,7 +209,7 @@
       background-color: var(--indigo);
     }
 
-    .folder-initials {
+    .source-card-initials {
       width: 62px;
       height: 48px;
       border-radius: 10px;
@@ -305,6 +242,7 @@
     .card-title-row h2 {
       margin-bottom: 0;
     }
+
 
     .math-grid {
       display: grid;
@@ -422,18 +360,6 @@
       border-color: var(--indigo);
       transform: translateY(-1px);
     }
-
-    @media (max-width: 700px) {
-      .search-panel,
-      .folder-header {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .folder-card {
-        width: 132px;
-      }
-    }
   </style>
 </head>
 
@@ -450,13 +376,9 @@
   <section id="math">
     <h1>Math</h1>
 
-    <div class="search-panel">
-      <span class="search-title">Search:</span>
-      <input id="math-search" class="search-input" type="search" placeholder="Search title, source, field, technique...">
-      <button id="reset-filters" class="reset-btn" type="button">Reset</button>
-    </div>
+    <div id="math-filters" class="filter-panel"></div>
 
-    <div id="folder-panel" class="folder-panel"></div>
+    <div id="source-card-panel" class="source-card-panel"></div>
 
     <div id="math-list" class="math-grid"></div>
   </section>
@@ -504,8 +426,6 @@
 
   <script>
     let mathItems = [];
-    let currentFolder = "root";
-    let searchQuery = "";
 
     const categories = ["proofMethod", "technique", "source", "type", "field"];
 
@@ -525,6 +445,7 @@
       field: "All"
     };
 
+
     const sourceIcons = {
       "MIT OCW": {
         src: "images/mit-ocw.jpg",
@@ -537,34 +458,6 @@
       "Green Book": {
         src: "images/green-book.jpg",
         alt: "Green Book"
-      },
-      "AIME": {
-        src: "images/MAA.jpg",
-        alt: "Mathematical Association of America"
-      },
-      "USAMO": {
-        src: "images/MAA.jpg",
-        alt: "Mathematical Association of America"
-      },
-      "BMO": {
-        src: "images/UKMT.jpg",
-        alt: "UK Maths Trust"
-      },
-      "BMO2": {
-        src: "images/UKMT.jpg",
-        alt: "UK Maths Trust"
-      },
-      "EGMO": {
-        src: "images/egmo.jpg",
-        alt: "EGMO"
-      },
-      "Handout": {
-        src: "images/handout.jpg",
-        alt: "Handout"
-      },
-      "SJSU": {
-        src: "images/SJSU.jpg",
-        alt: "SJSU"
       }
     };
 
@@ -572,32 +465,10 @@
       .then(response => response.json())
       .then(data => {
         mathItems = data.map(normalizeMathItem);
-        bindControls();
-        renderFolderPanel();
+        renderFilters();
+        renderSourceCards();
         renderMathItems();
       });
-
-    function bindControls() {
-      const searchInput = document.getElementById("math-search");
-      const resetButton = document.getElementById("reset-filters");
-
-      searchInput.addEventListener("input", () => {
-        searchQuery = searchInput.value.trim().toLowerCase();
-        renderMathItems();
-      });
-
-      resetButton.addEventListener("click", () => {
-        categories.forEach(category => {
-          activeFilters[category] = "All";
-        });
-
-        currentFolder = "root";
-        searchQuery = "";
-        searchInput.value = "";
-        renderFolderPanel();
-        renderMathItems();
-      });
-    }
 
     function unique(arr) {
       return [...new Set(arr)];
@@ -638,6 +509,49 @@
       };
     }
 
+    function renderFilters() {
+      const filters = document.getElementById("math-filters");
+      filters.innerHTML = "";
+
+      const title = document.createElement("span");
+      title.className = "filter-title";
+      title.textContent = "Filters:";
+      filters.appendChild(title);
+
+      categories.forEach(category => {
+        const select = document.createElement("select");
+        select.className = "filter-select";
+        select.dataset.category = category;
+        select.setAttribute("aria-label", categoryLabels[category]);
+
+        const tags = getTags(category);
+
+        tags.forEach(tag => {
+          const option = document.createElement("option");
+          option.value = tag;
+          option.textContent = categoryLabels[category] + ": " + tag;
+
+          if (activeFilters[category] === tag) {
+            option.selected = true;
+          }
+
+          select.appendChild(option);
+        });
+
+        select.onchange = () => {
+          activeFilters[category] = select.value;
+
+          if (category === "source") {
+            renderSourceCards();
+          }
+
+          renderMathItems();
+        };
+
+        filters.appendChild(select);
+      });
+    }
+
     function getTags(category) {
       const tags = new Set();
 
@@ -648,152 +562,50 @@
       return ["All", ...Array.from(tags).sort()];
     }
 
-    function renderFolderPanel() {
-      const panel = document.getElementById("folder-panel");
+
+    function renderSourceCards() {
+      const panel = document.getElementById("source-card-panel");
       panel.innerHTML = "";
 
-      const header = document.createElement("div");
-      header.className = "folder-header";
-
-      const titleBlock = document.createElement("div");
-
       const title = document.createElement("div");
-      title.className = "folder-title";
-      title.textContent = currentFolder === "root" ? "Master Folder" : categoryLabels[currentFolder];
-
-      const breadcrumb = document.createElement("div");
-      breadcrumb.className = "breadcrumb";
-      breadcrumb.textContent = currentFolder === "root"
-        ? "Choose a folder to filter your library."
-        : "Master Folder / " + categoryLabels[currentFolder];
-
-      titleBlock.appendChild(title);
-      titleBlock.appendChild(breadcrumb);
-      header.appendChild(titleBlock);
-
-      if (currentFolder !== "root") {
-        const backButton = document.createElement("button");
-        backButton.type = "button";
-        backButton.className = "back-btn";
-        backButton.textContent = "← Back";
-        backButton.addEventListener("click", () => {
-          currentFolder = "root";
-          renderFolderPanel();
-        });
-
-        header.appendChild(backButton);
-      }
-
-      panel.appendChild(header);
-      renderActiveFilterChips(panel);
+      title.className = "source-card-title";
+      title.textContent = "Filter by Source:";
+      panel.appendChild(title);
 
       const row = document.createElement("div");
-      row.className = "folder-row";
+      row.className = "source-card-row";
 
-      if (currentFolder === "root") {
-        categories.forEach(category => {
-          const button = createFolderCard({
-            label: categoryLabels[category],
-            active: activeFilters[category] !== "All",
-            visual: createFolderIcon(),
-            onClick: () => {
-              currentFolder = category;
-              renderFolderPanel();
-            }
-          });
+      getTags("source").forEach(sourceName => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "source-card";
+        button.dataset.source = sourceName;
 
-          row.appendChild(button);
+        if (activeFilters.source === sourceName) {
+          button.classList.add("active");
+        }
+
+        button.appendChild(createSourceVisual(sourceName));
+
+        const label = document.createElement("span");
+        label.textContent = sourceName === "All" ? "All Sources" : sourceName;
+        button.appendChild(label);
+
+        button.addEventListener("click", () => {
+          activeFilters.source = sourceName;
+          syncFilterSelect("source");
+          renderSourceCards();
+          renderMathItems();
         });
-      } else {
-        getTags(currentFolder).forEach(tag => {
-          const isAll = tag === "All";
-          const label = isAll ? "All " + categoryLabels[currentFolder] : tag;
-          const button = createFolderCard({
-            label,
-            active: activeFilters[currentFolder] === tag,
-            visual: createFilterVisual(currentFolder, tag),
-            onClick: () => {
-              activeFilters[currentFolder] = tag;
-              renderFolderPanel();
-              renderMathItems();
-            }
-          });
 
-          row.appendChild(button);
-        });
-      }
-
-      panel.appendChild(row);
-    }
-
-    function renderActiveFilterChips(panel) {
-      const active = categories.filter(category => activeFilters[category] !== "All");
-
-      if (active.length === 0) {
-        return;
-      }
-
-      const row = document.createElement("div");
-      row.className = "active-filter-row";
-
-      active.forEach(category => {
-        const chip = document.createElement("span");
-        chip.className = "active-filter-chip";
-        chip.textContent = categoryLabels[category] + ": " + activeFilters[category];
-        row.appendChild(chip);
+        row.appendChild(button);
       });
 
       panel.appendChild(row);
     }
 
-    function createFolderCard({ label, active, visual, onClick }) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "folder-card";
-
-      if (active) {
-        button.classList.add("active");
-      }
-
-      button.appendChild(visual);
-
-      const text = document.createElement("span");
-      text.textContent = label;
-      button.appendChild(text);
-
-      button.addEventListener("click", onClick);
-      return button;
-    }
-
-    function createFilterVisual(category, tag, small = false) {
-      if (category === "source" && tag !== "All" && sourceIcons[tag]) {
-        const img = document.createElement("img");
-        img.src = sourceIcons[tag].src;
-        img.alt = sourceIcons[tag].alt;
-        img.className = small ? "card-source-thumb" : "source-card-image";
-        return img;
-      }
-
-      if (tag === "All") {
-        return createFolderIcon();
-      }
-
-      const initials = document.createElement("span");
-      initials.className = "folder-initials";
-      initials.textContent = getInitials(tag);
-      initials.setAttribute("aria-hidden", "true");
-      return initials;
-    }
-
-    function createFolderIcon() {
-      const folder = document.createElement("span");
-      folder.className = "folder-icon";
-      folder.setAttribute("aria-hidden", "true");
-      return folder;
-    }
-
     function createSourceVisual(sourceName, small = false) {
-      if (sourceName && sourceIcons[sourceName]) {
+      if (sourceName !== "All" && sourceIcons[sourceName]) {
         const img = document.createElement("img");
         img.src = sourceIcons[sourceName].src;
         img.alt = sourceIcons[sourceName].alt;
@@ -801,9 +613,16 @@
         return img;
       }
 
+      if (sourceName === "All") {
+        const folder = document.createElement("span");
+        folder.className = "source-card-folder";
+        folder.setAttribute("aria-hidden", "true");
+        return folder;
+      }
+
       const initials = document.createElement("span");
-      initials.className = "folder-initials";
-      initials.textContent = getInitials(sourceName || "?");
+      initials.className = "source-card-initials";
+      initials.textContent = getInitials(sourceName);
       initials.setAttribute("aria-hidden", "true");
       return initials;
     }
@@ -818,12 +637,21 @@
         .toUpperCase();
     }
 
+    function syncFilterSelect(category) {
+      const select = document.querySelector(`.filter-select[data-category="${category}"]`);
+
+      if (select) {
+        select.value = activeFilters[category];
+      }
+    }
+
+
     function renderMathItems() {
       const list = document.getElementById("math-list");
       list.innerHTML = "";
 
       const filtered = mathItems.filter(item => {
-        const matchesFilters = categories.every(category => {
+        return categories.every(category => {
           const active = activeFilters[category];
 
           if (active === "All") {
@@ -832,25 +660,6 @@
 
           return item[category].includes(active);
         });
-
-        if (!matchesFilters) {
-          return false;
-        }
-
-        if (!searchQuery) {
-          return true;
-        }
-
-        const searchableText = [
-          item.title,
-          ...(item.source || []),
-          ...(item.type || []),
-          ...(item.field || []),
-          ...(item.proofMethod || []),
-          ...(item.technique || [])
-        ].join(" ").toLowerCase();
-
-        return searchableText.includes(searchQuery);
       });
 
       if (filtered.length === 0) {
