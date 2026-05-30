@@ -38,12 +38,12 @@
 
     .view {
       display: none;
-      padding: 20px;
-      margin: 20px;
+      padding: 28px;
+      margin: 24px;
       background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.10);
-      min-height: calc(100vh - 40px);
+      border-radius: 20px;
+      box-shadow: 0 16px 40px rgba(18, 10, 42, 0.18);
+      min-height: calc(100vh - 48px);
     }
 
     .view.active {
@@ -51,105 +51,107 @@
     }
 
     h1 {
-      color: #333;
+      color: #222;
       font-size: 42px;
       margin-top: 0;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
     }
 
     .subject-grid,
     .folder-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: stretch;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 22px;
+      align-items: start;
     }
 
     .folder-panel {
-      margin-bottom: 28px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background-color: var(--soft-bg);
+      margin-bottom: 26px;
+      padding: 18px 12px;
+      border: none;
+      border-radius: 18px;
+      background: transparent;
+      box-shadow: none;
     }
 
     .folder-card {
-      width: 185px;
-      min-height: 150px;
-      border: 1px solid #dddddd;
-      border-radius: 16px;
-      background-color: white;
+      width: auto;
+      min-height: 128px;
+      border: 1px solid transparent;
+      border-radius: 18px;
+      background: transparent;
       cursor: pointer;
-      padding: 14px 12px;
+      padding: 10px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      color: #333;
+      gap: 8px;
+      color: #2c2541;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       text-align: center;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+      box-shadow: none;
+      transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
     }
 
     .folder-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--indigo);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+      transform: translateY(-3px);
+      background-color: #f7f4ff;
+      box-shadow: 0 10px 24px rgba(38, 13, 94, 0.10);
     }
 
     .folder-card.active {
-      border-color: #7c6dff;
-      box-shadow: 0 0 0 4px rgba(124, 109, 255, 0.22);
+      background-color: #f1ecff;
+      box-shadow: 0 0 0 2px rgba(124, 109, 255, 0.35), 0 10px 24px rgba(38, 13, 94, 0.10);
     }
 
     .folder-card.default-folder-card {
-      background-color: var(--indigo);
-      border-color: var(--indigo);
-      color: white;
+      background: transparent;
+      border-color: transparent;
+      color: #2c2541;
     }
 
     .folder-card.default-folder-card:hover {
-      background-color: var(--indigo-dark);
-      border-color: #6f5eff;
-      box-shadow: 0 8px 18px rgba(38, 13, 94, 0.24);
+      background-color: #f7f4ff;
+      box-shadow: 0 10px 24px rgba(38, 13, 94, 0.10);
     }
 
     .folder-card.default-folder-card span {
-      color: white;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      color: #2c2541;
+      text-shadow: none;
     }
 
     .default-folder-image {
-      width: 126px;
-      height: 96px;
+      width: 118px;
+      height: 92px;
       object-fit: contain;
       display: block;
-      border-radius: 8px;
+      border-radius: 12px;
     }
 
     .source-card-image {
-      width: 82px;
-      height: 62px;
+      width: 76px;
+      height: 58px;
       object-fit: contain;
       display: block;
     }
 
     .card-source-thumb {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       object-fit: contain;
       flex: 0 0 auto;
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
     .card-default-folder-thumb {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       object-fit: contain;
       flex: 0 0 auto;
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
     .subject-back-btn,
@@ -180,10 +182,11 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 18px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background-color: var(--soft-bg);
+      padding: 16px;
+      border: 1px solid #ece7fa;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fcfbff 0%, #f7f4ff 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
 
     .search-title {
@@ -367,16 +370,20 @@
     .empty-message {
       color: #555;
       font-style: italic;
-      padding: 10px 0;
+      padding: 18px;
+      border: 1px dashed #d9d2eb;
+      border-radius: 14px;
+      background-color: #faf8ff;
+      text-align: center;
     }
 
 
     .home-section {
       margin-bottom: 22px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background-color: var(--soft-bg);
+      padding: 20px;
+      border: 1px solid #ece7fa;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fcfbff 0%, #f7f4ff 100%);
     }
 
     .home-section-title {
@@ -422,16 +429,16 @@
     }
 
     .subject-grid .folder-card {
-      width: 155px;
-      min-height: 118px;
-      gap: 7px;
-      padding: 12px 10px;
+      width: auto;
+      min-height: 130px;
+      gap: 8px;
+      padding: 10px 8px;
       font-size: 15px;
     }
 
     .subject-grid .default-folder-image {
-      width: 82px;
-      height: 62px;
+      width: 120px;
+      height: 94px;
     }
 
     .placeholder-text {
@@ -465,7 +472,8 @@
     @media (max-width: 700px) {
       .view {
         margin: 10px;
-        padding: 14px;
+        padding: 16px;
+        border-radius: 16px;
       }
 
       h1 {
@@ -477,14 +485,20 @@
         flex-direction: column;
       }
 
+      .subject-grid,
+      .folder-row {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      }
+
       .folder-card {
-        width: 142px;
-        min-height: 126px;
+        width: auto;
+        min-height: 118px;
+        border-radius: 18px;
       }
 
       .default-folder-image {
-        width: 100px;
-        height: 78px;
+        width: 72px;
+        height: 56px;
       }
     }
   </style>
@@ -611,18 +625,16 @@
   <section id="chemistry" class="view">
     <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Chemistry</h1>
-    <p class="empty-message">Empty folder.</p>
   </section>
 
   <section id="biology" class="view">
     <button class="subject-back-btn" type="button">← Back to Folders</button>
     <h1>Biology</h1>
-    <p class="empty-message">Empty folder.</p>
   </section>
 
   <script>
     let mathItems = [];
-    let currentFolder = "home";
+    let currentFolder = "root";
     let searchQuery = "";
     let libraryVisible = false;
 
@@ -752,7 +764,7 @@
           activeFilters[category] = "All";
         });
 
-        currentFolder = "home";
+        currentFolder = "root";
         searchQuery = "";
         libraryVisible = false;
         searchInput.value = "";
@@ -840,17 +852,7 @@
       const row = document.createElement("div");
       row.className = "folder-row";
 
-      if (currentFolder === "home") {
-        row.appendChild(createFolderCard({
-          label: "Master Folder",
-          active: hasActiveFilters(),
-          visual: createFolderIcon(),
-          onClick: () => {
-            currentFolder = "root";
-            renderFolderPanel();
-          }
-        }));
-      } else if (currentFolder === "root") {
+      if (currentFolder === "root") {
         categories.forEach(category => {
           row.appendChild(createFolderCard({
             label: categoryLabels[category],
@@ -977,10 +979,6 @@
       list.innerHTML = "";
 
       if (!shouldShowLibrary()) {
-        const message = document.createElement("p");
-        message.className = "empty-message";
-        message.textContent = "Library hidden. Search, choose a folder, or click Show All.";
-        list.appendChild(message);
         return;
       }
 
