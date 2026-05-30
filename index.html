@@ -61,7 +61,7 @@
     .subject-grid,
     .folder-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 22px;
       align-items: start;
     }
@@ -76,46 +76,48 @@
     }
 
     .folder-card {
-      width: auto;
-      min-height: 128px;
-      border: 1px solid transparent;
+      width: 190px;
+      min-height: 168px;
+      border: none;
       border-radius: 18px;
       background: transparent;
       cursor: pointer;
-      padding: 10px 8px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       color: #2c2541;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
       text-align: center;
       box-shadow: none;
-      transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
     .folder-card:hover {
-      transform: translateY(-3px);
-      background-color: #f7f4ff;
-      box-shadow: 0 10px 24px rgba(38, 13, 94, 0.10);
+      transform: translateY(-4px) scale(1.02);
+      background: transparent;
+      box-shadow: none;
+      filter: drop-shadow(0 10px 18px rgba(38, 13, 94, 0.16));
     }
 
     .folder-card.active {
-      background-color: #f1ecff;
-      box-shadow: 0 0 0 2px rgba(124, 109, 255, 0.35), 0 10px 24px rgba(38, 13, 94, 0.10);
+      background: transparent;
+      box-shadow: none;
+      filter: drop-shadow(0 10px 20px rgba(38, 13, 94, 0.18));
     }
 
     .folder-card.default-folder-card {
       background: transparent;
-      border-color: transparent;
+      border: none;
       color: #2c2541;
     }
 
     .folder-card.default-folder-card:hover {
-      background-color: #f7f4ff;
-      box-shadow: 0 10px 24px rgba(38, 13, 94, 0.10);
+      background: transparent;
+      box-shadow: none;
     }
 
     .folder-card.default-folder-card span {
@@ -124,11 +126,13 @@
     }
 
     .default-folder-image {
-      width: 118px;
-      height: 92px;
+      width: 172px;
+      height: auto;
       object-fit: contain;
       display: block;
-      border-radius: 12px;
+      border-radius: 0;
+      background: transparent;
+      mix-blend-mode: multiply;
     }
 
     .source-card-image {
@@ -147,11 +151,12 @@
     }
 
     .card-default-folder-thumb {
-      width: 42px;
-      height: 42px;
+      width: 52px;
+      height: auto;
       object-fit: contain;
       flex: 0 0 auto;
-      border-radius: 8px;
+      border-radius: 0;
+      mix-blend-mode: multiply;
     }
 
     .subject-back-btn,
@@ -429,16 +434,16 @@
     }
 
     .subject-grid .folder-card {
-      width: auto;
-      min-height: 130px;
-      gap: 8px;
-      padding: 10px 8px;
-      font-size: 15px;
+      width: 210px;
+      min-height: 200px;
+      gap: 10px;
+      padding: 10px;
+      font-size: 20px;
     }
 
     .subject-grid .default-folder-image {
-      width: 120px;
-      height: 94px;
+      width: 176px;
+      height: auto;
     }
 
     .placeholder-text {
@@ -497,8 +502,8 @@
       }
 
       .default-folder-image {
-        width: 72px;
-        height: 56px;
+        width: 120px;
+        height: auto;
       }
     }
   </style>
@@ -636,7 +641,7 @@
     let mathItems = [];
     let currentFolder = "root";
     let searchQuery = "";
-    let libraryVisible = false;
+    let libraryVisible = true;
 
     const categories = ["proofMethod", "technique", "source", "type", "field"];
 
@@ -766,7 +771,7 @@
 
         currentFolder = "root";
         searchQuery = "";
-        libraryVisible = false;
+        libraryVisible = true;
         searchInput.value = "";
         updateLibraryToggle();
         renderFolderPanel();
@@ -884,7 +889,7 @@
             visual: createFilterVisual(currentFolder, tag),
             onClick: () => {
               activeFilters[currentFolder] = tag;
-              libraryVisible = false;
+              libraryVisible = true;
               updateLibraryToggle();
               renderFolderPanel();
               renderMathItems();
@@ -1009,10 +1014,6 @@
       });
 
       if (filtered.length === 0) {
-        const message = document.createElement("p");
-        message.className = "empty-message";
-        message.textContent = "No matching items.";
-        list.appendChild(message);
         return;
       }
 
