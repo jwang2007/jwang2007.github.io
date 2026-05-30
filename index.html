@@ -20,7 +20,8 @@
     :root {
       --indigo: #260D5E;
       --indigo-dark: #18073F;
-      --soft-bg: #fafafa;
+      --soft-bg: #f7f7f7;
+      --panel-bg: #f7f7f7;
       --border: #e6e6e6;
     }
 
@@ -40,7 +41,7 @@
       display: none;
       padding: 28px;
       margin: 24px;
-      background-color: white;
+      background-color: var(--panel-bg);
       border-radius: 20px;
       box-shadow: 0 16px 40px rgba(18, 10, 42, 0.18);
       min-height: calc(100vh - 48px);
@@ -60,10 +61,11 @@
 
     .subject-grid,
     .folder-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 22px;
-      align-items: start;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 34px;
+      align-items: flex-start;
     }
 
     .folder-panel {
@@ -73,21 +75,22 @@
       border-radius: 18px;
       background: transparent;
       box-shadow: none;
+      overflow: visible;
     }
 
     .folder-card {
       width: 190px;
-      min-height: 168px;
+      min-height: 188px;
       border: none;
       border-radius: 18px;
       background: transparent;
       cursor: pointer;
-      padding: 8px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      justify-content: flex-start;
+      gap: 12px;
       color: #2c2541;
       font-size: 18px;
       font-weight: 700;
@@ -126,8 +129,8 @@
     }
 
     .default-folder-image {
-      width: 172px;
-      height: auto;
+      width: 160px;
+      height: 130px;
       object-fit: contain;
       display: block;
       border-radius: 0;
@@ -188,9 +191,9 @@
       gap: 12px;
       margin-bottom: 18px;
       padding: 16px;
-      border: 1px solid #ece7fa;
+      border: 1px solid #ececec;
       border-radius: 18px;
-      background: linear-gradient(180deg, #fcfbff 0%, #f7f4ff 100%);
+      background: var(--panel-bg);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
 
@@ -386,9 +389,9 @@
     .home-section {
       margin-bottom: 22px;
       padding: 20px;
-      border: 1px solid #ece7fa;
+      border: 1px solid #ececec;
       border-radius: 18px;
-      background: linear-gradient(180deg, #fcfbff 0%, #f7f4ff 100%);
+      background: var(--panel-bg);
     }
 
     .home-section-title {
@@ -434,16 +437,16 @@
     }
 
     .subject-grid .folder-card {
-      width: 210px;
-      min-height: 200px;
-      gap: 10px;
+      width: 190px;
+      min-height: 188px;
+      gap: 12px;
       padding: 10px;
       font-size: 20px;
     }
 
     .subject-grid .default-folder-image {
-      width: 176px;
-      height: auto;
+      width: 160px;
+      height: 130px;
     }
 
     .placeholder-text {
@@ -492,18 +495,19 @@
 
       .subject-grid,
       .folder-row {
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        justify-content: center;
+        gap: 18px;
       }
 
       .folder-card {
-        width: auto;
-        min-height: 118px;
+        width: 145px;
+        min-height: 155px;
         border-radius: 18px;
       }
 
       .default-folder-image {
-        width: 120px;
-        height: auto;
+        width: 125px;
+        height: 105px;
       }
     }
   </style>
@@ -580,7 +584,7 @@
     <div class="search-panel">
       <span class="search-title">Search:</span>
       <input id="math-search" class="search-input" type="search" placeholder="Search title, source, field, technique...">
-      <button id="toggle-library" class="reset-btn" type="button">Show All</button>
+      <button id="toggle-library" class="reset-btn" type="button">Hide Library</button>
       <button id="reset-filters" class="reset-btn" type="button">Reset</button>
     </div>
 
