@@ -15,6 +15,7 @@
   <script id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root {
@@ -514,6 +515,40 @@
 </head>
 
 <body>
+  <header class="sticky top-0 z-50 bg-slate-950 text-white shadow-2xl shadow-slate-900/20">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="#" class="flex items-center gap-3">
+        <div class="flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-500 via-indigo-600 to-violet-700 text-lg font-bold text-white shadow-lg shadow-cyan-500/20">
+          J
+        </div>
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-200">jwang07</p>
+          <p class="text-[11px] text-slate-400">Math & problem library</p>
+        </div>
+      </a>
+
+      <div class="hidden items-center gap-3 md:flex">
+        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="home">Home</button>
+        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="math">Math</button>
+        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="projects">Projects</button>
+        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="socials">Socials</button>
+        <button class="subject-folder rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 transition duration-200 hover:bg-cyan-400" type="button" data-target="resume">Resume</button>
+      </div>
+
+      <button id="mobile-menu-button" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-700 bg-slate-900 text-slate-100 shadow-lg shadow-slate-950/30 md:hidden" aria-label="Open menu">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="hidden border-t border-slate-800 bg-slate-950/95 px-4 pb-4 md:hidden">
+      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="home">Home</button>
+      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="math">Math</button>
+      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="projects">Projects</button>
+      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="socials">Socials</button>
+      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="resume">Resume</button>
+    </div>
+  </header>
+
   <section id="home" class="view active">
     <h1>Library</h1>
 
@@ -709,6 +744,7 @@
     };
 
     bindSubjectFolders();
+    setupMobileMenu();
 
     fetch("data.json")
       .then(response => response.json())
@@ -734,6 +770,24 @@
       document.querySelectorAll(".subject-back-btn").forEach(button => {
         button.addEventListener("click", () => {
           showView("home");
+        });
+      });
+    }
+
+    function setupMobileMenu() {
+      const mobileButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+      if (!mobileButton || !mobileMenu) {
+        return;
+      }
+
+      mobileButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      document.querySelectorAll("#mobile-menu .subject-folder").forEach(button => {
+        button.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
         });
       });
     }
