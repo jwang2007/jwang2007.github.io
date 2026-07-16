@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chess Line Visualizer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap');
+
+  :root{
+    --paper:#f3efe6;
+    --canvas:#eee8db;
+    --ink:#1c1a17;
+    --ink-soft:#5a554c;
+    --ink-faint:#8c8579;
+    --rule:#d6cfbf;
+    --board-l:#e8dcc0;
+    --board-d:#9a7b56;
+    --board-edge:#5c4a34;
+    --accent:#b3472f;
+    --good:#4f7a3f;   --good-bg:#e6ecdd;
+    --warn:#b8852a;   --warn-bg:#f1e7d0;
+    --bad:#a83a2c;    --bad-bg:#f0ddd6;
+    --info:#3f6079;   --info-bg:#dde7ee;
+    --hi:rgba(179,71,47,.26);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);
+    overflow:hidden;
+  }
+
+  .app{display:grid;grid-template-rows:1fr;height:100vh}
+
+  /* main split */
+  .main{display:grid;grid-template-columns:1fr 392px;min-height:0}
+  @media(max-width:900px){
+    .main{grid-template-columns:1fr;grid-template-rows:1fr auto}
+    .side{border-left:none!important;border-top:1.5px solid var(--ink)}
+  }
+
+  /* graph */
+  .graphwrap{position:relative;overflow:hidden;background:
+    radial-gradient(circle at 1px 1px, rgba(92,74,52,.13) 1px, transparent 0) 0 0/26px 26px,
+    var(--canvas);
+    cursor:grab;}
+  .graphwrap.drag{cursor:grabbing}
+  #graph{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
+  #edges{position:absolute;top:0;left:0;overflow:visible;pointer-events:none;width:1400px;height:400px;transform-origin:0 0}
+  .gnode{
+    position:absolute;transform:translate(-50%,-50%);
+    width:var(--w,150px);
+    background:#fff;border:1.5px solid var(--rule);border-left-width:3px;
+    border-radius:9px;padding:8px 10px;cursor:pointer;
+    box-shadow:0 4px 14px -8px rgba(40,25,10,.5);
+    transition:border-color .14s, box-shadow .14s, transform .05s;
+    user-select:none;
+  }
+  .gnode:hover{box-shadow:0 8px 20px -8px rgba(40,25,10,.6)}
+  .gnode .gm{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12.5px;letter-spacing:-.01em;line-height:1.25}
+  .gnode .gt{font-size:11px;color:var(--ink-faint);margin-top:3px;line-height:1.3}
+  .gnode.sel .gt{color:var(--ink-soft)}
+  /* mini board thumbnail under each move */
+  .gboard{margin-top:6px;width:100%;aspect-ratio:1/1;border-radius:4px;overflow:hidden;
+    display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
+    border:1px solid rgba(92,74,52,.35)}
+  .gboard .gs{display:flex;align-items:center;justify-content:center;position:relative}
+  .gboard .gs.l{background:var(--board-l)}.gboard .gs.d{background:var(--board-d)}
+  .gboard .gp{font-size:9px;line-height:1}
+  .gboard .gp.w{color:#fbf7ee;text-shadow:0 0 1px rgba(0,0,0,.6)}
+  .gboard .gp.b{color:#241f19}
+  .gboard .gs.hl::after{content:"";position:absolute;inset:0;background:rgba(179,71,47,.32)}
+  /* boards OFF: hide the thumbnails entirely */
+  .graphwrap.boards-off .gboard{display:none}
+  .dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%}
+  .dot.good{background:var(--good)}.dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}.dot.info{background:var(--info)}
+
+  /* whose-move cue = node border color (white border = White to move, dark = Black) */
+  .gnode[data-turn="white"]{border-color:#fbf7ee;border-width:2px}
+  .gnode[data-turn="black"]{border-color:#2b2620;border-width:2px}
+  .gnode[data-turn="mate"]{border-color:var(--bad);border-width:2px}
+  /* keep the verdict color on the thick left edge */
+  .gnode{border-left-width:3px}
+  .gnode[data-v="good"]{border-left-color:var(--good)}
+  .gnode[data-v="bad"]{border-left-color:var(--bad)}
+  .gnode[data-v="warn"]{border-left-color:var(--warn)}
+  .gnode[data-v="info"]{border-left-color:var(--info)}
+  .gnode.onpath{border-left-color:var(--accent)}
+  /* selected node still gets the accent ring so it stands out */
+  .gnode.sel{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(179,71,47,.25),0 10px 24px -10px rgba(40,25,10,.6)}
+  .gnode.sel[data-v]{border-left-color:var(--accent)}
+
+  /* colors OFF: neutralize verdict accents (left border + dots) */
+  .graphwrap.colors-off .gnode[data-v]{border-left-color:var(--rule)}
+  .graphwrap.colors-off .gnode.onpath{border-left-color:var(--accent)}
+  .graphwrap.colors-off .gnode.sel[data-v]{border-left-color:var(--accent)}
+  .graphwrap.colors-off .dot{display:none}
+
+  .zoombar{position:absolute;left:14px;bottom:14px;display:flex;gap:6px;z-index:5}
+  .zbtn{width:34px;height:34px;border:1.5px solid var(--ink);background:rgba(255,255,255,.9);border-radius:8px;
+    font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+  .zbtn:hover{background:var(--ink);color:var(--paper)}
+  /* settings panel */
+  .panel{position:absolute;right:14px;top:14px;background:rgba(255,255,255,.95);border:1.5px solid var(--rule);
+    border-radius:10px;font-size:11px;color:var(--ink-soft);z-index:5;overflow:hidden;min-width:152px}
+  .panel-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink);padding:9px 12px 6px;border-bottom:1px solid var(--rule)}
+  .setting-row{display:flex;align-items:center;gap:12px;width:100%;cursor:pointer;background:transparent;border:none;
+    color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.04em;
+    padding:9px 12px;line-height:1.2}
+  .setting-row:hover{background:rgba(0,0,0,.03)}
+  .setting-select{padding:9px 12px;border-bottom:1px solid var(--rule);display:grid;gap:5px}
+  .setting-select label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--ink)}
+  .setting-select select{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--ink);
+    background:#faf7f0;border:1.5px solid var(--rule);border-radius:6px;padding:5px 7px;cursor:pointer;width:100%}
+  .setting-select select:hover{border-color:var(--ink-faint)}
+  .setting-label{text-transform:none}
+  .sw{margin-left:auto;position:relative;width:32px;height:17px;border-radius:99px;background:var(--good);
+    transition:background .18s ease;flex:0 0 auto}
+  .knob{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;
+    box-shadow:0 1px 2px rgba(0,0,0,.3);transition:left .18s ease}
+  .setting-row[aria-checked="false"] .sw{background:#bdb6a6}
+  .setting-row[aria-checked="false"] .knob{left:17px}
+  .legend-body{padding:4px 12px 8px;display:grid;gap:2px;border-bottom:1px solid var(--rule)}
+  .panel.colors-hidden .legend-body{display:none}
+  .legend-body i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+  .legend-body i.good{background:var(--good)}.legend-body i.bad{background:var(--bad)}.legend-body i.warn{background:var(--warn)}.legend-body i.info{background:var(--info)}
+
+  /* side / board */
+  .side{border-left:1.5px solid var(--ink);display:flex;flex-direction:column;min-height:0;background:var(--paper)}
+  .side-scroll{overflow:auto;padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px}
+  .boardhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .boardhead .ttl{font-family:'Fraunces',serif;font-weight:500;font-size:18px;line-height:1.15;letter-spacing:-.01em}
+  .verdict{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 9px;border-radius:99px;white-space:nowrap;align-self:center}
+  .verdict.good{background:var(--good-bg);color:var(--good)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+  .verdict.warn{background:var(--warn-bg);color:var(--warn)}.verdict.info{background:var(--info-bg);color:var(--info)}
+  .main.colors-off .verdict{display:none}
+
+  .turnbar{display:flex;align-items:center;gap:8px;margin:0 auto;width:min(100%,340px);
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.04em;
+    padding:7px 11px;border-radius:8px;border:1.5px solid var(--rule);background:#faf7f0;color:var(--ink)}
+  .turnbar .chip{width:14px;height:14px;border-radius:50%;border:1.5px solid #8a8273;flex:0 0 auto}
+  .turnbar.white .chip{background:#fbf7ee}
+  .turnbar.black .chip{background:#2b2620}
+  .turnbar.white{border-color:#cdbf9f}
+  .turnbar.black{border-color:#9a9384;background:#efece4}
+  .turnbar.mate{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+  .turnbar.mate .chip{display:none}
+  .turnbar .sub{color:var(--ink-faint);font-weight:500;margin-left:auto;text-transform:none;letter-spacing:0}
+
+  .board-aspect{width:min(100%,340px);aspect-ratio:1/1;margin:0 auto;position:relative;container-type:inline-size}
+  .board{position:absolute;inset:0;width:100%;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
+    border:5px solid var(--board-edge);border-radius:5px;overflow:hidden;box-shadow:0 18px 38px -20px rgba(60,40,20,.6)}
+  .sq{position:relative;display:flex;align-items:center;justify-content:center}
+  .sq.l{background:var(--board-l)}.sq.d{background:var(--board-d)}
+  .glyph{font-size:7.5cqw;line-height:1}
+  .glyph.w{color:#fbf7ee;filter:drop-shadow(0 1.5px 1px rgba(0,0,0,.55))}
+  .glyph.b{color:#241f19;filter:drop-shadow(0 1px 0 rgba(255,255,255,.18))}
+  .sq.last::after{content:"";position:absolute;inset:0;background:var(--hi);box-shadow:inset 0 0 0 2.5px var(--accent)}
+  .coord{position:absolute;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;opacity:.5}
+  .coord.file{right:3px;bottom:1px}.coord.rank{left:3px;top:1px}
+  .sq.l .coord{color:var(--board-d)}.sq.d .coord{color:var(--board-l)}
+
+  /* stepper */
+  .stepper{display:flex;flex-direction:column;gap:9px}
+  .movetape{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .ply{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;padding:3px 7px;border-radius:6px;
+    cursor:pointer;color:var(--ink-soft);background:transparent;border:1px solid transparent;line-height:1.2}
+  .ply:hover{background:#fff;border-color:var(--rule)}
+  .ply.cur{background:var(--accent);color:#fff}
+  .ply.movenum{color:var(--ink-faint);cursor:default;padding:3px 2px 3px 4px;font-weight:500}
+  .ply.movenum:hover{background:transparent;border-color:transparent}
+  .ply.start{font-style:normal}
+  .navbtns{display:flex;gap:6px}
+  .nav{flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;background:transparent;color:var(--ink);
+    border:1.5px solid var(--ink);border-radius:7px;padding:7px 0;cursor:pointer;transition:.12s}
+  .nav:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+  .nav:disabled{opacity:.32;cursor:default}
+
+  .label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+  .prose{font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+  .takeaway{border-left:2.5px solid var(--accent);padding:1px 0 1px 13px;font-family:'Fraunces',serif;font-size:14.5px;
+    font-style:italic;color:var(--ink);line-height:1.4}
+
+  /* back link to the resume site */
+  .backlink{position:absolute;left:14px;top:14px;z-index:6;font-family:'JetBrains Mono',monospace;font-size:11px;
+    font-weight:600;letter-spacing:.04em;color:var(--ink);text-decoration:none;background:rgba(255,255,255,.9);
+    border:1.5px solid var(--ink);border-radius:8px;padding:7px 11px}
+  .backlink:hover{background:var(--ink);color:var(--paper)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="main">
+    <div class="graphwrap" id="graphwrap">
+      <a class="backlink" href="index.html#projects">&larr; Back</a>
+      <svg id="edges"></svg>
+      <div id="graph"></div>
+      <div class="panel" id="settings">
+        <div class="panel-title">Settings</div>
+        <div class="setting-select">
+          <label for="openingSelect">Opening</label>
+          <select id="openingSelect">
+            <option value="scholars">Scholar&rsquo;s Mate (Qh5)</option>
+            <option value="englund">Englund Gambit trap</option>
+          </select>
+        </div>
+        <button class="setting-row" id="colorsToggle" role="switch" aria-checked="true">
+          <span class="setting-label">Colors</span>
+          <span class="sw"><span class="knob"></span></span>
+        </button>
+        <div class="legend-body" id="legendBody">
+          <div><i class="good"></i>Best / correct</div>
+          <div><i class="warn"></i>Risky / threat</div>
+          <div><i class="bad"></i>Blunder / mate</div>
+          <div><i class="info"></i>Setup / sideline</div>
+        </div>
+        <button class="setting-row" id="boardsToggle" role="switch" aria-checked="true">
+          <span class="setting-label">Boards</span>
+          <span class="sw"><span class="knob"></span></span>
+        </button>
+        <button class="setting-row" id="flipToggle" role="switch" aria-checked="false">
+          <span class="setting-label">Flip board</span>
+          <span class="sw"><span class="knob"></span></span>
+        </button>
+      </div>
+      <div class="zoombar">
+        <button class="zbtn" id="zin">+</button>
+        <button class="zbtn" id="zout">−</button>
+        <button class="zbtn" id="zfit" title="Fit" style="font-size:12px;font-family:'JetBrains Mono',monospace">fit</button>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="side-scroll">
+        <div class="boardhead">
+          <div class="ttl" id="posTitle">Starting position</div>
+          <span class="verdict info" id="verdict">Idea</span>
+        </div>
+        <div class="board-aspect"><div class="board" id="board"></div></div>
+
+        <div class="turnbar white" id="turnbar"><span class="chip"></span><span id="turnText">White to move</span></div>
+
+        <div class="stepper">
+          <div class="movetape" id="tape"></div>
+          <div class="navbtns">
+            <button class="nav" id="first">⏮</button>
+            <button class="nav" id="prev">◀</button>
+            <button class="nav" id="next">▶</button>
+            <button class="nav" id="last">⏭</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const START={
+  a1:'R',b1:'N',c1:'B',d1:'Q',e1:'K',f1:'B',g1:'N',h1:'R',
+  a2:'P',b2:'P',c2:'P',d2:'P',e2:'P',f2:'P',g2:'P',h2:'P',
+  a7:'p',b7:'p',c7:'p',d7:'p',e7:'p',f7:'p',g7:'p',h7:'p',
+  a8:'r',b8:'n',c8:'b',d8:'q',e8:'k',f8:'b',g8:'n',h8:'r'
+};
+const GLYPH={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
+
+/* tree: each node carries the FULL move list from the start (uci) + per-ply SAN labels */
+/* ===== Opening library ===== */
+const OPENINGS={
+scholars:{
+  name:"Scholar’s Mate (Qh5)",
+  orient:'white',
+  tree:{
+  id:'root',label:'1.e4 e5 2.Qh5',v:'info',
+  title:'Bring the queen out',
+  uci:['e2e4','e7e5','d1h5'], san:['e4','e5','Qh5'],
+  explain:'Magnus’s tongue-in-cheek “best opening”: push e4, and once Black answers …e5, swing the queen to h5. It hits e5 and stares at f7 — the only square the king alone defends.',
+  takeaway:'The whole idea: queen on h5 eyeing f7, hoping the opponent doesn’t notice the threat.',
+  children:[
+    {
+      id:'g6',label:'2...g6?',v:'warn',
+      title:'Black kicks the queen too soon',
+      uci:['e2e4','e7e5','d1h5','g7g6'],
+      san:['e4','e5','Qh5','g6'],
+      explain:'Black plays …g6 to chase the queen off h5 — but in his rush to kick it, the e5 pawn is left hanging. Magnus pounces on that.',
+      takeaway:'Kicking the queen with …g6 looks clever, but it drops the e5 pawn.',
+      children:[
+        {
+          id:'qxe5',label:'3.Qxe5+',v:'good',
+          title:'Queen grabs the pawn with check',
+          uci:['e2e4','e7e5','d1h5','g7g6','h5e5'],
+          san:['e4','e5','Qh5','g6','Qxe5+'],
+          explain:'Instead of retreating, the queen snatches the undefended e5 pawn — and it’s check. This is Magnus’s actual point: the careless …g6 just hands White a free pawn with tempo.',
+          takeaway:'Don’t retreat — take the pawn with check. …g6 was punished.',
+          children:[
+            {
+              id:'qe7block',label:'3...Qe7',v:'warn',
+              title:'Black blocks the check',
+              uci:['e2e4','e7e5','d1h5','g7g6','h5e5','d8e7'],
+              san:['e4','e5','Qh5','g6','Qxe5+','Qe7'],
+              explain:'Black has to block the check by putting the queen in front of the king on e7 — forced. But this leaves the rook in the corner undefended, and the queen on e5 now stares down the long diagonal to h8.',
+              takeaway:'…Qe7 stops the check, but the h8 rook is hanging on the diagonal.',
+              children:[
+                {
+                  id:'qxh8',label:'4.Qxh8',v:'bad',
+                  title:'Queen grabs the rook',
+                  uci:['e2e4','e7e5','d1h5','g7g6','h5e5','d8e7','e5h8'],
+                  san:['e4','e5','Qh5','g6','Qxe5+','Qe7','Qxh8'],
+                  explain:'The queen sweeps up the diagonal and takes the h8 rook. Magnus’s punchline: the careless …g6 didn’t just lose a pawn — it lost a whole rook. You’ve won decisive material.',
+                  takeaway:'…g6 punished in full: a pawn with check, then the rook. That’s the winner.'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id:'main',label:'2...Nc6',v:'good',
+      title:'Black develops with Nc6',
+      uci:['e2e4','e7e5','d1h5','b8c6'],
+      san:['e4','e5','Qh5','Nc6'],
+      explain:'Nc6 develops a knight and defends the e5 pawn against Qxe5+. White brings the bishop out to set up the real threat on f7.',
+      takeaway:'Nc6 guards e5 — but f7 is still the target once the bishop comes to c4.',
+      children:[
+        {
+          id:'bc4',label:'3.Bc4',v:'warn',
+          title:'Bishop joins the attack on f7',
+          uci:['e2e4','e7e5','d1h5','b8c6','f1c4'],
+          san:['e4','e5','Qh5','Nc6','Bc4'],
+          explain:'Queen on h5 and bishop on c4 both aim at f7. Qxf7# is threatened — Black has to deal with it. Develop carelessly and it’s mate; defend the square and it’s a normal game.',
+          takeaway:'The battery is loaded: Qh5 + Bc4 both hit f7. Black must respond.',
+          children:[
+            {
+              id:'matemain',label:'3...Nf6?? 4.Qxf7#',v:'bad',
+              title:'Black develops into mate',
+              uci:['e2e4','e7e5','d1h5','b8c6','f1c4','g8f6','h5f7'],
+              san:['e4','e5','Qh5','Nc6','Bc4','Nf6','Qxf7#'],
+              explain:'Nf6 looks natural — it develops and hits the queen — but a knight on f6 does NOT defend f7. The queen takes f7 with mate, guarded by the bishop on c4. This is exactly the checkmate Magnus shows.',
+              takeaway:'Nf6 doesn’t cover f7! Qxf7# is mate — the four-move checkmate.'
+            },
+            {
+              id:'g6def',label:'3...g6',v:'good',
+              title:'Black covers f7 with g6',
+              uci:['e2e4','e7e5','d1h5','b8c6','f1c4','g7g6'],
+              san:['e4','e5','Qh5','Nc6','Bc4','g6'],
+              explain:'The correct defense: g6 attacks the queen and takes away the f7 mate. Now White can’t mate, but the queen can reposition to keep the pressure.',
+              takeaway:'…g6 is the move that actually stops the mate — it kicks the queen and guards f7.',
+              children:[
+                {
+                  id:'qf3',label:'4.Qf3',v:'warn',
+                  title:'Queen reloads on f7',
+                  uci:['e2e4','e7e5','d1h5','b8c6','f1c4','g7g6','h5f3'],
+                  san:['e4','e5','Qh5','Nc6','Bc4','g6','Qf3'],
+                  explain:'The queen slides to f3, so Qf3 and the bishop on c4 again both aim at f7 — renewing the mate threat. Black has to cover f7 one more time, which is easy.',
+                  takeaway:'Qf3 + Bc4 re-points at f7. Black must defend the square again.',
+                  children:[
+                    {
+                      id:'develop',label:'4...Nf6 → develop',v:'info',
+                      title:'Fine development for both',
+                      uci:['e2e4','e7e5','d1h5','b8c6','f1c4','g7g6','h5f3','g8f6'],
+                      san:['e4','e5','Qh5','Nc6','Bc4','g6','Qf3','Nf6'],
+                      explain:'Now Nf6 is a good move — with the queen on f3 (not h5) and g6 already played, the knight blocks the f-file and guards f7 instead of walking into mate. Black develops both knights and the pieces come out on both sides. Magnus’s verdict: the “best opening” just turns into an ordinary, healthy game with fine development for everyone.',
+                      takeaway:'Same Nf6, totally different result: here it defends f7 and develops. Both sides are fine.'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  }
+},
+englund:{
+  name:"Englund Gambit (mainline trap)",
+  orient:'black',
+  tree:{
+    id:'root',label:'1.d4 e5',v:'info',
+    title:'The Englund Gambit',
+    uci:['d2d4','e7e5'], san:['d4','e5'],
+    explain:'Black answers 1.d4 with the aggressive gambit 1...e5, offering a pawn to pull White’s pieces forward and set up tricks against the queenside.',
+    takeaway:'Black sacrifices the e5 pawn to open lines and hunt the b2 pawn and White’s king.',
+    children:[{
+      id:'e1',label:'2.dxe5 Nc6',v:'good',
+      title:'White grabs the pawn; Black develops',
+      uci:['d2d4','e7e5','d4e5','b8c6'], san:['d4','e5','dxe5','Nc6'],
+      explain:'White accepts the gambit with dxe5. Black develops the knight to c6, hitting the e5 pawn and preparing to bring the queen into the attack.',
+      takeaway:'Nc6 pressures e5 and clears the way for the queen to swing out.',
+      children:[{
+        id:'e2',label:'3.Nf3 Qe7',v:'good',
+        title:'Black eyes the e5 pawn',
+        uci:['d2d4','e7e5','d4e5','b8c6','g1f3','d8e7'], san:['d4','e5','dxe5','Nc6','Nf3','Qe7'],
+        explain:'White defends e5 with Nf3. Black plays the surprising Qe7, pinning the pawn to eventually regain it and lining the queen up for a queenside raid.',
+        takeaway:'Qe7 attacks e5 again and sets the queen up for tricks on b4 and b2.',
+        children:[{
+          id:'e3',label:'4.Bf4 Qb4+',v:'warn',
+          title:'The queen lunges with check',
+          uci:['d2d4','e7e5','d4e5','b8c6','g1f3','d8e7','c1f4','e7b4'], san:['d4','e5','dxe5','Nc6','Nf3','Qe7','Bf4','Qb4+'],
+          explain:'White protects e5 again with Bf4. Now Qb4+ forks: it gives check and attacks both the b2 pawn and the loose bishop on f4.',
+          takeaway:'Qb4+ is the key trap move — check plus double attack on b2 and f4.',
+          children:[{
+            id:'e4',label:'5.Bd2 Qxb2',v:'warn',
+            title:'Black snatches b2',
+            uci:['d2d4','e7e5','d4e5','b8c6','g1f3','d8e7','c1f4','e7b4','f4d2','b4b2'], san:['d4','e5','dxe5','Nc6','Nf3','Qe7','Bf4','Qb4+','Bd2','Qxb2'],
+            explain:'White blocks the check with Bd2. Black grabs the b2 pawn — greedily but with a deadly point: the queen now attacks the rook on a1.',
+            takeaway:'Qxb2 wins a pawn and threatens the a1 rook, luring White into the trap.',
+            children:[{
+              id:'e5',label:'6.Bc3 Bb4',v:'warn',
+              title:'White traps the queen — or so it seems',
+              uci:['d2d4','e7e5','d4e5','b8c6','g1f3','d8e7','c1f4','e7b4','f4d2','b4b2','d2c3','f8b4'], san:['d4','e5','dxe5','Nc6','Nf3','Qe7','Bf4','Qb4+','Bd2','Qxb2','Bc3','Bb4'],
+              explain:'Bc3 attacks the queen and blocks its retreat, seemingly trapping it. But Black has the stunning Bb4! — pinning the c3 bishop against White’s king, so it can no longer capture the black queen on b2.',
+              takeaway:'Bb4 pins the c3 bishop — it can no longer take the queen on b2.',
+              children:[{
+                id:'e6',label:'7.Qd2 Bxc3',v:'bad',
+                title:'The trap springs',
+                uci:['d2d4','e7e5','d4e5','b8c6','g1f3','d8e7','c1f4','e7b4','f4d2','b4b2','d2c3','f8b4','d1d2','b4c3'], san:['d4','e5','dxe5','Nc6','Nf3','Qe7','Bf4','Qb4+','Bd2','Qxb2','Bc3','Bb4','Qd2','Bxc3'],
+                explain:'White tries Qd2 to unpin and defend. Black plays Bxc3, and after White recaptures, the queen delivers mate on the back rank.',
+                takeaway:'Bxc3 rips open the defense — mate is one move away.',
+                children:[{
+                  id:'e7',label:'8.Qxc3 Qc1#',v:'bad',
+                  title:'Qc1 — checkmate',
+                  uci:['d2d4','e7e5','d4e5','b8c6','g1f3','d8e7','c1f4','e7b4','f4d2','b4b2','d2c3','f8b4','d1d2','b4c3','d2c3','b2c1'],
+                  san:['d4','e5','dxe5','Nc6','Nf3','Qe7','Bf4','Qb4+','Bd2','Qxb2','Bc3','Bb4','Qd2','Bxc3','Qxc3','Qc1#'],
+                  explain:'After Qxc3, Qc1 is checkmate! The queen gives check on the back rank, and White’s own knight on b1 blocks the a1 rook from capturing — the king has no escape.',
+                  takeaway:'Qc1#: White’s own knight on b1 traps the a1 rook, so nothing stops the mate.'
+                }]
+              }]
+            }]
+          }]
+        }]
+      }]
+    }]
+  }
+}
+};
+
+/* active opening + mutable index */
+let currentOpening='scholars';
+let tree=OPENINGS[currentOpening].tree;
+let NODES={}, PARENT={};
+function reindex(){ NODES={}; PARENT={}; (function idx(n,p){NODES[n.id]=n;if(p)PARENT[n.id]=p.id;(n.children||[]).forEach(c=>idx(c,n));})(tree,null); }
+reindex();
+
+/* tidy-ish layout: assign depth (x) by ply-depth, y by in-order leaf slotting */
+const COLW=200;
+let ROWH=180;            // vertical spacing; large when boards are shown
+let leafCursor=0;
+function layout(n,depth){
+  n._x=depth*COLW+120;
+  const kids=n.children||[];
+  if(!kids.length){ n._y=leafCursor*ROWH+90; leafCursor++; }
+  else{ kids.forEach(c=>layout(c,depth+1)); n._y=(kids[0]._y+kids[kids.length-1]._y)/2; }
+}
+function relayout(){ leafCursor=0; layout(tree,0); }
+relayout();
+
+/* ---------- render graph ---------- */
+const graph=document.getElementById('graph');
+const edges=document.getElementById('edges');
+let sel='root';
+let flipped=false;   // false = White's perspective, true = Black's
+
+function pathIds(id){const s=new Set();let c=id;while(c){s.add(c);c=PARENT[c];}return s;}
+
+/* whose move it is after k half-moves of node n. checkmate => no move */
+function turnInfo(n,k){
+  const sanList=n.san||[];
+  const lastShown = k>0 ? sanList[k-1] : null;
+  if(lastShown && lastShown.includes('#')) return {side:'mate',label:'Checkmate — game over'};
+  return (k%2===0) ? {side:'white',label:'White to move'} : {side:'black',label:'Black to move'};
+}
+
+/* build a tiny 8x8 board thumbnail for a node's final position */
+function miniBoard(n){
+  const uci=n.uci||[];
+  const b=posAt(uci, uci.length);
+  const last=uci.length?uci[uci.length-1]:null;
+  const lf=last?last.slice(0,2):null, lt=last?last.slice(2,4):null;
+  const files=['a','b','c','d','e','f','g','h'];
+  const ranks=flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1];
+  const fileOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
+  let cells='';
+  for(const r of ranks)for(const f of fileOrder){
+    const sq=files[f]+r, light=(f+r)%2===1;
+    const pc=b[sq];
+    const hl=(sq===lf||sq===lt)?' hl':'';
+    const glyph=pc?`<span class="gp ${pc===pc.toUpperCase()?'w':'b'}">${GLYPH[pc]}</span>`:'';
+    cells+=`<div class="gs ${light?'l':'d'}${hl}">${glyph}</div>`;
+  }
+  return `<div class="gboard">${cells}</div>`;
+}
+
+function buildGraph(){
+  graph.innerHTML=''; edges.innerHTML='';
+  const onPath=pathIds(sel);
+  /* edges: connect parent's right edge to child's left edge */
+  Object.values(NODES).forEach(n=>{
+    (n.children||[]).forEach(c=>{
+      const HW_P=(n.id==='root'?64:75);   // half-width of parent box
+      const HW_C=75;                       // half-width of child box
+      const x1=n._x+HW_P, y1=n._y;         // right edge of parent
+      const x2=c._x-HW_C, y2=c._y;         // left edge of child
+      const mid=(x1+x2)/2;
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d',`M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`);
+      p.setAttribute('fill','none');
+      const active=onPath.has(n.id)&&onPath.has(c.id);
+      p.setAttribute('stroke',active?'#b3472f':'#cfc6b4');
+      p.setAttribute('stroke-width',active?'2.5':'1.5');
+      edges.appendChild(p);
+    });
+  });
+  /* nodes */
+  Object.values(NODES).forEach(n=>{
+    const el=document.createElement('div');
+    el.className='gnode'+(n.id===sel?' sel':'')+(onPath.has(n.id)?' onpath':'');
+    el.setAttribute('data-v',n.v);
+    el.setAttribute('data-turn',turnInfo(n,(n.uci||[]).length).side);
+    el.style.left=n._x+'px'; el.style.top=n._y+'px';
+    if(n.id==='root')el.style.setProperty('--w','128px');
+    el.innerHTML=`<span class="dot ${n.v}"></span><div class="gm">${n.label}</div>${miniBoard(n)}`;
+    el.onclick=(e)=>{e.stopPropagation();if(dragging)return;selectNode(n.id);};
+    graph.appendChild(el);
+  });
+}
+
+/* ---------- pan / zoom ---------- */
+const wrap=document.getElementById('graphwrap');
+let scale=1,tx=0,ty=0;
+function applyT(){graph.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;edges.style.transform=graph.style.transform;}
+function fit(){
+  const xs=Object.values(NODES),pad=70;
+  const minX=Math.min(...xs.map(n=>n._x))-pad,maxX=Math.max(...xs.map(n=>n._x))+pad+90;
+  const minY=Math.min(...xs.map(n=>n._y))-pad,maxY=Math.max(...xs.map(n=>n._y))+pad;
+  const w=wrap.clientWidth,h=wrap.clientHeight;
+  scale=Math.min(w/(maxX-minX),h/(maxY-minY),1.15);
+  tx=(w-(maxX-minX)*scale)/2-minX*scale;
+  ty=(h-(maxY-minY)*scale)/2-minY*scale;
+  applyT();
+}
+wrap.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=wrap.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+  const ns=Math.min(2.2,Math.max(.35,scale*(e.deltaY<0?1.12:0.89)));
+  tx=mx-(mx-tx)*(ns/scale);ty=my-(my-ty)*(ns/scale);scale=ns;applyT();
+},{passive:false});
+let down=false,dragging=false,startX,startY,sx,sy,capId=null;
+wrap.addEventListener('pointerdown',e=>{
+  down=true;dragging=false;
+  startX=e.clientX;startY=e.clientY;
+  sx=e.clientX-tx;sy=e.clientY-ty;capId=e.pointerId;
+});
+wrap.addEventListener('pointermove',e=>{
+  if(!down)return;
+  if(!dragging){
+    if(Math.abs(e.clientX-startX)+Math.abs(e.clientY-startY)>5){
+      dragging=true;wrap.classList.add('drag');
+      try{wrap.setPointerCapture(capId);}catch(_){}
+    } else return;
+  }
+  tx=e.clientX-sx;ty=e.clientY-sy;applyT();
+});
+function endDrag(e){
+  down=false;
+  if(dragging){try{wrap.releasePointerCapture(capId);}catch(_){}}
+  dragging=false;wrap.classList.remove('drag');
+}
+wrap.addEventListener('pointerup',endDrag);
+wrap.addEventListener('pointercancel',endDrag);
+document.getElementById('zin').onclick=()=>{scale=Math.min(2.2,scale*1.18);applyT();};
+document.getElementById('zout').onclick=()=>{scale=Math.max(.35,scale*0.85);applyT();};
+document.getElementById('zfit').onclick=fit;
+
+/* Settings: Colors toggle (verdict coloring + legend key + badge) */
+document.getElementById('colorsToggle').onclick=()=>{
+  const btn=document.getElementById('colorsToggle');
+  const nowOff=btn.getAttribute('aria-checked')==='true';   // currently on -> toggling off
+  btn.setAttribute('aria-checked', String(!nowOff));
+  document.getElementById('graphwrap').classList.toggle('colors-off', nowOff);
+  document.querySelector('.main').classList.toggle('colors-off', nowOff);
+  document.getElementById('settings').classList.toggle('colors-hidden', nowOff);
+};
+
+/* Settings: Boards toggle (mini-board thumbnails + row spacing) */
+document.getElementById('boardsToggle').onclick=()=>{
+  const btn=document.getElementById('boardsToggle');
+  const nowOff=btn.getAttribute('aria-checked')==='true';
+  btn.setAttribute('aria-checked', String(!nowOff));
+  document.getElementById('graphwrap').classList.toggle('boards-off', nowOff);
+  ROWH = nowOff ? 64 : 180;     // tighten rows when boards hidden, expand when shown
+  relayout();
+  buildGraph();
+  fit();
+};
+
+/* Settings: Flip board (White <-> Black perspective) */
+function applyFlip(){
+  document.getElementById('flipToggle').setAttribute('aria-checked', String(flipped));
+  buildGraph();      // redraw mini-boards in new orientation
+  updateBoard();     // redraw main board
+}
+document.getElementById('flipToggle').onclick=()=>{
+  flipped=!flipped;
+  applyFlip();
+};
+
+/* ---------- board + stepper ---------- */
+let ply=0; // how many half-moves shown
+function applyMove(b,m){const f=m.slice(0,2),t=m.slice(2,4);b[t]=b[f];delete b[f];}
+function posAt(uci,k){const b={...START};for(let i=0;i<k;i++)applyMove(b,uci[i]);return b;}
+function drawBoard(board,last){
+  const el=document.getElementById('board');el.innerHTML='';
+  const files=['a','b','c','d','e','f','g','h'];
+  const ranks=flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1];
+  const fileOrder=flipped?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
+  const lastRank=ranks[7], firstFileIdx=fileOrder[0];
+  for(const r of ranks)for(const f of fileOrder){
+    const sq=files[f]+r,light=(f+r)%2===1;
+    const d=document.createElement('div');d.className='sq '+(light?'l':'d');
+    if(last&&(sq===last.slice(0,2)||sq===last.slice(2,4)))d.className+=' last';
+    const pc=board[sq];
+    if(pc){const g=document.createElement('span');g.className='glyph '+(pc===pc.toUpperCase()?'w':'b');g.textContent=GLYPH[pc];d.appendChild(g);}
+    if(f===firstFileIdx){const c=document.createElement('span');c.className='coord rank';c.textContent=r;d.appendChild(c);}
+    if(r===lastRank){const c=document.createElement('span');c.className='coord file';c.textContent=files[f];d.appendChild(c);}
+    el.appendChild(d);
+  }
+}
+function renderTape(){
+  const n=NODES[sel],tape=document.getElementById('tape');tape.innerHTML='';
+  const start=document.createElement('span');
+  start.className='ply start'+(ply===0?' cur':'');
+  start.textContent='start';start.onclick=()=>goPly(0);tape.appendChild(start);
+  n.san.forEach((s,i)=>{
+    if(i%2===0){const mn=document.createElement('span');mn.className='ply movenum';mn.textContent=(i/2+1)+'.';tape.appendChild(mn);}
+    const sp=document.createElement('span');
+    sp.className='ply'+(ply===i+1?' cur':'');
+    sp.textContent=s;sp.onclick=()=>goPly(i+1);tape.appendChild(sp);
+  });
+}
+function updateBoard(){
+  const n=NODES[sel];
+  const last=ply>0?n.uci[ply-1]:null;
+  drawBoard(posAt(n.uci,ply),last);
+  renderTape();
+  const total=n.uci.length;
+  document.getElementById('first').disabled=ply===0;
+  document.getElementById('prev').disabled=ply===0;
+  document.getElementById('next').disabled=ply>=total;
+  document.getElementById('last').disabled=ply>=total;
+  // turn bar reflects the position currently on the board
+  const ti=turnInfo(n,ply);
+  const tb=document.getElementById('turnbar');
+  tb.className='turnbar '+ti.side;
+  document.getElementById('turnText').textContent=ti.label;
+}
+function goPly(k){
+  const n=NODES[sel];ply=Math.max(0,Math.min(k,n.uci.length));updateBoard();
+}
+function stepNext(){const n=NODES[sel];if(ply<n.uci.length){ply++;updateBoard();return true;}return false;}
+function stepPrev(){if(ply>0){ply--;updateBoard();}}
+
+document.getElementById('first').onclick=()=>goPly(0);
+document.getElementById('prev').onclick=()=>{stepPrev();};
+document.getElementById('next').onclick=()=>{stepNext();};
+document.getElementById('last').onclick=()=>{const n=NODES[sel];goPly(n.uci.length);};
+
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){e.preventDefault();stepNext();}
+  else if(e.key==='ArrowLeft'){e.preventDefault();stepPrev();}
+  else if(e.key==='Home'){goPly(0);}
+  else if(e.key==='End'){const n=NODES[sel];goPly(n.uci.length);}
+});
+
+/* ---------- select a node ---------- */
+function selectNode(id){
+  sel=id;const n=NODES[id];
+  ply=n.uci.length;            // land on the position the node represents
+  document.getElementById('posTitle').textContent=n.title;
+  const vd=document.getElementById('verdict');
+  const vmap={good:'Best',warn:'Sharp',bad:'Trap',info:'Idea'};
+  vd.textContent=vmap[n.v]||'Idea';vd.className='verdict '+n.v;
+  buildGraph();
+  updateBoard();
+}
+
+/* switch between openings */
+function loadOpening(key){
+  currentOpening=key;
+  tree=OPENINGS[key].tree;
+  reindex();
+  flipped = (OPENINGS[key].orient==='black');
+  document.getElementById('flipToggle').setAttribute('aria-checked', String(flipped));
+  relayout();
+  selectNode('root');
+  fit();
+}
+document.getElementById('openingSelect').onchange=(e)=>loadOpening(e.target.value);
+
+/* init: apply the starting opening's default orientation */
+flipped = (OPENINGS[currentOpening].orient==='black');
+document.getElementById('flipToggle').setAttribute('aria-checked', String(flipped));
+buildGraph();
+selectNode('root');
+fit();
+window.addEventListener('resize',fit);
+</script>
+</body>
+</html>
