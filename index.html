@@ -243,6 +243,67 @@
         text-decoration: underline;
       }
 
+      /* Research paper card */
+      .paper {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 24px;
+      }
+
+      .paper-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .paper-head h3 {
+        font-size: 1.15rem;
+        line-height: 1.35;
+        letter-spacing: -0.01em;
+        max-width: 46ch;
+      }
+
+      .paper-status {
+        flex: 0 0 auto;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--blue);
+        background: #eff4ff;
+        border: 1px solid #dbe4ff;
+        border-radius: 999px;
+        padding: 5px 12px;
+        white-space: nowrap;
+      }
+
+      .paper-authors {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-top: 10px;
+      }
+
+      .paper-abstract {
+        color: var(--muted);
+        font-size: 0.98rem;
+        margin-top: 12px;
+      }
+
+      .paper-link {
+        display: inline-block;
+        margin-top: 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+      }
+
+      .paper-link:hover {
+        text-decoration: underline;
+      }
+
       /* Resume */
       .resume-download {
         display: inline-block;
@@ -598,6 +659,7 @@
         <!-- Menu links -->
         <ul class="nav-links" id="navLinks">
           <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#research" class="nav-link">Research</a></li>
           <li><a href="#projects" class="nav-link">Projects</a></li>
           <li><a href="#resume" class="nav-link">Resume</a></li>
           <li><a href="#notes" class="nav-link">Notes</a></li>
@@ -628,6 +690,46 @@
         machine learning for medical imaging. I love olympiad math and physics,
         and I build small tools and games in my spare time.
       </p>
+    </section>
+
+    <!-- ============================ RESEARCH ============================ -->
+    <section class="section" id="research">
+      <h2>Research</h2>
+      <p class="lead">
+        Current work at the intersection of quantum mechanics and medical physics.
+      </p>
+
+      <article class="paper">
+        <div class="paper-head">
+          <h3>
+            A Novel Approach to Reducing Radiation Dose in PET Imaging Through
+            Magnetic Field Manipulation of Positronium
+          </h3>
+          <span class="paper-status">Under peer review</span>
+        </div>
+        <p class="paper-authors">
+          Jessy Wang · with G. Guerrier (Yale), J. Reyes, MD (UPMC), and
+          M. Chao, PhD (Mount Sinai, corresponding author) · July 2026
+        </p>
+        <p class="paper-abstract">
+          Proposes using the static magnetic field already present in hybrid
+          PET/MRI scanners to steer positronium spin states via Zeeman mixing —
+          converting ortho-positronium into para-positronium. This raises the
+          fraction of two-photon annihilations that PET reconstruction depends
+          on, so image quality can be preserved while lowering the injected
+          radiotracer dose and patient radiation exposure. The paper develops
+          the quantum-mechanical framework and shows a ~0.5&nbsp;T permanent
+          magnet is sufficient.
+        </p>
+        <a
+          class="paper-link"
+          href="Jessy_Wang_Applied_QM_Research_PET_SCAN.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Read the paper (PDF) -&gt;
+        </a>
+      </article>
     </section>
 
     <!-- ============================ PROJECTS ============================ -->
