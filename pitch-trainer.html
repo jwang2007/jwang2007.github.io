@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitch Trainer</title>
+<style>
+  :root{
+    --bg:#1a1a18; --surface:#26262300; --card:#2c2c2a; --card2:#222220;
+    --text:#f1efe8; --text2:#b4b2a9; --text3:#888780; --border:#444441;
+    --info-bg:#185fa5; --info-text:#e6f1fb; --info-border:#378add;
+    --ok-bg:#0f6e56; --ok-text:#e1f5ee; --err-bg:#a32d2d; --err-text:#fcebeb;
+    --radius:8px; --radius-lg:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; padding:24px 16px;}
+  .wrap{max-width:680px; margin:0 auto;}
+  .backlink{display:inline-block; margin:0 0 14px; color:var(--text2); text-decoration:none; font-size:13px;}
+  .backlink:hover{color:var(--text);}
+  h1{font-size:22px; font-weight:500; margin:0 0 4px;}
+  .sub{color:var(--text2); font-size:14px; margin:0 0 24px;}
+  .mode-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;}
+  .mode-btn{flex:1; min-width:120px; border:0.5px solid var(--border); background:transparent;
+    padding:10px 8px; border-radius:var(--radius); cursor:pointer; font-size:14px; color:var(--text2);}
+  .mode-btn.active{background:var(--info-bg); color:var(--info-text); border-color:var(--info-border); font-weight:500;}
+  .opt-row{display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center;}
+  label.lbl{font-size:13px; color:var(--text2);}
+  select{flex:1; min-width:140px; background:var(--card); color:var(--text); border:0.5px solid var(--border);
+    border-radius:var(--radius); padding:8px 10px; font-size:14px; height:38px;}
+  .chk{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text2); cursor:pointer;}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;}
+  .stat{background:var(--card2); border-radius:var(--radius); padding:12px 16px;}
+  .stat p:first-child{font-size:13px; color:var(--text2); margin:0;}
+  .stat p:last-child{font-size:24px; font-weight:500; margin:0;}
+  .act-row{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+  button.act{border:0.5px solid var(--border); background:transparent; color:var(--text);
+    padding:10px; border-radius:var(--radius); cursor:pointer; font-size:14px;}
+  button.act:hover{background:var(--card);}
+  #play-btn{flex:2; min-width:160px; background:var(--info-bg); color:var(--info-text); border-color:var(--info-border); font-weight:500;}
+  #replay-btn{flex:1; min-width:100px;}
+  #feedback{text-align:center; font-size:15px; font-weight:500; min-height:24px; margin:0 0 16px;}
+  #keyboard{position:relative; height:170px; margin-bottom:14px; user-select:none;}
+  .key-w{position:absolute; bottom:0; height:100%; background:#f1efe8; border:0.5px solid #888780;
+    border-radius:0 0 var(--radius) var(--radius); cursor:pointer; display:flex; align-items:flex-end;
+    justify-content:center; padding-bottom:8px; font-size:12px; color:#5f5e5a;}
+  .key-w:hover{background:#d3d1c7;}
+  .key-b{position:absolute; top:0; width:9%; height:62%; background:#1a1a18; border:0.5px solid #000;
+    border-radius:0 0 var(--radius) var(--radius); cursor:pointer; z-index:2; display:flex; align-items:flex-end;
+    justify-content:center; padding-bottom:6px; font-size:10px; color:#b4b2a9;}
+  .key-b:hover{background:#333;}
+  .key-correct{background:var(--ok-bg)!important; color:var(--ok-text)!important;}
+  .key-wrong{background:var(--err-bg)!important; color:var(--err-text)!important;}
+  #hint{font-size:12px; color:var(--text3); text-align:center; margin:0;}
+  .tips{margin-top:28px; padding-top:20px; border-top:0.5px solid var(--border); font-size:13px; color:var(--text2);}
+  .tips h2{font-size:16px; font-weight:500; color:var(--text); margin:0 0 8px;}
+  .note-chip{border:0.5px solid var(--border); background:transparent; color:var(--text2);
+    padding:6px 12px; border-radius:var(--radius); cursor:pointer; font-size:13px; min-width:42px;}
+  .note-chip.on{background:var(--info-bg); color:var(--info-text); border-color:var(--info-border); font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="index.html#projects">← Back to projects</a>
+  <h1>Pitch Trainer</h1>
+
+  <div class="mode-row">
+    <button id="mode-note" class="mode-btn">Note ID</button>
+    <button id="mode-interval" class="mode-btn">Interval ID</button>
+    <button id="mode-absolute" class="mode-btn">Absolute (no ref)</button>
+    <button id="mode-free" class="mode-btn">Free play</button>
+  </div>
+
+  <div class="opt-row">
+    <label class="lbl">Range</label>
+    <select id="range-sel">
+      <option value="white1">White keys (1 octave)</option>
+      <option value="all1" selected>All 12 notes (1 octave)</option>
+      <option value="all2">All notes (2 octaves)</option>
+      <option value="custom">Custom keys…</option>
+    </select>
+    <label class="chk"><input type="checkbox" id="ref-toggle" checked> Play reference (C)</label>
+  </div>
+
+  <div id="custom-row" style="display:none; margin-bottom:20px;">
+    <p style="font-size:13px; color:var(--text2); margin:0 0 8px;">Pick the notes to practice:</p>
+    <div id="note-picker" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><p>Correct</p><p id="stat-correct">0</p></div>
+    <div class="stat"><p>Attempts</p><p id="stat-total">0</p></div>
+    <div class="stat"><p>Streak</p><p id="stat-streak">0</p></div>
+  </div>
+
+  <div class="act-row">
+    <button id="play-btn" class="act">▶ New question <span style="opacity:0.7; font-size:12px;">(Shift)</span></button>
+    <button id="replay-btn" class="act">↻ Replay</button>
+  </div>
+
+  <p id="feedback">Pick a mode and press New question</p>
+  <div id="keyboard"></div>
+  <p id="hint"></p>
+</div>
+
+<script>
+(function(){
+  const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const A4=440;
+  function freq(midi){return A4*Math.pow(2,(midi-69)/12);}
+  let ctx=null;
+  function audio(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx;}
+  function tone(midi,dur=0.7,delay=0){
+    const c=audio();const t=c.currentTime+delay;
+    const o=c.createOscillator();const g=c.createGain();
+    o.type='triangle';o.frequency.value=freq(midi);
+    o.connect(g);g.connect(c.destination);
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.25,t+0.02);
+    g.gain.setValueAtTime(0.25,t+dur-0.1);
+    g.gain.linearRampToValueAtTime(0,t+dur);
+    o.start(t);o.stop(t+dur);
+  }
+
+  let mode='note', current=null, refMidi=60, answered=false;
+  let correct=0,total=0,streak=0;
+  let customPCs=new Set([0,4,7]);
+  const ranges={white1:{base:60,len:12,white:true},all1:{base:60,len:12},all2:{base:60,len:24},custom:{base:60,len:12,custom:true}};
+
+  const fb=document.getElementById('feedback');
+  const hint=document.getElementById('hint');
+  const kb=document.getElementById('keyboard');
+
+  function setMode(m){
+    mode=m; answered=false; current=null; clearKeys();
+    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('mode-'+m).classList.add('active');
+    const refT=document.getElementById('ref-toggle');
+    const quizUI=document.querySelector('.act-row');
+    const statsUI=document.querySelector('.stats');
+    if(m==='free'){
+      refT.disabled=true;
+      quizUI.style.display='none';
+      statsUI.style.display='none';
+      buildKeyboard();
+      fb.textContent='Click any key to play it';
+      hint.textContent='Play freely — no scoring';
+      return;
+    }
+    quizUI.style.display='flex';
+    statsUI.style.display='grid';
+    if(m==='absolute'){refT.checked=false;refT.disabled=true;}
+    else{refT.disabled=false;}
+    buildKeyboard();
+    fb.textContent='Press New question';
+    hint.textContent=m==='interval'?'Identify the second note relative to C':(m==='absolute'?'No reference — name the note cold':'');
+  }
+
+  function rangeCfg(){return ranges[document.getElementById('range-sel').value];}
+
+  function buildKeyboard(){
+    kb.innerHTML='';
+    const cfg=rangeCfg();
+    const blackIdx=[1,3,6,8,10];
+    let whiteCount=0;const whitePos={};
+    for(let i=0;i<cfg.len;i++){const pc=(cfg.base+i)%12;if(!blackIdx.includes(pc)){whitePos[i]=whiteCount;whiteCount++;}}
+    const ww=100/whiteCount;
+    for(let i=0;i<cfg.len;i++){
+      const midi=cfg.base+i;const pc=midi%12;
+      const isBlack=blackIdx.includes(pc);
+      if(cfg.white&&isBlack)continue;
+      const el=document.createElement('div');
+      el.dataset.midi=midi;
+      if(isBlack){
+        el.className='key-b';
+        el.style.left=(whitePos[i-1]*ww+ww*0.66)+'%';
+        el.textContent=NOTES[pc];
+      }else{
+        el.className='key-w';
+        el.style.left=(whitePos[i]*ww)+'%';
+        el.style.width=ww+'%';
+        el.textContent=NOTES[pc]+(Math.floor(midi/12)-1);
+      }
+      el.addEventListener('click',()=>guess(midi,el));
+      if(cfg.custom&&!customPCs.has(pc)){el.style.opacity='0.3';}
+      kb.appendChild(el);
+    }
+  }
+
+  function clearKeys(){document.querySelectorAll('.key-w,.key-b').forEach(k=>k.classList.remove('key-correct','key-wrong'));}
+
+  function newQuestion(){
+    const cfg=rangeCfg();answered=false;clearKeys();
+    const candidates=[];const blackIdx=[1,3,6,8,10];
+    for(let i=0;i<cfg.len;i++){
+      const midi=cfg.base+i;
+      if(cfg.white&&blackIdx.includes(midi%12))continue;
+      if(cfg.custom&&!customPCs.has(midi%12))continue;
+      candidates.push(midi);
+    }
+    if(candidates.length===0){fb.textContent='Select at least one note above';return;}
+    current=candidates[Math.floor(Math.random()*candidates.length)];
+    playCurrent();
+    fb.textContent='What note do you hear?';fb.style.color='';
+  }
+
+  function playCurrent(){
+    const refT=document.getElementById('ref-toggle');
+    if(refT.checked){tone(refMidi,0.6,0);tone(current,0.7,0.75);}
+    else{tone(current,0.8,0);}
+  }
+
+  function guess(midi,el){
+    if(mode==='free'){
+      tone(midi,0.8,0);
+      fb.textContent=NOTES[midi%12]+(Math.floor(midi/12)-1);
+      clearKeys();el.classList.add('key-correct');
+      setTimeout(()=>el.classList.remove('key-correct'),250);
+      return;
+    }
+    if(current===null||answered)return;
+    answered=true;total++;
+    const targetPc=current%12;const guessPc=midi%12;
+    const right=(mode==='absolute')?(midi===current):(guessPc===targetPc||midi===current);
+    if(right){
+      correct++;streak++;el.classList.add('key-correct');
+      fb.textContent='Correct — '+NOTES[current%12];fb.style.color='#5dcaa5';
+    }else{
+      streak=0;el.classList.add('key-wrong');
+      document.querySelectorAll('[data-midi]').forEach(k=>{if(+k.dataset.midi===current||(mode!=='absolute'&&(+k.dataset.midi)%12===targetPc))k.classList.add('key-correct');});
+      fb.textContent='It was '+NOTES[current%12];fb.style.color='#f09595';
+    }
+    document.getElementById('stat-correct').textContent=correct;
+    document.getElementById('stat-total').textContent=total;
+    document.getElementById('stat-streak').textContent=streak;
+  }
+
+  document.getElementById('mode-note').onclick=()=>setMode('note');
+  document.getElementById('mode-interval').onclick=()=>setMode('interval');
+  document.getElementById('mode-absolute').onclick=()=>setMode('absolute');
+  document.getElementById('mode-free').onclick=()=>setMode('free');
+  document.getElementById('play-btn').onclick=newQuestion;
+  document.getElementById('replay-btn').onclick=()=>{if(current!==null)playCurrent();};
+  function buildPicker(){
+    const p=document.getElementById('note-picker');p.innerHTML='';
+    NOTES.forEach((n,pc)=>{
+      const b=document.createElement('button');
+      b.className='note-chip'+(customPCs.has(pc)?' on':'');
+      b.textContent=n;
+      b.onclick=()=>{
+        if(customPCs.has(pc))customPCs.delete(pc);else customPCs.add(pc);
+        b.classList.toggle('on');
+        if(rangeCfg().custom){buildKeyboard();current=null;answered=false;}
+      };
+      p.appendChild(b);
+    });
+  }
+  buildPicker();
+
+  document.getElementById('range-sel').onchange=()=>{
+    const isCustom=rangeCfg().custom;
+    document.getElementById('custom-row').style.display=isCustom?'block':'none';
+    buildKeyboard();current=null;answered=false;fb.textContent='Press New question';
+  };
+
+  document.addEventListener('keydown',(e)=>{
+    if(e.key!=='Shift'||e.repeat)return;
+    const t=e.target.tagName;
+    if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
+    if(mode==='free')return;
+    e.preventDefault();
+    newQuestion();
+  });
+
+  setMode('note');
+})();
+</script>
+</body>
+</html>
