@@ -413,9 +413,17 @@
       .resume-figure.small {
         max-width: 220px;
       }
+      .about-photos {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        margin: 8px 0 28px;
+      }
       .about-photo {
         max-width: 320px;
-        margin: 8px 0 28px;
+        margin: 0;
+        flex: 1 1 240px;
       }
 
       /* Notes */
@@ -706,13 +714,22 @@
     <!-- ============================ ABOUT ============================ -->
     <section class="section" id="about">
       <h2>About</h2>
-      <figure class="resume-figure about-photo">
-        <img
-          src="jessy-portrait.jpg"
-          alt="Jessy Wang"
-          loading="lazy"
-        />
-      </figure>
+      <div class="about-photos">
+        <figure class="resume-figure about-photo">
+          <img
+            src="jessy-portrait.jpg"
+            alt="Jessy Wang"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="resume-figure about-photo">
+          <img
+            src="jessy-young.jpg"
+            alt="Jessy Wang, younger"
+            loading="lazy"
+          />
+        </figure>
+      </div>
       <p class="lead">
         Hi, I'm Jessy Wang — a high school student at Laurel Springs School and
         an aspiring research scientist in mathematics, AI, and neuroscience.
