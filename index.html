@@ -1,1233 +1,1047 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>jwang07</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jessy Wang - Personal Resume</title>
 
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      }
-    };
-  </script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    :root {
-      --indigo: #260D5E;
-      --indigo-dark: #18073F;
-      --soft-bg: #f7f7f7;
-      --panel-bg: #f7f7f7;
-      --border: #e6e6e6;
-    }
+    <!-- Math rendering for LaTeX in note titles (e.g. $\sqrt{2}$) -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]] } };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--indigo);
-      color: #333;
-    }
-
-    .view {
-      display: none;
-      padding: 28px;
-      margin: 24px;
-      background-color: var(--panel-bg);
-      border-radius: 20px;
-      box-shadow: 0 16px 40px rgba(18, 10, 42, 0.18);
-      min-height: calc(100vh - 48px);
-    }
-
-    .view.active {
-      display: block;
-    }
-
-    h1 {
-      color: #222;
-      font-size: 42px;
-      margin-top: 0;
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-
-    .subject-grid,
-    .folder-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 34px;
-      align-items: flex-start;
-    }
-
-    .folder-panel {
-      margin-bottom: 26px;
-      padding: 18px 12px;
-      border: none;
-      border-radius: 18px;
-      background: transparent;
-      box-shadow: none;
-      overflow: visible;
-    }
-
-    .folder-card {
-      width: 190px;
-      min-height: 188px;
-      border: none;
-      border-radius: 18px;
-      background: transparent;
-      cursor: pointer;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 12px;
-      color: #2c2541;
-      font-size: 18px;
-      font-weight: 700;
-      text-align: center;
-      box-shadow: none;
-      transition: transform 0.2s ease, filter 0.2s ease;
-    }
-
-    .folder-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      background: transparent;
-      box-shadow: none;
-      filter: drop-shadow(0 10px 18px rgba(38, 13, 94, 0.16));
-    }
-
-    .folder-card.active {
-      background: transparent;
-      box-shadow: none;
-      filter: drop-shadow(0 10px 20px rgba(38, 13, 94, 0.18));
-    }
-
-    .folder-card.default-folder-card {
-      background: transparent;
-      border: none;
-      color: #2c2541;
-    }
-
-    .folder-card.default-folder-card:hover {
-      background: transparent;
-      box-shadow: none;
-    }
-
-    .folder-card.default-folder-card span {
-      color: #2c2541;
-      text-shadow: none;
-    }
-
-    .default-folder-image {
-      width: 160px;
-      height: 130px;
-      object-fit: contain;
-      display: block;
-      border-radius: 0;
-      background: transparent;
-      mix-blend-mode: multiply;
-    }
-
-    .source-card-image {
-      width: 76px;
-      height: 58px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .card-source-thumb {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      flex: 0 0 auto;
-      border-radius: 8px;
-    }
-
-    .card-default-folder-thumb {
-      width: 52px;
-      height: auto;
-      object-fit: contain;
-      flex: 0 0 auto;
-      border-radius: 0;
-      mix-blend-mode: multiply;
-    }
-
-    .subject-back-btn,
-    .reset-btn {
-      border: 1px solid var(--indigo);
-      background: white;
-      color: var(--indigo);
-      border-radius: 999px;
-      padding: 9px 14px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.2s;
-    }
-
-    .subject-back-btn {
-      margin-bottom: 18px;
-    }
-
-    .subject-back-btn:hover,
-    .reset-btn:hover {
-      background-color: #f5f3ff;
-      transform: translateY(-1px);
-    }
-
-    .search-panel {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-      padding: 16px;
-      border: 1px solid #ececec;
-      border-radius: 18px;
-      background: var(--panel-bg);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
-    }
-
-    .search-title {
-      font-weight: bold;
-      color: #333;
-      white-space: nowrap;
-    }
-
-    .search-input {
-      width: 100%;
-      border: 1px solid #cccccc;
-      color: #333;
-      background-color: white;
-      border-radius: 999px;
-      padding: 9px 15px;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .search-input:hover,
-    .search-input:focus {
-      border-color: var(--indigo);
-      box-shadow: 0 0 0 3px rgba(48, 39, 124, 0.14);
-    }
-
-    .active-filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .active-filter-chip {
-      border: 1px solid var(--indigo);
-      color: var(--indigo);
-      background-color: #f5f3ff;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .math-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 18px;
-      align-items: start;
-    }
-
-    .math-card,
-    .item-card {
-      border: 1px solid #dddddd;
-      border-radius: 12px;
-      padding: 16px;
-      background-color: white;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-      align-self: start;
-      min-height: 145px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .math-card:hover,
-    .item-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-    }
-
-    .card-title-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .math-card h2,
-    .item-card h2 {
-      font-size: 20px;
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: black;
-      line-height: 1.15;
-    }
-
-    .tag-row {
-      margin-bottom: 4px;
-    }
-
-    .dynamic-tag-row {
-      margin-top: 2px;
-      min-height: 34px;
-    }
-
-    .tag {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 3px 8px;
-      margin: 0 4px 8px 0;
-      font-size: 12px;
-      font-weight: normal;
-      line-height: 1.2;
-    }
-
-    .proof-method-tag {
-      background-color: #ece9ff;
-      color: #30277C;
-      border: 1px solid #30277C;
-    }
-
-    .technique-tag {
-      background-color: #ede7f6;
-      color: #4527a0;
-      border: 1px solid #6a4bc3;
-    }
-
-    .source-tag {
-      background-color: #eeeeee;
-      color: #333;
-      border: 1px solid #666;
-    }
-
-    .field-tag {
-      background-color: #e3f2fd;
-      color: #0d47a1;
-      border: 1px solid #0d47a1;
-    }
-
-    .type-tag {
-      background-color: #fff3cd;
-      color: #7a4f00;
-      border: 1px solid #b7791f;
-    }
-
-    .pdf-btn {
-      display: inline-block;
-      background-color: var(--indigo);
-      color: white;
-      padding: 9px 16px;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 14px;
-      font-weight: bold;
-      transition: background-color 0.2s, transform 0.2s;
-      margin-top: 14px;
-      margin-right: 6px;
-      margin-bottom: 6px;
-    }
-
-    .pdf-btn:hover {
-      background-color: var(--indigo-dark);
-      transform: translateY(-1px);
-    }
-
-    .solution-switcher {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-top: 12px;
-      margin-bottom: 2px;
-    }
-
-    .solution-nav-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      border: 1px solid #cccccc;
-      background-color: white;
-      color: #333;
-      font-size: 22px;
-      line-height: 1;
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
-    }
-
-    .solution-nav-btn:hover {
-      background-color: #f5f5f5;
-      border-color: var(--indigo);
-      transform: translateY(-1px);
-    }
-
-    .empty-message {
-      color: #555;
-      font-style: italic;
-      padding: 18px;
-      border: 1px dashed #d9d2eb;
-      border-radius: 14px;
-      background-color: #faf8ff;
-      text-align: center;
-    }
-
-
-    .home-section {
-      margin-bottom: 22px;
-      padding: 20px;
-      border: 1px solid #ececec;
-      border-radius: 18px;
-      background: var(--panel-bg);
-    }
-
-    .home-section-title {
-      font-size: 24px;
-      margin: 0 0 14px 0;
-      color: #333;
-    }
-
-    .home-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
-    }
-
-    .home-card {
-      min-height: 126px;
-      border: 1px solid var(--indigo);
-      border-radius: 16px;
-      background-color: var(--indigo);
-      color: white;
-      cursor: pointer;
-      padding: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      text-decoration: none;
-      transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
-    }
-
-    .home-card:hover {
-      transform: translateY(-2px);
-      background-color: var(--indigo-dark);
-      box-shadow: 0 8px 18px rgba(38, 13, 94, 0.22);
-    }
-
-    .library-section-title {
-      font-size: 24px;
-      margin: 0 0 14px 0;
-      color: #333;
-    }
-
-    .subject-grid .folder-card {
-      width: 190px;
-      min-height: 188px;
-      gap: 12px;
-      padding: 10px;
-      font-size: 20px;
-    }
-
-    .subject-grid .default-folder-image {
-      width: 160px;
-      height: 130px;
-    }
-
-    .placeholder-text {
-      color: #555;
-      font-size: 16px;
-      line-height: 1.5;
-      margin: 0 0 16px 0;
-    }
-
-    .link-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .link-pill {
-      display: inline-block;
-      border: 1px solid var(--indigo);
-      color: var(--indigo);
-      background-color: #f5f3ff;
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .link-pill:hover {
-      background-color: #ece9ff;
-    }
-
-    @media (max-width: 700px) {
-      .view {
-        margin: 10px;
-        padding: 16px;
-        border-radius: 16px;
+    <style>
+      :root {
+        --blue: #2563eb;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #e8edf5;
+        --bg: #ffffff;
       }
 
-      h1 {
-        font-size: 36px;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .search-panel {
-        align-items: stretch;
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px; /* offset for the sticky navbar */
+      }
+
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* ============================================================
+       NAVBAR
+       ============================================================ */
+      .nav-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .navbar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 18px 24px;
+      }
+
+      /* Menu links */
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        list-style: none;
+      }
+
+      .nav-links a {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--muted);
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .nav-links a.active {
+        color: var(--blue);
+      }
+
+      /* Hamburger */
+      .hamburger {
+        display: none;
         flex-direction: column;
-      }
-
-      .subject-grid,
-      .folder-row {
         justify-content: center;
-        gap: 18px;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: none;
+        cursor: pointer;
       }
 
-      .folder-card {
-        width: 145px;
-        min-height: 155px;
-        border-radius: 18px;
+      .hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        margin: 0 auto;
+        background: var(--ink);
+        border-radius: 2px;
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
       }
 
-      .default-folder-image {
-        width: 125px;
-        height: 105px;
+      .hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
       }
-    }
-  </style>
-</head>
+      .hamburger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
 
-<body>
-  <header class="sticky top-0 z-50 bg-slate-950 text-white shadow-2xl shadow-slate-900/20">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-      <a href="#" class="flex items-center gap-3">
-        <div class="flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-500 via-indigo-600 to-violet-700 text-lg font-bold text-white shadow-lg shadow-cyan-500/20">
-          J
+      /* ============================================================
+       SECTIONS
+       ============================================================ */
+      .section {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 72px 24px;
+      }
+
+      .section h2 {
+        font-size: 1.8rem;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+      }
+
+      .section p.lead {
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      /* Projects */
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 32px;
+      }
+
+      .project {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .project:hover {
+        transform: translateY(-4px);
+        border-color: var(--blue);
+      }
+
+      .project h3 {
+        font-size: 1.15rem;
+        margin-bottom: 8px;
+      }
+
+      .project p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 16px;
+      }
+
+      .project a {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+      }
+
+      .project a:hover {
+        text-decoration: underline;
+      }
+
+      /* Resume */
+      .resume-subhead {
+        font-size: 1.05rem;
+        margin: 36px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .resume-item {
+        margin-bottom: 24px;
+      }
+
+      .resume-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .resume-row strong {
+        font-size: 1.05rem;
+      }
+
+      .resume-row .when {
+        color: var(--muted);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      .resume-item .where {
+        color: var(--blue);
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin: 2px 0 6px;
+      }
+
+      .resume-item p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .award-list {
+        list-style: none;
+        display: grid;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .award-list li {
+        position: relative;
+        padding-left: 22px;
+        font-size: 0.98rem;
+      }
+
+      .award-list li::before {
+        content: ">";
+        position: absolute;
+        left: 0;
+        color: var(--blue);
+      }
+
+      .award-sublist {
+        margin-top: 8px;
+        padding-left: 20px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .award-sublist li {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      /* Notes */
+      .notes-toolbar {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        padding: 16px;
+      }
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .filter-field {
+        display: grid;
+        gap: 7px;
+        min-width: 0;
+      }
+
+      .filter-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+
+      .filter-input {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background-color: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 0.92rem;
+        padding: 0 14px;
+        outline: none;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .filter-input:hover {
+        border-color: #cbd5e1;
+      }
+
+      .filter-input:focus {
+        background-color: #fff;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+
+      .filter-select {
+        appearance: none;
+        background-image:
+          linear-gradient(45deg, transparent 50%, #334155 50%),
+          linear-gradient(135deg, #334155 50%, transparent 50%);
+        background-position:
+          calc(100% - 18px) 18px,
+          calc(100% - 13px) 18px;
+        background-repeat: no-repeat;
+        background-size: 5px 5px;
+        padding-right: 38px;
+      }
+
+      .filter-footer {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .proof-filter {
+        width: min(100%, 310px);
+      }
+
+      .clear-filters-btn {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0 16px;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .clear-filters-btn:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+
+      .footer-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      /* Version switcher (e.g. for the two sqrt(2) proofs) */
+      .version-switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
+      .version-btn {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--muted);
+        font: inherit;
+        font-size: 0.78rem;
+        padding: 4px 12px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .version-btn:hover {
+        border-color: #cbd5e1;
+      }
+
+      .version-btn.is-active {
+        border-color: var(--blue);
+        color: var(--blue);
+        background: #eff4ff;
+      }
+
+      #notesGrid.is-hidden {
+        display: none;
+      }
+      .notes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .note {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease;
+      }
+
+      .note:hover {
+        border-color: var(--blue);
+      }
+
+      .note a {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+        white-space: nowrap;
+      }
+
+      .note a:hover {
+        text-decoration: underline;
+      }
+
+      /* Socials */
+      .socials {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .social {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--ink);
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .social:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+
+      /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+      @media (max-width: 720px) {
+        .filter-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-footer {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .proof-filter {
+          width: 100%;
+        }
+        .hamburger {
+          display: flex;
+        }
+
+        .nav-links {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+          background: #fff;
+          border-bottom: 1px solid var(--line);
+          padding: 8px 24px 16px;
+
+          /* closed state */
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-8px);
+          transition:
+            opacity 0.25s ease,
+            transform 0.25s ease,
+            visibility 0.25s ease;
+        }
+
+        .nav-links.show {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+
+        .nav-links a {
+          display: block;
+          width: 100%;
+          padding: 10px 0;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ============================ NAVBAR ============================ -->
+    <div class="nav-wrap">
+      <nav class="navbar">
+        <!-- Menu links -->
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#resume" class="nav-link">Resume</a></li>
+          <li><a href="#notes" class="nav-link">Notes</a></li>
+          <li><a href="#socials" class="nav-link">Socials</a></li>
+        </ul>
+
+        <!-- Hamburger -->
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ============================ ABOUT ============================ -->
+    <section class="section" id="about">
+      <h2>About</h2>
+      <p class="lead">
+        Hi, I'm Jessy Wang. I'm passionate about building clean, thoughtful
+        experiences on the web. This is a short placeholder bio - replace it
+        with your own story.
+      </p>
+    </section>
+
+    <!-- ============================ PROJECTS ============================ -->
+    <section class="section" id="projects">
+      <h2>Projects</h2>
+      <p class="lead">A few things I'm building. Live links coming soon.</p>
+
+      <div class="projects">
+        <article class="project">
+          <h3>ZetaTrack</h3>
+          <p>
+            A focused tool for tracking and visualizing your progress over time.
+          </p>
+          <a href="#">View project -&gt;</a>
+        </article>
+
+        <article class="project">
+          <h3>Cadence</h3>
+          <p>
+            A piano practice companion that helps you build consistent habits.
+          </p>
+          <a href="#">View project -&gt;</a>
+        </article>
+
+        <article class="project">
+          <h3>GambitLab</h3>
+          <p>A chess trainer for sharpening your tactics and openings.</p>
+          <a href="#">View project -&gt;</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================ RESUME ============================ -->
+    <section class="section" id="resume">
+      <h2>Resume</h2>
+      <p class="lead">My competition highlights.</p>
+
+      <!-- Awards -->
+      <h3 class="resume-subhead">Competitions &amp; Awards</h3>
+      <ul class="award-list">
+        <li>USAMO Qualifier</li>
+        <li>USAPhO Qualifier - Distinction for Commendable Performance</li>
+        <li>USACO Gold Division</li>
+        <li>USNCO National Qualifier</li>
+      </ul>
+
+      <!-- Featured award -->
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Utica University AMC 12 Competition</strong>
         </div>
-        <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-200">jwang07</p>
-          <p class="text-[11px] text-slate-400">Math & problem library</p>
+        <ul class="award-sublist">
+          <li>Placed 1st out of 100+ students.</li>
+          <li>One of 2 students out of 100+ to qualify for AIME.</li>
+          <li>Earned DHR (Distinguished Honor Roll) on the AMC 12.</li>
+          <li>
+            Awarded a scholarship for two credited classes at Utica University.
+          </li>
+          <li>
+            Invited to deliver a speech at the awards ceremony; ceremony was
+            later canceled due to weather conditions.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================ NOTES ============================ -->
+    <section class="section" id="notes">
+      <div class="space-y-6">
+        <div
+          class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
+        >
+          <div>
+            <h2>Notes</h2>
+          </div>
+          <div
+            id="resultsCount"
+            class="text-sm font-medium text-slate-500"
+          ></div>
         </div>
-      </a>
 
-      <div class="hidden items-center gap-3 md:flex">
-        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="home">Home</button>
-        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="math">Math</button>
-        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="projects">Projects</button>
-        <button class="subject-folder rounded-full bg-slate-900/80 px-4 py-2 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-cyan-500/15 hover:text-white" type="button" data-target="socials">Socials</button>
-        <button class="subject-folder rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 transition duration-200 hover:bg-cyan-400" type="button" data-target="resume">Resume</button>
+        <div class="notes-toolbar">
+          <div class="filter-grid">
+            <label class="filter-field">
+              <span class="filter-label">Search</span>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Search title or topic"
+                class="filter-input"
+              />
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Source</span>
+              <select
+                id="sourceFilter"
+                data-filter-key="source"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Problem / Result</span>
+              <select
+                id="problemFilter"
+                data-filter-key="type"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Field</span>
+              <select
+                id="fieldFilter"
+                data-filter-key="field"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Technique</span>
+              <select
+                id="techniqueFilter"
+                data-filter-key="technique"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+          </div>
+
+          <div class="filter-footer">
+            <label class="filter-field proof-filter">
+              <span class="filter-label">Proof</span>
+              <select
+                id="proofFilter"
+                data-filter-key="proofMethod"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+            <div class="footer-actions">
+              <button
+                id="toggleResults"
+                type="button"
+                class="clear-filters-btn"
+                aria-pressed="false"
+              >
+                Hide results
+              </button>
+              <button id="clearFilters" type="button" class="clear-filters-btn">
+                Clear filters
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          id="notesGrid"
+          class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+        ></div>
       </div>
+    </section>
 
-      <button id="mobile-menu-button" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-700 bg-slate-900 text-slate-100 shadow-lg shadow-slate-950/30 md:hidden" aria-label="Open menu">
-        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
+    <!-- ============================ SOCIALS ============================ -->
+    <section class="section" id="socials">
+      <h2>Socials</h2>
+      <p class="lead">Let's connect.</p>
 
-    <div id="mobile-menu" class="hidden border-t border-slate-800 bg-slate-950/95 px-4 pb-4 md:hidden">
-      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="home">Home</button>
-      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="math">Math</button>
-      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="projects">Projects</button>
-      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="socials">Socials</button>
-      <button class="subject-folder block w-full rounded-3xl px-4 py-3 text-left text-sm font-semibold text-slate-200 transition duration-200 hover:bg-slate-800/80" type="button" data-target="resume">Resume</button>
-    </div>
-  </header>
-
-  <section id="home" class="view active">
-    <h1>Library</h1>
-
-    <div class="home-section">
-      <h2 class="home-section-title">Main</h2>
-      <div class="home-card-grid">
-        <button class="home-card subject-folder" type="button" data-target="projects">Projects</button>
-        <button class="home-card subject-folder" type="button" data-target="resume">Resume</button>
-        <button class="home-card subject-folder" type="button" data-target="socials">Socials</button>
+      <div class="socials">
+        <a
+          class="social"
+          href="https://www.linkedin.com/in/jessy-wang-0ab128309/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn -&gt;
+        </a>
       </div>
-    </div>
+    </section>
 
-    <div class="folder-panel">
-      <h2 class="library-section-title">Subjects</h2>
-      <div class="subject-grid">
-        <button class="folder-card default-folder-card subject-folder" type="button" data-target="math">
-          <img src="images/purple_folder.jpg" alt="Math folder" class="default-folder-image">
-          <span>Math</span>
-        </button>
+    <!-- ============================ SCRIPT ============================ -->
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navLinks = document.getElementById("navLinks");
 
-        <button class="folder-card default-folder-card subject-folder" type="button" data-target="physics">
-          <img src="images/purple_folder.jpg" alt="Physics folder" class="default-folder-image">
-          <span>Physics</span>
-        </button>
-
-        <button class="folder-card default-folder-card subject-folder" type="button" data-target="cs">
-          <img src="images/purple_folder.jpg" alt="CS folder" class="default-folder-image">
-          <span>CS</span>
-        </button>
-
-        <button class="folder-card default-folder-card subject-folder" type="button" data-target="chemistry">
-          <img src="images/purple_folder.jpg" alt="Chemistry folder" class="default-folder-image">
-          <span>Chemistry</span>
-        </button>
-
-        <button class="folder-card default-folder-card subject-folder" type="button" data-target="biology">
-          <img src="images/purple_folder.jpg" alt="Biology folder" class="default-folder-image">
-          <span>Biology</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-
-  <section id="projects" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Projects</h1>
-  </section>
-
-  <section id="resume" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Resume</h1>
-    <!-- Example: <a href="resume.pdf" target="_blank" class="pdf-btn">View Resume</a> -->
-  </section>
-
-  <section id="socials" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Socials</h1>
-    <div class="link-list">
-      <a class="link-pill" href="https://www.linkedin.com/in/jessy-wang-0ab128309/" target="_blank">LinkedIn</a>
-    </div>
-  </section>
-
-  <section id="math" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Math</h1>
-
-    <div class="search-panel">
-      <span class="search-title">Search:</span>
-      <input id="math-search" class="search-input" type="search" placeholder="Search title, source, field, technique...">
-      <button id="toggle-library" class="reset-btn" type="button">Hide Library</button>
-      <button id="reset-filters" class="reset-btn" type="button">Reset</button>
-    </div>
-
-    <div id="folder-panel" class="folder-panel"></div>
-    <div id="math-list" class="math-grid"></div>
-  </section>
-
-  <section id="physics" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Physics</h1>
-
-    <div class="math-grid">
-      <div class="item-card">
-        <h2>Thermodynamical Processes</h2>
-        <a href="ThermodynamicalProcesses.pdf" target="_blank" class="pdf-btn">View PDF</a>
-      </div>
-
-      <div class="item-card">
-        <h2>Charges in a Cube (Purcell)</h2>
-        <a href="Charges_in_a_Cube_Purcell.pdf" target="_blank" class="pdf-btn">View PDF</a>
-      </div>
-
-      <div class="item-card">
-        <h2>Electrostatic Potential</h2>
-        <a href="Electrostatic_Potential.pdf" target="_blank" class="pdf-btn">View PDF</a>
-      </div>
-
-      <div class="item-card">
-        <h2>UCSD 2009 Fall Physics 110a Lagrangian Problem 1</h2>
-        <a href="ucsd.pdf" target="_blank" class="pdf-btn">View PDF</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="cs" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Computer Science</h1>
-
-    <div class="math-grid">
-      <div class="item-card">
-        <h2>Topological Sort (DFS Algorithm)</h2>
-        <a href="topsort.cpp" target="_blank" class="pdf-btn">View Code</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="chemistry" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Chemistry</h1>
-  </section>
-
-  <section id="biology" class="view">
-    <button class="subject-back-btn" type="button">← Back to Folders</button>
-    <h1>Biology</h1>
-  </section>
-
-  <script>
-    let mathItems = [];
-    let currentFolder = "root";
-    let searchQuery = "";
-    let libraryVisible = true;
-
-    const categories = ["proofMethod", "technique", "source", "type", "field"];
-
-    const categoryLabels = {
-      proofMethod: "Proof Method",
-      technique: "Technique",
-      source: "Source",
-      type: "Type",
-      field: "Field"
-    };
-
-    const activeFilters = {
-      proofMethod: "All",
-      technique: "All",
-      source: "All",
-      type: "All",
-      field: "All"
-    };
-
-    const sourceIcons = {
-      "MIT OCW": {
-        src: "images/mit-ocw.jpg",
-        alt: "MIT OCW"
-      },
-      "MIT Integration Bee": {
-        src: "images/mit-integration-bee.jpg",
-        alt: "MIT Integration Bee"
-      },
-      "Green Book": {
-        src: "images/green-book.jpg",
-        alt: "Green Book"
-      },
-      "AIME": {
-        src: "images/MAA.jpg",
-        alt: "Mathematical Association of America"
-      },
-      "USAMO": {
-        src: "images/MAA.jpg",
-        alt: "Mathematical Association of America"
-      },
-      "BMO": {
-        src: "images/UKMT.jpg",
-        alt: "UK Maths Trust"
-      },
-      "BMO2": {
-        src: "images/UKMT.jpg",
-        alt: "UK Maths Trust"
-      },
-      "EGMO": {
-        src: "images/egmo.jpg",
-        alt: "EGMO"
-      },
-      "Handout": {
-        src: "images/handout.jpg",
-        alt: "Handout"
-      },
-      "SJSU": {
-        src: "images/SJSU.jpg",
-        alt: "SJSU"
-      }
-    };
-
-    bindSubjectFolders();
-    setupMobileMenu();
-
-    fetch("data.json")
-      .then(response => response.json())
-      .then(data => {
-        mathItems = data.map(normalizeMathItem);
-        bindControls();
-        renderFolderPanel();
-        renderMathItems();
-      })
-      .catch(() => {
-        bindControls();
-        renderFolderPanel();
-        renderMathItems();
+      hamburger.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("show");
+        hamburger.classList.toggle("open", isOpen);
+        hamburger.setAttribute("aria-expanded", isOpen);
       });
 
-    function bindSubjectFolders() {
-      document.querySelectorAll(".subject-folder").forEach(button => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.target);
+      // Close the mobile menu after clicking a link
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("show");
+          hamburger.classList.remove("open");
+          hamburger.setAttribute("aria-expanded", "false");
         });
       });
 
-      document.querySelectorAll(".subject-back-btn").forEach(button => {
-        button.addEventListener("click", () => {
-          showView("home");
-        });
-      });
-    }
-
-    function setupMobileMenu() {
-      const mobileButton = document.getElementById("mobile-menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
-      if (!mobileButton || !mobileMenu) {
-        return;
-      }
-
-      mobileButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
+      // Highlight the active link while scrolling
+      const sections = document.querySelectorAll("section[id]");
+      const linkMap = {};
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        linkMap[link.getAttribute("href").slice(1)] = link;
       });
 
-      document.querySelectorAll("#mobile-menu .subject-folder").forEach(button => {
-        button.addEventListener("click", () => {
-          mobileMenu.classList.add("hidden");
-        });
-      });
-    }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && linkMap[entry.target.id]) {
+              Object.values(linkMap).forEach((l) =>
+                l.classList.remove("active"),
+              );
+              linkMap[entry.target.id].classList.add("active");
+            }
+          });
+        },
+        { rootMargin: "-45% 0px -50% 0px" },
+      );
 
-    function showView(target) {
-      document.querySelectorAll(".view").forEach(section => {
-        section.classList.remove("active");
-      });
+      sections.forEach((section) => observer.observe(section));
 
-      const next = document.getElementById(target) || document.getElementById("home");
-      next.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+      // --- Notes: loaded from data.json (the source of truth) ---
+      const notesGrid = document.getElementById("notesGrid");
+      const resultsCount = document.getElementById("resultsCount");
+      const searchInput = document.getElementById("searchInput");
+      const sourceFilter = document.getElementById("sourceFilter");
+      const typeFilter = document.getElementById("problemFilter");
+      const fieldFilter = document.getElementById("fieldFilter");
+      const techniqueFilter = document.getElementById("techniqueFilter");
+      const proofFilter = document.getElementById("proofFilter");
+      const clearFilters = document.getElementById("clearFilters");
+      const toggleResults = document.getElementById("toggleResults");
 
-    function bindControls() {
-      const searchInput = document.getElementById("math-search");
-      const toggleButton = document.getElementById("toggle-library");
-      const resetButton = document.getElementById("reset-filters");
+      // Facets are array-valued in data.json; a note may carry several values.
+      const FACETS = ["source", "type", "field", "technique", "proofMethod"];
 
-      if (!searchInput || !toggleButton || !resetButton) {
-        return;
-      }
-
-      searchInput.addEventListener("input", () => {
-        searchQuery = searchInput.value.trim().toLowerCase();
-        renderMathItems();
-      });
-
-      toggleButton.addEventListener("click", () => {
-        libraryVisible = !libraryVisible;
-        updateLibraryToggle();
-        renderMathItems();
-      });
-
-      resetButton.addEventListener("click", () => {
-        categories.forEach(category => {
-          activeFilters[category] = "All";
-        });
-
-        currentFolder = "root";
-        searchQuery = "";
-        libraryVisible = true;
-        searchInput.value = "";
-        updateLibraryToggle();
-        renderFolderPanel();
-        renderMathItems();
-      });
-
-      updateLibraryToggle();
-    }
-
-    function hasActiveFilters() {
-      return categories.some(category => activeFilters[category] !== "All");
-    }
-
-    function shouldShowLibrary() {
-      return libraryVisible || searchQuery.length > 0 || hasActiveFilters();
-    }
-
-    function updateLibraryToggle() {
-      const toggleButton = document.getElementById("toggle-library");
-      if (toggleButton) {
-        toggleButton.textContent = libraryVisible ? "Hide Library" : "Show All";
-      }
-    }
-
-    function unique(arr) {
-      return [...new Set(arr)];
-    }
-
-    function normalizeMathItem(item) {
-      let files = [];
-
-      if (Array.isArray(item.files) && item.files.length > 0) {
-        files = item.files.map(fileItem => ({
-          file: fileItem.file || null,
-          label: fileItem.label || "View PDF",
-          proofMethod: fileItem.proofMethod || [],
-          technique: fileItem.technique || []
-        }));
-      } else if (item.file) {
-        files = [
-          {
-            file: item.file,
-            label: "View PDF",
-            proofMethod: item.proofMethod || [],
-            technique: item.technique || []
-          }
-        ];
-      }
-
-      const derivedProofMethods = unique(files.flatMap(fileItem => fileItem.proofMethod || []));
-      const derivedTechniques = unique(files.flatMap(fileItem => fileItem.technique || []));
-
-      return {
-        ...item,
-        source: item.source || [],
-        type: item.type || [],
-        field: item.field || [],
-        proofMethod: unique([...(item.proofMethod || []), ...derivedProofMethods]),
-        technique: unique([...(item.technique || []), ...derivedTechniques]),
-        files: files
+      let notes = [];
+      const state = {
+        search: "",
+        source: "All",
+        type: "All",
+        field: "All",
+        technique: "All",
+        proofMethod: "All",
       };
-    }
 
-    function getTags(category) {
-      const tags = new Set();
+      // Normalize a raw record into a consistent shape with one or more links.
+      function normalize(raw) {
+        const links = Array.isArray(raw.files)
+          ? raw.files.map((f) => ({
+              file: f.file,
+              label: f.label || "View",
+              proofMethod: f.proofMethod || [],
+              technique: f.technique || [],
+            }))
+          : [
+              {
+                file: raw.file,
+                label: "View",
+                proofMethod: raw.proofMethod || [],
+                technique: raw.technique || [],
+              },
+            ];
 
-      mathItems.forEach(item => {
-        item[category].forEach(tag => tags.add(tag));
-      });
+        // Aggregate per-file facets up to the card for filtering.
+        const union = (key) => [
+          ...new Set([
+            ...(raw[key] || []),
+            ...links.flatMap((l) => l[key] || []),
+          ]),
+        ];
 
-      return ["All", ...Array.from(tags).sort()];
-    }
-
-    function renderFolderPanel() {
-      const panel = document.getElementById("folder-panel");
-      if (!panel) {
-        return;
+        return {
+          title: raw.title || "Untitled",
+          type: raw.type || [],
+          source: raw.source || [],
+          field: raw.field || [],
+          proofMethod: union("proofMethod"),
+          technique: union("technique"),
+          links,
+        };
       }
 
-      panel.innerHTML = "";
-      renderActiveFilterChips(panel);
+      function populateSelect(select, values, placeholder = "All") {
+        select.innerHTML = [placeholder, ...values]
+          .map((value) => `<option value="${value}">${value}</option>`)
+          .join("");
+      }
 
-      const row = document.createElement("div");
-      row.className = "folder-row";
+      function uniqueSorted(key) {
+        return [...new Set(notes.flatMap((note) => note[key]))]
+          .filter(Boolean)
+          .sort();
+      }
 
-      if (currentFolder === "root") {
-        categories.forEach(category => {
-          row.appendChild(createFolderCard({
-            label: categoryLabels[category],
-            active: activeFilters[category] !== "All",
-            visual: createFolderIcon(),
-            onClick: () => {
-              currentFolder = category;
-              renderFolderPanel();
-            }
-          }));
+      function setupFilters() {
+        populateSelect(sourceFilter, uniqueSorted("source"));
+        populateSelect(typeFilter, uniqueSorted("type"));
+        populateSelect(fieldFilter, uniqueSorted("field"));
+        populateSelect(techniqueFilter, uniqueSorted("technique"));
+        populateSelect(proofFilter, uniqueSorted("proofMethod"));
+      }
+
+      function matchesFilters(note) {
+        const q = state.search.trim().toLowerCase();
+        const matchesSearch =
+          !q ||
+          note.title.toLowerCase().includes(q) ||
+          note.field.some((f) => f.toLowerCase().includes(q)) ||
+          note.source.some((s) => s.toLowerCase().includes(q));
+
+        return (
+          matchesSearch &&
+          FACETS.every(
+            (key) => state[key] === "All" || note[key].includes(state[key]),
+          )
+        );
+      }
+
+      // Tags for one specific version (link) of a note, so multi-version
+      // notes can swap their tags when you switch versions.
+      function metaRow(note, link) {
+        return [
+          ...note.source,
+          ...note.field,
+          ...(link.technique || []),
+          ...(link.proofMethod || []),
+        ]
+          .filter(Boolean)
+          .map((value) => `<span>${value}</span>`)
+          .join('<span aria-hidden="true">&middot;</span>');
+      }
+
+      // The notes currently shown, so the version switcher can look them up.
+      let currentVisible = [];
+
+      function cardHTML(note, index) {
+        const badge = note.type.length
+          ? `<span class="shrink-0 text-xs font-medium text-blue-600">${note.type.join(", ")}</span>`
+          : "";
+
+        // Multi-version notes get a switcher; single ones just link out.
+        const switcher =
+          note.links.length > 1
+            ? `<div class="version-switch">${note.links
+                .map(
+                  (l, j) =>
+                    `<button type="button" class="version-btn${j === 0 ? " is-active" : ""}" data-card="${index}" data-index="${j}">${l.label}</button>`,
+                )
+                .join("")}</div>`
+            : "";
+
+        const active = note.links[0];
+
+        return `
+          <article class="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-500" data-card="${index}">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-base font-semibold text-slate-900">${note.title}</h3>
+              ${badge}
+            </div>
+            ${switcher}
+            <div class="note-meta mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-400">${metaRow(note, active)}</div>
+            <a
+              href="${active.file}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="note-view mt-5 inline-flex items-center text-sm font-medium text-blue-600 hover:underline"
+            >
+              View &rarr;
+            </a>
+          </article>
+        `;
+      }
+
+      function renderNotes() {
+        const visible = notes.filter(matchesFilters);
+        currentVisible = visible;
+        resultsCount.textContent = `Showing ${visible.length} of ${notes.length} notes`;
+
+        if (!visible.length) {
+          notesGrid.innerHTML = `
+            <div class="md:col-span-2 xl:col-span-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+              No notes match those filters yet. Try widening the search.
+            </div>
+          `;
+          return;
+        }
+
+        notesGrid.innerHTML = visible
+          .map((note, i) => cardHTML(note, i))
+          .join("");
+
+        // Re-render any LaTeX in the titles (e.g. $\sqrt{2}$).
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise([notesGrid]);
+        }
+      }
+
+      function bindEvents() {
+        searchInput.addEventListener("input", (event) => {
+          state.search = event.target.value;
+          renderNotes();
         });
-      } else {
-        row.appendChild(createFolderCard({
-          label: "Back",
-          active: false,
-          visual: createFolderIcon(),
-          onClick: () => {
-            currentFolder = "root";
-            renderFolderPanel();
-          }
-        }));
 
-        getTags(currentFolder).forEach(tag => {
-          const label = tag === "All" ? "All " + categoryLabels[currentFolder] : tag;
+        [
+          sourceFilter,
+          typeFilter,
+          fieldFilter,
+          techniqueFilter,
+          proofFilter,
+        ].forEach((select) => {
+          select.addEventListener("change", (event) => {
+            state[event.target.dataset.filterKey] = event.target.value;
+            renderNotes();
+          });
+        });
 
-          row.appendChild(createFolderCard({
-            label,
-            active: activeFilters[currentFolder] === tag,
-            visual: createFilterVisual(currentFolder, tag),
-            onClick: () => {
-              activeFilters[currentFolder] = tag;
-              libraryVisible = true;
-              updateLibraryToggle();
-              renderFolderPanel();
-              renderMathItems();
-            }
-          }));
+        clearFilters.addEventListener("click", () => {
+          state.search = "";
+          FACETS.forEach((key) => (state[key] = "All"));
+          searchInput.value = "";
+          [
+            sourceFilter,
+            typeFilter,
+            fieldFilter,
+            techniqueFilter,
+            proofFilter,
+          ].forEach((select) => (select.value = "All"));
+          renderNotes();
+        });
+
+        // Switch versions on a multi-version note; tags + link update in place.
+        notesGrid.addEventListener("click", (event) => {
+          const btn = event.target.closest(".version-btn");
+          if (!btn) return;
+
+          const card = btn.closest("article");
+          const note = currentVisible[Number(btn.dataset.card)];
+          const link = note.links[Number(btn.dataset.index)];
+
+          card
+            .querySelectorAll(".version-btn")
+            .forEach((b) => b.classList.toggle("is-active", b === btn));
+          card.querySelector(".note-meta").innerHTML = metaRow(note, link);
+          card.querySelector(".note-view").setAttribute("href", link.file);
+        });
+
+        // Toggle the results grid in and out of view.
+        toggleResults.addEventListener("click", () => {
+          const hidden = notesGrid.classList.toggle("is-hidden");
+          toggleResults.textContent = hidden ? "Show results" : "Hide results";
+          toggleResults.setAttribute("aria-pressed", String(hidden));
         });
       }
 
-      panel.appendChild(row);
-    }
+      bindEvents();
 
-    function renderActiveFilterChips(panel) {
-      const active = categories.filter(category => activeFilters[category] !== "All");
-      if (active.length === 0) {
-        return;
-      }
-
-      const row = document.createElement("div");
-      row.className = "active-filter-row";
-
-      active.forEach(category => {
-        const chip = document.createElement("span");
-        chip.className = "active-filter-chip";
-        chip.textContent = categoryLabels[category] + ": " + activeFilters[category];
-        row.appendChild(chip);
-      });
-
-      panel.appendChild(row);
-    }
-
-    function createFolderCard({ label, active, visual, onClick }) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "folder-card";
-
-      if (active) {
-        button.classList.add("active");
-      }
-
-      if (visual.classList && visual.classList.contains("default-folder-image")) {
-        button.classList.add("default-folder-card");
-      }
-
-      button.appendChild(visual);
-
-      const text = document.createElement("span");
-      text.textContent = label;
-      button.appendChild(text);
-
-      button.addEventListener("click", onClick);
-      return button;
-    }
-
-    function createFilterVisual(category, tag, small = false) {
-      if (category === "source" && tag !== "All" && sourceIcons[tag]) {
-        const img = document.createElement("img");
-        img.src = sourceIcons[tag].src;
-        img.alt = sourceIcons[tag].alt;
-        img.className = small ? "card-source-thumb" : "source-card-image";
-        return img;
-      }
-
-      return createFolderIcon(small);
-    }
-
-    function createFolderIcon(small = false) {
-      const img = document.createElement("img");
-      img.src = "images/purple_folder.jpg";
-      img.alt = "Folder";
-      img.className = small ? "card-default-folder-thumb" : "default-folder-image";
-      return img;
-    }
-
-    function createSourceVisual(sourceName, small = false) {
-      if (sourceName && sourceIcons[sourceName]) {
-        const img = document.createElement("img");
-        img.src = sourceIcons[sourceName].src;
-        img.alt = sourceIcons[sourceName].alt;
-        img.className = small ? "card-source-thumb" : "source-card-image";
-        return img;
-      }
-
-      return createFolderIcon(small);
-    }
-
-    function renderMathItems() {
-      const list = document.getElementById("math-list");
-      if (!list) {
-        return;
-      }
-
-      list.innerHTML = "";
-
-      if (!shouldShowLibrary()) {
-        return;
-      }
-
-      const filtered = mathItems.filter(item => {
-        const matchesFilters = categories.every(category => {
-          const active = activeFilters[category];
-          return active === "All" || item[category].includes(active);
+      fetch("data.json")
+        .then((response) => response.json())
+        .then((data) => {
+          notes = data.map(normalize);
+          setupFilters();
+          renderNotes();
+        })
+        .catch(() => {
+          resultsCount.textContent = "";
+          notesGrid.innerHTML = `
+            <div class="md:col-span-2 xl:col-span-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+              Couldn't load notes. Open this page through the live site or a local
+              server so data.json can be fetched.
+            </div>
+          `;
         });
-
-        if (!matchesFilters) {
-          return false;
-        }
-
-        if (!searchQuery) {
-          return true;
-        }
-
-        const searchableText = [
-          item.title,
-          ...(item.source || []),
-          ...(item.type || []),
-          ...(item.field || []),
-          ...(item.proofMethod || []),
-          ...(item.technique || [])
-        ].join(" ").toLowerCase();
-
-        return searchableText.includes(searchQuery);
-      });
-
-      if (filtered.length === 0) {
-        return;
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "math-card";
-        card.tabIndex = 0;
-
-        const titleRow = document.createElement("div");
-        titleRow.className = "card-title-row";
-
-        if (item.source.length > 0) {
-          titleRow.appendChild(createSourceVisual(item.source[0], true));
-        }
-
-        const title = document.createElement("h2");
-        title.textContent = item.title;
-        titleRow.appendChild(title);
-        card.appendChild(titleRow);
-
-        const staticTagRow = document.createElement("div");
-        staticTagRow.className = "tag-row";
-        addTags(staticTagRow, item.source, "source-tag");
-        addTags(staticTagRow, item.type, "type-tag");
-        addTags(staticTagRow, item.field, "field-tag");
-        card.appendChild(staticTagRow);
-
-        const dynamicTagRow = document.createElement("div");
-        dynamicTagRow.className = "tag-row dynamic-tag-row";
-        card.appendChild(dynamicTagRow);
-
-        renderSolutionViewer(card, item, dynamicTagRow);
-        list.appendChild(card);
-      });
-
-      if (window.MathJax) {
-        MathJax.typesetPromise();
-      }
-    }
-
-    function getInitialSolutionIndex(item) {
-      if (!item.files || item.files.length <= 1) {
-        return 0;
-      }
-
-      const proofMethodFilter = activeFilters.proofMethod;
-      const techniqueFilter = activeFilters.technique;
-
-      const matchIndex = item.files.findIndex(fileItem => {
-        if (proofMethodFilter !== "All" && !fileItem.proofMethod.includes(proofMethodFilter)) {
-          return false;
-        }
-
-        if (techniqueFilter !== "All" && !fileItem.technique.includes(techniqueFilter)) {
-          return false;
-        }
-
-        return true;
-      });
-
-      return matchIndex >= 0 ? matchIndex : 0;
-    }
-
-    function renderSolutionViewer(card, item, dynamicTagRow) {
-      if (!item.files || item.files.length === 0) {
-        return;
-      }
-
-      let currentIndex = getInitialSolutionIndex(item);
-      const solutionCount = item.files.length;
-
-      const mainLink = document.createElement("a");
-      mainLink.target = "_blank";
-      mainLink.className = "pdf-btn";
-
-      function updateDynamicTags(fileItem) {
-        dynamicTagRow.innerHTML = "";
-        addTags(dynamicTagRow, fileItem.proofMethod || [], "proof-method-tag");
-        addTags(dynamicTagRow, fileItem.technique || [], "technique-tag");
-      }
-
-      function updateMainLink(fileItem) {
-        mainLink.href = fileItem.file;
-        mainLink.textContent = "View PDF";
-        mainLink.setAttribute("aria-label", fileItem.label || "View PDF");
-        mainLink.title = fileItem.label || "View PDF";
-      }
-
-      if (solutionCount === 1) {
-        const onlyFile = item.files[0];
-        updateDynamicTags(onlyFile);
-        updateMainLink(onlyFile);
-        card.appendChild(mainLink);
-        return;
-      }
-
-      const switcher = document.createElement("div");
-      switcher.className = "solution-switcher";
-
-      const prevBtn = document.createElement("button");
-      prevBtn.className = "solution-nav-btn";
-      prevBtn.type = "button";
-      prevBtn.setAttribute("aria-label", "Previous solution");
-      prevBtn.title = "Previous solution";
-      prevBtn.textContent = "←";
-
-      const nextBtn = document.createElement("button");
-      nextBtn.className = "solution-nav-btn";
-      nextBtn.type = "button";
-      nextBtn.setAttribute("aria-label", "Next solution");
-      nextBtn.title = "Next solution";
-      nextBtn.textContent = "→";
-
-      function updateSolution() {
-        const currentFile = item.files[currentIndex];
-        updateDynamicTags(currentFile);
-        updateMainLink(currentFile);
-      }
-
-      prevBtn.addEventListener("click", () => {
-        currentIndex = (currentIndex - 1 + solutionCount) % solutionCount;
-        updateSolution();
-      });
-
-      nextBtn.addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % solutionCount;
-        updateSolution();
-      });
-
-      card.addEventListener("keydown", event => {
-        if (event.key === "ArrowLeft") {
-          event.preventDefault();
-          currentIndex = (currentIndex - 1 + solutionCount) % solutionCount;
-          updateSolution();
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault();
-          currentIndex = (currentIndex + 1) % solutionCount;
-          updateSolution();
-        }
-      });
-
-      updateSolution();
-      switcher.appendChild(prevBtn);
-      switcher.appendChild(nextBtn);
-      card.appendChild(switcher);
-      card.appendChild(mainLink);
-    }
-
-    function addTags(parent, tags, className) {
-      tags.forEach(tag => {
-        const span = document.createElement("span");
-        span.className = "tag " + className;
-        span.textContent = tag;
-        parent.appendChild(span);
-      });
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>
