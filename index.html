@@ -170,9 +170,12 @@
       }
 
       .project {
+        display: flex;
+        flex-direction: column;
         border: 1px solid var(--line);
         border-radius: 14px;
-        padding: 24px;
+        overflow: hidden;
+        background: #fff;
         transition:
           transform 0.2s ease,
           border-color 0.2s ease;
@@ -183,28 +186,83 @@
         border-color: var(--blue);
       }
 
+      /* project thumbnail */
+      .thumb {
+        height: 132px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .thumb-math {
+        background:
+          radial-gradient(circle at 50% 50%, #e8c43c 0 46px, rgba(232, 196, 60, 0) 47px),
+          linear-gradient(135deg, #3d3b9e, #2e2c82);
+      }
+      .thumb-math span {
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 700;
+        font-size: 2rem;
+        color: #141210;
+      }
+
+      .thumb-pitch {
+        background: #1a1a18;
+      }
+
+      .thumb-chess {
+        background-color: #e8dcc0;
+        background-image:
+          linear-gradient(45deg, #9a7b56 25%, transparent 25%, transparent 75%, #9a7b56 75%),
+          linear-gradient(45deg, #9a7b56 25%, transparent 25%, transparent 75%, #9a7b56 75%);
+        background-size: 44px 44px;
+        background-position: 0 0, 22px 22px;
+      }
+      .thumb-chess span {
+        font-size: 3rem;
+        color: #241f19;
+        filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5));
+      }
+
+      .project-body {
+        padding: 18px 20px 22px;
+      }
+
       .project h3 {
         font-size: 1.15rem;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
 
-      .project p {
-        color: var(--muted);
-        font-size: 0.95rem;
-        margin-bottom: 16px;
-      }
-
-      .project a {
+      .project-link {
         font-size: 0.9rem;
         font-weight: 600;
         color: var(--blue);
       }
 
-      .project a:hover {
+      .project:hover .project-link {
         text-decoration: underline;
       }
 
       /* Resume */
+      .resume-download {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 10px 18px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease;
+      }
+      .resume-download:hover {
+        border-color: var(--blue);
+        background: var(--blue-soft, #eff4ff);
+      }
+
       .resume-subhead {
         font-size: 1.05rem;
         margin: 36px 0 16px;
@@ -565,72 +623,132 @@
     <section class="section" id="about">
       <h2>About</h2>
       <p class="lead">
-        Hi, I'm Jessy Wang. I'm passionate about building clean, thoughtful
-        experiences on the web. This is a short placeholder bio - replace it
-        with your own story.
+        Hi, I'm Jessy Wang — an aspiring research scientist in mathematics, AI,
+        and neuroscience. I'm a high school student at Laurel Springs School and
+        a research assistant at UPMC, where I work on quantum tractography and
+        machine learning for medical imaging. I love olympiad math and physics,
+        and I build small tools and games in my spare time.
       </p>
     </section>
 
     <!-- ============================ PROJECTS ============================ -->
     <section class="section" id="projects">
       <h2>Projects</h2>
-      <p class="lead">A few things I'm building. Live links coming soon.</p>
 
       <div class="projects">
-        <article class="project">
-          <h3>Classic Math Games</h3>
-          <p>
-            A trainer for elementary math games — 24 and SET.
-          </p>
-          <a href="classic-math-games.html">View project -&gt;</a>
-        </article>
+        <a class="project" href="classic-math-games.html">
+          <div class="thumb thumb-math"><span>24</span></div>
+          <div class="project-body">
+            <h3>Classic Math Games</h3>
+            <span class="project-link">View project -&gt;</span>
+          </div>
+        </a>
 
-        <article class="project">
-          <h3>Pitch Trainer</h3>
-          <p>
-            An ear trainer to help musicians develop perfect pitch.
-          </p>
-          <a href="pitch-trainer.html">View project -&gt;</a>
-        </article>
+        <a class="project" href="pitch-trainer.html">
+          <div class="thumb thumb-pitch">
+            <svg width="200" height="90" viewBox="0 0 200 90" aria-hidden="true">
+              <g>
+                <rect x="0" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="29" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="57" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="86" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="114" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="143" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="171" y="0" width="27" height="90" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+              </g>
+              <g fill="#1a1a18">
+                <rect x="21" y="0" width="14" height="54" rx="2" />
+                <rect x="50" y="0" width="14" height="54" rx="2" />
+                <rect x="107" y="0" width="14" height="54" rx="2" />
+                <rect x="135" y="0" width="14" height="54" rx="2" />
+                <rect x="164" y="0" width="14" height="54" rx="2" />
+              </g>
+            </svg>
+          </div>
+          <div class="project-body">
+            <h3>Pitch Trainer</h3>
+            <span class="project-link">View project -&gt;</span>
+          </div>
+        </a>
 
-        <article class="project">
-          <h3>Chess Line Visualizer</h3>
-          <p>A visualizer for chess openings — and eventually endgames.</p>
-          <a href="chess-line-visualizer.html">View project -&gt;</a>
-        </article>
+        <a class="project" href="chess-line-visualizer.html">
+          <div class="thumb thumb-chess"><span>&#9822;</span></div>
+          <div class="project-body">
+            <h3>Chess Line Visualizer</h3>
+            <span class="project-link">View project -&gt;</span>
+          </div>
+        </a>
       </div>
     </section>
 
     <!-- ============================ RESUME ============================ -->
     <section class="section" id="resume">
       <h2>Resume</h2>
-      <p class="lead">My competition highlights.</p>
+      <p class="lead">Aspiring research scientist in mathematics, AI &amp; neuroscience.</p>
+      <a
+        class="resume-download"
+        href="resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download résumé (PDF) -&gt;
+      </a>
 
-      <!-- Awards -->
-      <h3 class="resume-subhead">Competitions &amp; Awards</h3>
-      <ul class="award-list">
-        <li>USAMO Qualifier</li>
-        <li>USAPhO Qualifier - Distinction for Commendable Performance</li>
-        <li>USACO Gold Division</li>
-        <li>USNCO National Qualifier</li>
-      </ul>
-
-      <!-- Featured award -->
+      <!-- Education -->
+      <h3 class="resume-subhead">Education</h3>
       <div class="resume-item">
         <div class="resume-row">
-          <strong>Utica University AMC 12 Competition</strong>
+          <strong>Laurel Springs School</strong>
+          <span class="when">2022 — 2026</span>
+        </div>
+        <p class="where">GPA 4.0 · ACT 35 (Math 36, English 35, Reading 35)</p>
+      </div>
+
+      <!-- Research -->
+      <h3 class="resume-subhead">Research Experience</h3>
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Research Assistant · UPMC</strong>
+          <span class="when">2025 — Now</span>
+        </div>
+        <ul class="award-sublist">
+          <li>Assist with research on implementing quantum tractography in neurosurgery.</li>
+          <li>Explore applications of neural networks for personalized treatment planning.</li>
+          <li>Study connections between computational modeling, medical imaging, and patient-specific medical decision-making.</li>
+        </ul>
+      </div>
+
+      <!-- Awards -->
+      <h3 class="resume-subhead">Honors &amp; Awards</h3>
+      <ul class="award-list">
+        <li>F=ma Perfect Score — rank 1 / 6,682</li>
+        <li>USAMO Qualifier (2026)</li>
+        <li>USAPhO Qualifier — Distinction for Commendable Performance (2025–26)</li>
+        <li>USACO Gold Division (2025–26)</li>
+        <li>USNCO National Qualifier (2026) — CMU site</li>
+      </ul>
+
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Citadel Pathways Program (2026) — Invitational Participant</strong>
+        </div>
+        <ul class="award-sublist">
+          <li>All-expenses-paid, invitation-only program for top US high school juniors and seniors recognized for excellence in Math, Physics, and Computing Olympiads.</li>
+          <li>Learned about quantitative trading, research, and technology through interactive simulations and mentorship from industry leaders.</li>
+          <li>1 of 26 selected from a pool of ~15,000.</li>
+        </ul>
+      </div>
+
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Utica University AMC Scholarship</strong>
         </div>
         <ul class="award-sublist">
           <li>Placed 1st out of 100+ students.</li>
           <li>One of 2 students out of 100+ to qualify for AIME.</li>
           <li>Earned DHR (Distinguished Honor Roll) on the AMC 12.</li>
-          <li>
-            Awarded a scholarship for two credited classes at Utica University.
-          </li>
-          <li>
-            Invited to deliver a speech at the awards ceremony; ceremony was
-            later canceled due to weather conditions.
-          </li>
+          <li>Awarded the Professor Wayne Newman Palmer Scholarship ($5,000) for two credited classes at Utica University.</li>
+          <li>Invited to deliver a speech at the awards ceremony; ceremony was later canceled due to weather conditions.</li>
         </ul>
       </div>
     </section>
@@ -743,6 +861,17 @@
           rel="noopener noreferrer"
         >
           LinkedIn -&gt;
+        </a>
+        <a
+          class="social"
+          href="https://github.com/jwang2007"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub -&gt;
+        </a>
+        <a class="social" href="mailto:wangje26@gmail.com">
+          Email -&gt;
         </a>
       </div>
     </section>
