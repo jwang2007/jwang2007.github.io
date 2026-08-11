@@ -1,0 +1,1717 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jessy Wang - Personal Resume</title>
+
+    <!-- Modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Math rendering for LaTeX in note titles (e.g. $\sqrt{2}$) -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]] } };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <style>
+      :root {
+        --blue: #2563eb;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #e8edf5;
+        --bg: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px; /* offset for the sticky navbar */
+      }
+
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* ============================================================
+       NAVBAR
+       ============================================================ */
+      .nav-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .navbar {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 18px 24px;
+      }
+
+      /* Menu links */
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        list-style: none;
+      }
+
+      .nav-links a {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--muted);
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .nav-links a.active {
+        color: var(--blue);
+      }
+
+      /* Hamburger */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+
+      .hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        margin: 0 auto;
+        background: var(--ink);
+        border-radius: 2px;
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
+      }
+
+      .hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .hamburger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      /* ============================================================
+       SECTIONS
+       ============================================================ */
+      .section {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 72px 24px;
+      }
+
+      .section h2 {
+        font-size: 1.8rem;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+      }
+
+      .section p.lead {
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      /* Projects */
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 32px;
+      }
+
+      .project {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: #fff;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .project:hover {
+        transform: translateY(-4px);
+        border-color: var(--blue);
+      }
+
+      /* project thumbnail */
+      .thumb {
+        height: 132px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .thumb-math {
+        background: linear-gradient(135deg, #3d3b9e, #2e2c82);
+      }
+
+      .thumb-pitch {
+        background: #1a1a18;
+      }
+
+      /* Chess: full-bleed checkerboard (SVG, so no cropped squares) with the
+         knight overlaid on top and centered. */
+      .thumb-chess {
+        position: relative;
+        background: #e8dcc0;
+      }
+      .chess-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .chess-knight {
+        position: relative;
+        z-index: 1;
+        font-size: 3rem;
+        line-height: 1;
+        color: #241f19;
+        filter: drop-shadow(0 0 3px rgba(251, 247, 238, 0.9));
+      }
+
+      .project-body {
+        padding: 18px 20px 22px;
+      }
+
+      .project h3 {
+        font-size: 1.15rem;
+        margin-bottom: 10px;
+      }
+
+      .project-link {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+      }
+
+      .project:hover .project-link {
+        text-decoration: underline;
+      }
+
+      /* Research paper card */
+      .paper {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 24px;
+      }
+
+      .paper-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .paper-head h3 {
+        font-size: 1.15rem;
+        line-height: 1.35;
+        letter-spacing: -0.01em;
+        max-width: 46ch;
+      }
+
+      .paper-status {
+        flex: 0 0 auto;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--blue);
+        background: #eff4ff;
+        border: 1px solid #dbe4ff;
+        border-radius: 999px;
+        padding: 5px 12px;
+        white-space: nowrap;
+      }
+
+      .paper-authors {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-top: 10px;
+      }
+
+      .paper-abstract {
+        color: var(--muted);
+        font-size: 0.98rem;
+        margin-top: 12px;
+      }
+
+      .paper-link {
+        display: inline-block;
+        margin-top: 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+      }
+
+      .paper-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Resume */
+      .resume-download {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 10px 18px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease;
+      }
+      .resume-download:hover {
+        border-color: var(--blue);
+        background: var(--blue-soft, #eff4ff);
+      }
+
+      .resume-subhead {
+        font-size: 1.05rem;
+        margin: 36px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .resume-item {
+        margin-bottom: 24px;
+      }
+
+      .resume-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .resume-row strong {
+        font-size: 1.05rem;
+      }
+
+      .resume-row .when {
+        color: var(--muted);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      .resume-item .where {
+        color: var(--blue);
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin: 2px 0 6px;
+      }
+
+      .resume-item p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .award-list {
+        list-style: none;
+        display: grid;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .award-list li {
+        position: relative;
+        padding-left: 22px;
+        font-size: 0.98rem;
+      }
+
+      .award-list li::before {
+        content: ">";
+        position: absolute;
+        left: 0;
+        color: var(--blue);
+      }
+
+      .award-sublist {
+        margin-top: 8px;
+        padding-left: 20px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .award-sublist li {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .resume-figure {
+        margin-top: 16px;
+        max-width: 540px;
+      }
+      .resume-figure img {
+        display: block;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      .resume-figure figcaption {
+        margin-top: 8px;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .resume-figure.small {
+        max-width: 220px;
+      }
+      .about-photos {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        margin: 8px 0 28px;
+      }
+      .about-photo {
+        max-width: 320px;
+        margin: 0;
+        flex: 1 1 240px;
+      }
+      .about-photo img {
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      /* Notes */
+      .notes-toolbar {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        padding: 16px;
+      }
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .filter-field {
+        display: grid;
+        gap: 7px;
+        min-width: 0;
+      }
+
+      .filter-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+
+      .filter-input {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background-color: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 0.92rem;
+        padding: 0 14px;
+        outline: none;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .filter-input:hover {
+        border-color: #cbd5e1;
+      }
+
+      .filter-input:focus {
+        background-color: #fff;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+
+      .filter-select {
+        appearance: none;
+        background-image:
+          linear-gradient(45deg, transparent 50%, #334155 50%),
+          linear-gradient(135deg, #334155 50%, transparent 50%);
+        background-position:
+          calc(100% - 18px) 18px,
+          calc(100% - 13px) 18px;
+        background-repeat: no-repeat;
+        background-size: 5px 5px;
+        padding-right: 38px;
+      }
+
+      .filter-footer {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .proof-filter {
+        width: min(100%, 310px);
+      }
+
+      .clear-filters-btn {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0 16px;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .clear-filters-btn:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+
+      .footer-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      /* Version switcher (e.g. for the two sqrt(2) proofs) */
+      .version-switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
+      .version-btn {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--muted);
+        font: inherit;
+        font-size: 0.78rem;
+        padding: 4px 12px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .version-btn:hover {
+        border-color: #cbd5e1;
+      }
+
+      .version-btn.is-active {
+        border-color: var(--blue);
+        color: var(--blue);
+        background: #eff4ff;
+      }
+
+      #notesGrid.is-hidden {
+        display: none;
+      }
+      .notes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .note {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease;
+      }
+
+      .note:hover {
+        border-color: var(--blue);
+      }
+
+      .note a {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue);
+        white-space: nowrap;
+      }
+
+      .note a:hover {
+        text-decoration: underline;
+      }
+
+      /* Socials */
+      .socials {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .social {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--ink);
+        transition:
+          border-color 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .social:hover {
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+
+      /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+      @media (max-width: 720px) {
+        .filter-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-footer {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .proof-filter {
+          width: 100%;
+        }
+        .hamburger {
+          display: flex;
+        }
+
+        .nav-links {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+          background: #fff;
+          border-bottom: 1px solid var(--line);
+          padding: 8px 24px 16px;
+
+          /* closed state */
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-8px);
+          transition:
+            opacity 0.25s ease,
+            transform 0.25s ease,
+            visibility 0.25s ease;
+        }
+
+        .nav-links.show {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+
+        .nav-links a {
+          display: block;
+          width: 100%;
+          padding: 10px 0;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ============================ NAVBAR ============================ -->
+    <div class="nav-wrap">
+      <nav class="navbar">
+        <!-- Menu links -->
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#research" class="nav-link">Research</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#resume" class="nav-link">Resume</a></li>
+          <li><a href="#notes" class="nav-link">Notes</a></li>
+          <li><a href="#socials" class="nav-link">Socials</a></li>
+          <li><a href="index.html" class="nav-ext">My House &#8599;</a></li>
+        </ul>
+
+        <!-- Hamburger -->
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ============================ ABOUT ============================ -->
+    <section class="section" id="about">
+      <h2>About</h2>
+      <div class="about-photos">
+        <figure class="resume-figure about-photo">
+          <img
+            src="jessy-portrait.jpg"
+            alt="Jessy Wang"
+            loading="lazy"
+          />
+        </figure>
+        <figure class="resume-figure about-photo">
+          <img
+            src="jessy-young.jpg"
+            alt="Jessy Wang, younger"
+            loading="lazy"
+          />
+        </figure>
+      </div>
+      <p class="lead">
+        Hi, I'm Jessy Wang, a senior at Laurel Springs School with a passion for
+        math, AI, and neuroscience. My goal is to become a research scientist and
+        create practical AI tools that make a real difference in people's lives. I
+        believe technology should be used to simplify complex tasks and make them
+        more accessible to everyone. Whether I'm working on a research project,
+        helping students understand new concepts, or developing educational
+        software, my primary goal remains the same: to use technology to drive
+        positive change and help people achieve their goals.
+      </p>
+      <p class="lead" style="margin-top: 16px">
+        I have a strong foundation in math, physics, and computer science, which
+        helps me tackle tough problems in a logical and curious way. Some of the
+        accolades I've earned include a perfect score on the F=ma exam (ranked 1st
+        among 6,682 participants), qualifying for several prestigious math and
+        science competitions such as the USAMO, USAPhO, and USNCO, and reaching
+        gold in the USACO Gold Division. What's really exciting for me, though, is
+        applying this analytical way of thinking to my research at UPMC. I'm
+        working on using artificial intelligence to improve medical imaging, which
+        has the potential to make a big impact on healthcare and scientific
+        discovery. By combining machine learning with quantum tractography, I'm
+        exploring new ways to analyze and understand medical images, which could
+        lead to better patient outcomes and new insights into the human body.
+      </p>
+      <p class="lead" style="margin-top: 16px">
+        I'm passionate about helping others achieve their goals, beyond just my
+        research work. After achieving a 1540 on the SAT, I was chosen as a
+        volunteer tutor with Schoolhouse, where I dedicate several hours weekly to
+        guiding students from varied backgrounds. This experience taught me that
+        the most effective solution isn't always the most complex; it's the one
+        that's easy for people to grasp, use, and benefit from. That realization
+        motivated me to create the projects listed below, aiming to make learning
+        more enjoyable, tailored, and accessible. These projects include
+        arithmetic games, ear-training tools, and chess applications, all designed
+        with the user in mind. My goal is to continue developing AI systems that
+        solve real problems and empower those who use them, long after they're
+        implemented.
+      </p>
+    </section>
+
+    <!-- ============================ RESEARCH ============================ -->
+    <section class="section" id="research">
+      <h2>Research</h2>
+      <p class="lead">
+        Current work at the intersection of quantum mechanics and medical physics.
+      </p>
+
+      <article class="paper">
+        <div class="paper-head">
+          <h3>
+            A Novel Approach to Reducing Radiation Dose in PET Imaging Through
+            Magnetic Field Manipulation of Positronium
+          </h3>
+          <span class="paper-status">Under peer review</span>
+        </div>
+        <p class="paper-authors">
+          Jessy Wang · with G. Guerrier (Yale), J. Reyes, MD (UPMC), and
+          M. Chao, PhD (Mount Sinai, corresponding author) · July 2026
+        </p>
+        <p class="paper-abstract">
+          Proposes using the static magnetic field already present in hybrid
+          PET/MRI scanners to steer positronium spin states via Zeeman mixing —
+          converting ortho-positronium into para-positronium. This raises the
+          fraction of two-photon annihilations that PET reconstruction depends
+          on, so image quality can be preserved while lowering the injected
+          radiotracer dose and patient radiation exposure. The paper develops
+          the quantum-mechanical framework and shows a ~0.5&nbsp;T permanent
+          magnet is sufficient.
+        </p>
+        <a
+          class="paper-link"
+          href="Jessy_Wang_Applied_QM_Research_Paper.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Read the paper (PDF) -&gt;
+        </a>
+      </article>
+    </section>
+
+    <!-- ============================ PROJECTS ============================ -->
+    <section class="section" id="projects">
+      <h2>Projects</h2>
+
+      <div class="projects">
+        <a class="project" href="classic-math-games.html">
+          <div class="thumb thumb-math">
+            <svg width="200" height="104" viewBox="0 0 200 104" aria-hidden="true">
+              <!-- 24 wheel (styled like the game's app icon) -->
+              <circle cx="46" cy="52" r="26" fill="#e8c43c" />
+              <g>
+                <path d="M46 50 L40 41 L46 28 L52 41 Z" fill="#e8362e" />
+                <line x1="46" y1="49" x2="46" y2="29" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="42.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="49.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+              </g>
+              <g transform="rotate(90 46 52)">
+                <path d="M46 50 L40 41 L46 28 L52 41 Z" fill="#e8362e" />
+                <line x1="46" y1="49" x2="46" y2="29" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="42.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="49.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+              </g>
+              <g transform="rotate(180 46 52)">
+                <path d="M46 50 L40 41 L46 28 L52 41 Z" fill="#e8362e" />
+                <line x1="46" y1="49" x2="46" y2="29" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="42.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="49.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+              </g>
+              <g transform="rotate(270 46 52)">
+                <path d="M46 50 L40 41 L46 28 L52 41 Z" fill="#e8362e" />
+                <line x1="46" y1="49" x2="46" y2="29" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="42.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+                <line x1="46" y1="49" x2="49.5" y2="32" stroke="#f7dcdc" stroke-width="0.7" />
+              </g>
+              <path d="M46 46 L52 52 L46 58 L40 52 Z" fill="#fff" stroke="#e8362e" stroke-width="1" />
+              <!-- SET card -->
+              <rect x="84" y="26" width="38" height="52" rx="8" fill="#fff" stroke="#cba420" stroke-width="1.5" />
+              <polygon points="103,34 110,39 103,44 96,39" fill="#d81e63" />
+              <polygon points="103,46 110,51 103,56 96,51" fill="none" stroke="#2fa84f" stroke-width="2" />
+              <polygon points="103,58 110,63 103,68 96,63" fill="#6e56cf" />
+              <!-- 2048 tile -->
+              <rect x="134" y="30" width="50" height="46" rx="10" fill="#edc22e" />
+              <text x="159" y="53" text-anchor="middle" dominant-baseline="central"
+                font-family="system-ui, sans-serif" font-weight="700"
+                font-size="14" fill="#fff">2048</text>
+            </svg>
+          </div>
+          <div class="project-body">
+            <h3>Classic Math Games</h3>
+            <span class="project-link">View project -&gt;</span>
+          </div>
+        </a>
+
+        <a class="project" href="pitch-trainer.html">
+          <div class="thumb thumb-pitch">
+            <svg width="200" height="118" viewBox="0 0 200 118" aria-hidden="true">
+              <!-- musical note + sound waves: signals hearing a pitch -->
+              <text x="87" y="21" text-anchor="middle" font-size="16" fill="#e6f1fb">&#9835;</text>
+              <g fill="none" stroke="#378add" stroke-width="2" stroke-linecap="round">
+                <path d="M105 9 q5 5 0 11" />
+                <path d="M111 6 q8 8 0 17" />
+              </g>
+              <!-- white keys (one highlighted in the app's blue = the played pitch) -->
+              <g>
+                <rect x="0" y="34" width="27" height="84" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="29" y="34" width="27" height="84" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="57" y="34" width="27" height="84" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="86" y="34" width="27" height="84" rx="3" fill="#185fa5" stroke="#378add" />
+                <rect x="114" y="34" width="27" height="84" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="143" y="34" width="27" height="84" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+                <rect x="171" y="34" width="27" height="84" rx="3" fill="#f1efe8" stroke="#7d7c76" />
+              </g>
+              <g fill="#1a1a18">
+                <rect x="21" y="34" width="14" height="50" rx="2" />
+                <rect x="50" y="34" width="14" height="50" rx="2" />
+                <rect x="107" y="34" width="14" height="50" rx="2" />
+                <rect x="135" y="34" width="14" height="50" rx="2" />
+                <rect x="164" y="34" width="14" height="50" rx="2" />
+              </g>
+            </svg>
+          </div>
+          <div class="project-body">
+            <h3>Pitch Trainer</h3>
+            <span class="project-link">View project -&gt;</span>
+          </div>
+        </a>
+
+        <a class="project" href="chess-line-visualizer.html">
+          <div class="thumb thumb-chess">
+            <svg class="chess-bg" viewBox="0 0 12 7" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <pattern id="cbrd" width="2" height="2" patternUnits="userSpaceOnUse">
+                  <rect width="2" height="2" fill="#e8dcc0" />
+                  <rect width="1" height="1" fill="#9a7b56" />
+                  <rect x="1" y="1" width="1" height="1" fill="#9a7b56" />
+                </pattern>
+              </defs>
+              <rect width="12" height="7" fill="url(#cbrd)" />
+            </svg>
+            <span class="chess-knight">&#9822;</span>
+          </div>
+          <div class="project-body">
+            <h3>Chess Line Visualizer</h3>
+            <span class="project-link">View project -&gt;</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============================ RESUME ============================ -->
+    <section class="section" id="resume">
+      <h2>Resume</h2>
+      <a
+        class="resume-download"
+        href="resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download résumé (PDF) -&gt;
+      </a>
+
+      <!-- Education -->
+      <h3 class="resume-subhead">Education</h3>
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Laurel Springs School</strong>
+          <span class="when">2022 — 2026</span>
+        </div>
+        <p class="where">GPA 4.0 · SAT 1540 · ACT 35 (Math 36, English 35, Reading 35)</p>
+      </div>
+
+      <!-- Research -->
+      <h3 class="resume-subhead">Research Experience</h3>
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Research Assistant · UPMC</strong>
+          <span class="when">2025 — Now</span>
+        </div>
+        <ul class="award-sublist">
+          <li>Assist with research on implementing quantum tractography in neurosurgery.</li>
+          <li>Explore applications of neural networks for personalized treatment planning.</li>
+          <li>Study connections between computational modeling, medical imaging, and patient-specific medical decision-making.</li>
+        </ul>
+      </div>
+
+      <!-- Awards -->
+      <h3 class="resume-subhead">Honors &amp; Awards</h3>
+      <ul class="award-list">
+        <li>F=ma Perfect Score — rank 1 / 6,682</li>
+        <li>USAMO Qualifier (2026)</li>
+        <li>USAPhO Qualifier — Distinction for Commendable Performance (2025–26)</li>
+        <li>USACO Gold Division (2025–26)</li>
+        <li>USNCO National Qualifier (2026) — CMU site</li>
+      </ul>
+
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Citadel Pathways Program (2026) — Invitational Participant</strong>
+        </div>
+        <ul class="award-sublist">
+          <li>All-expenses-paid, invitation-only program for top US high school juniors and seniors recognized for excellence in Math, Physics, and Computing Olympiads.</li>
+          <li>Learned about quantitative trading, research, and technology through interactive simulations and mentorship from industry leaders.</li>
+          <li>1 of 26 selected from a pool of ~15,000.</li>
+        </ul>
+        <figure class="resume-figure">
+          <img
+            src="citadel-pathways.jpg"
+            alt="Citadel Pathways Program participants in Miami, 2026"
+            loading="lazy"
+          />
+          <figcaption>Citadel Pathways Program · Miami, 2026</figcaption>
+        </figure>
+      </div>
+
+      <div class="resume-item">
+        <div class="resume-row">
+          <strong>Utica University AMC Scholarship</strong>
+        </div>
+        <ul class="award-sublist">
+          <li>Placed 1st out of 100+ students.</li>
+          <li>One of 2 students out of 100+ to qualify for AIME.</li>
+          <li>Earned DHR (Distinguished Honor Roll) on the AMC 12.</li>
+          <li>Awarded the Professor Wayne Newman Palmer Scholarship ($5,000) for two credited classes at Utica University.</li>
+          <li>Invited to deliver a speech at the awards ceremony; ceremony was later canceled due to weather conditions.</li>
+        </ul>
+        <figure class="resume-figure small">
+          <img
+            src="utica-amc.jpg"
+            alt="Regional AMC 12 Medal, 2025"
+            loading="lazy"
+          />
+          <figcaption>Regional AMC 12 Medal (2025) · Awarded during the 2025 AMC 12 competition</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================ NOTES ============================ -->
+    <section class="section" id="notes">
+      <div class="space-y-6">
+        <div
+          class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
+        >
+          <div>
+            <h2>Notes</h2>
+          </div>
+          <div
+            id="resultsCount"
+            class="text-sm font-medium text-slate-500"
+          ></div>
+        </div>
+
+        <div class="notes-toolbar">
+          <div class="filter-grid">
+            <label class="filter-field">
+              <span class="filter-label">Search</span>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Search title or topic"
+                class="filter-input"
+              />
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Source</span>
+              <select
+                id="sourceFilter"
+                data-filter-key="source"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Problem / Result</span>
+              <select
+                id="problemFilter"
+                data-filter-key="type"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Field</span>
+              <select
+                id="fieldFilter"
+                data-filter-key="field"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+
+            <label class="filter-field">
+              <span class="filter-label">Technique</span>
+              <select
+                id="techniqueFilter"
+                data-filter-key="technique"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+          </div>
+
+          <div class="filter-footer">
+            <label class="filter-field proof-filter">
+              <span class="filter-label">Proof</span>
+              <select
+                id="proofFilter"
+                data-filter-key="proofMethod"
+                class="filter-input filter-select"
+              ></select>
+            </label>
+            <div class="footer-actions">
+              <button
+                id="toggleResults"
+                type="button"
+                class="clear-filters-btn"
+                aria-pressed="true"
+              >
+                Show results
+              </button>
+              <button id="clearFilters" type="button" class="clear-filters-btn">
+                Clear filters
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          id="notesGrid"
+          class="grid gap-4 md:grid-cols-2 xl:grid-cols-3 is-hidden"
+        ></div>
+      </div>
+    </section>
+
+    <!-- ============================ SOCIALS ============================ -->
+    <section class="section" id="socials">
+      <h2>Socials</h2>
+      <p class="lead">Let's connect.</p>
+
+      <div class="socials">
+        <a
+          class="social"
+          href="https://www.linkedin.com/in/jessy-wang-0ab128309/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn -&gt;
+        </a>
+        <a
+          class="social"
+          href="https://github.com/jwang2007"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub -&gt;
+        </a>
+        <a class="social" href="mailto:wangje26@gmail.com">
+          Email -&gt;
+        </a>
+      </div>
+    </section>
+
+    <!-- ============================ NOTES DATA ============================ -->
+    <!-- Inlined mirror of data.json, used as a fallback when the page is opened
+         from the file system (file://) or if fetch is blocked. On the live
+         GitHub Pages site, data.json is fetched instead so it stays the source
+         of truth. Keep this in sync with data.json. -->
+    <script type="application/json" id="notesData">
+[
+  {
+    "title": "Proof of the Infinitude of Primes",
+    "file": "infinite_primes.pdf",
+    "type": ["Result"],
+    "source": [],
+    "field": ["Number Theory"],
+    "proofMethod": ["Proof by Contradiction"],
+    "technique": []
+  },
+  {
+    "title": "Euclidean Algorithm",
+    "file": "EuclideanAlgorithm.pdf",
+    "type": ["Result"],
+    "source": [],
+    "field": ["Number Theory"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "Linearity of Expectation",
+    "file": "MIT_RES_6_012_L05_11_Linearity_of_Expectations.pdf",
+    "type": ["Result"],
+    "source": ["MIT OCW"],
+    "field": ["Probability"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "Proof that $\\sqrt{2}$ is Irrational",
+    "files": [
+      {
+        "file": "sqrt2_1.pdf",
+        "label": "Parity Solution",
+        "proofMethod": ["Proof by Contradiction"],
+        "technique": ["Parity"]
+      },
+      {
+        "file": "sqrt2_2.pdf",
+        "label": "Infinite Descent Solution",
+        "proofMethod": ["Infinite Descent"],
+        "technique": []
+      }
+    ],
+    "type": ["Result"],
+    "source": [],
+    "field": ["Number Theory"]
+  },
+  {
+    "title": "EGMO 2016 Problem 1",
+    "file": "egmo_2016_p1.pdf",
+    "type": ["Problem"],
+    "source": ["EGMO"],
+    "field": [],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "EGMO 2025 Problem 1",
+    "file": "egmo_2025_p1.pdf",
+    "type": ["Problem"],
+    "source": ["EGMO"],
+    "field": [],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "BMO2 2020 Problem 1",
+    "file": "BMO2_2020_p1.pdf",
+    "type": ["Problem"],
+    "source": ["BMO"],
+    "field": ["Number Theory"],
+    "proofMethod": ["Infinite Descent"],
+    "technique": []
+  },
+  {
+    "title": "SJSU M179 Midterm Problem",
+    "file": "SJSU.pdf",
+    "type": ["Problem"],
+    "source": ["SJSU"],
+    "field": ["Graph Theory"],
+    "proofMethod": ["Proof by Contradiction"],
+    "technique": ["Hall's Lemma"]
+  },
+  {
+    "title": "AIME 2006 Problem 6",
+    "file": "aime_2006_p6.pdf",
+    "type": ["Problem"],
+    "source": ["AIME"],
+    "field": ["Probability"],
+    "proofMethod": [],
+    "technique": ["Linearity of Expectation"]
+  },
+  {
+    "title": "USAMO 2015 Problem 1",
+    "file": "usamo_2015_p1.pdf",
+    "type": ["Problem"],
+    "source": ["USAMO"],
+    "field": [],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "USAMO 1976 Problem 3",
+    "file": "usamo_1976_p3.pdf",
+    "type": ["Problem"],
+    "source": ["USAMO"],
+    "field": ["Number Theory"],
+    "proofMethod": ["Infinite Descent"],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2023 Problem 1",
+    "file": "integration_bee_2023_p1.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2023 Problem 2",
+    "file": "integration_bee_2023_p2.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2023 Problem 3",
+    "file": "integration_bee_2023_p3.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 5",
+    "file": "integration_bee_2025_p5.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 1",
+    "file": "integration_bee_2025_p1.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 4",
+    "file": "integration_bee_2025_p4.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 6",
+    "file": "integration_bee_2025_p6.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "MIT Integration Bee 2025 Problem 14",
+    "file": "integration_bee_2025_14.pdf",
+    "type": ["Problem"],
+    "source": ["MIT Integration Bee"],
+    "field": ["Calculus"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "Expected Uses of Probability Lemma 3.2",
+    "file": "lemma_3_2.pdf",
+    "type": ["Problem"],
+    "source": ["Handout"],
+    "field": ["Probability"],
+    "proofMethod": [],
+    "technique": ["Bounding Sums by Integrals"]
+  },
+  {
+    "title": "River Crossing",
+    "file": "River_Crossing.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Recursion"]
+  },
+  {
+    "title": "Tiger and Sheep",
+    "file": "tigers_and_sheep.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Recursion", "Parity"]
+  },
+  {
+    "title": "Birthday Problem",
+    "file": "birthday_problem.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Elimination"]
+  },
+  {
+    "title": "Horse Race",
+    "file": "horse_race.pdf",
+    "type": ["Problem"],
+    "source": ["Green Book"],
+    "field": ["Logic"],
+    "proofMethod": [],
+    "technique": ["Elimination"]
+  },
+  {
+    "title": "Charges in a Cube",
+    "file": "Charges_in_a_Cube_Purcell.pdf",
+    "type": ["Problem"],
+    "source": ["Purcell"],
+    "field": ["Physics"],
+    "proofMethod": [],
+    "technique": ["Symmetry"]
+  },
+  {
+    "title": "Electrostatic Potential",
+    "file": "Electrostatic_Potential.pdf",
+    "type": ["Result"],
+    "source": [],
+    "field": ["Physics"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "Thermodynamic Processes",
+    "file": "ThermodynamicalProcesses.pdf",
+    "type": ["Result"],
+    "source": [],
+    "field": ["Physics"],
+    "proofMethod": [],
+    "technique": []
+  },
+  {
+    "title": "Topological Sort",
+    "file": "topsort.cpp",
+    "type": ["Result"],
+    "source": [],
+    "field": ["Computer Science"],
+    "proofMethod": [],
+    "technique": ["Graph Traversal"]
+  }
+]
+    </script>
+
+    <!-- ============================ SCRIPT ============================ -->
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navLinks = document.getElementById("navLinks");
+
+      hamburger.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("show");
+        hamburger.classList.toggle("open", isOpen);
+        hamburger.setAttribute("aria-expanded", isOpen);
+      });
+
+      // Close the mobile menu after clicking a link
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("show");
+          hamburger.classList.remove("open");
+          hamburger.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      // Highlight the active link while scrolling
+      const sections = document.querySelectorAll("section[id]");
+      const linkMap = {};
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        linkMap[link.getAttribute("href").slice(1)] = link;
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && linkMap[entry.target.id]) {
+              Object.values(linkMap).forEach((l) =>
+                l.classList.remove("active"),
+              );
+              linkMap[entry.target.id].classList.add("active");
+            }
+          });
+        },
+        { rootMargin: "-45% 0px -50% 0px" },
+      );
+
+      sections.forEach((section) => observer.observe(section));
+
+      // --- Notes: loaded from data.json (the source of truth) ---
+      const notesGrid = document.getElementById("notesGrid");
+      const resultsCount = document.getElementById("resultsCount");
+      const searchInput = document.getElementById("searchInput");
+      const sourceFilter = document.getElementById("sourceFilter");
+      const typeFilter = document.getElementById("problemFilter");
+      const fieldFilter = document.getElementById("fieldFilter");
+      const techniqueFilter = document.getElementById("techniqueFilter");
+      const proofFilter = document.getElementById("proofFilter");
+      const clearFilters = document.getElementById("clearFilters");
+      const toggleResults = document.getElementById("toggleResults");
+
+      // Facets are array-valued in data.json; a note may carry several values.
+      const FACETS = ["source", "type", "field", "technique", "proofMethod"];
+
+      let notes = [];
+      const state = {
+        search: "",
+        source: "All",
+        type: "All",
+        field: "All",
+        technique: "All",
+        proofMethod: "All",
+      };
+
+      // Normalize a raw record into a consistent shape with one or more links.
+      function normalize(raw) {
+        const links = Array.isArray(raw.files)
+          ? raw.files.map((f) => ({
+              file: f.file,
+              label: f.label || "View",
+              proofMethod: f.proofMethod || [],
+              technique: f.technique || [],
+            }))
+          : [
+              {
+                file: raw.file,
+                label: "View",
+                proofMethod: raw.proofMethod || [],
+                technique: raw.technique || [],
+              },
+            ];
+
+        // Aggregate per-file facets up to the card for filtering.
+        const union = (key) => [
+          ...new Set([
+            ...(raw[key] || []),
+            ...links.flatMap((l) => l[key] || []),
+          ]),
+        ];
+
+        return {
+          title: raw.title || "Untitled",
+          type: raw.type || [],
+          source: raw.source || [],
+          field: raw.field || [],
+          proofMethod: union("proofMethod"),
+          technique: union("technique"),
+          links,
+        };
+      }
+
+      function populateSelect(select, values, placeholder = "All") {
+        select.innerHTML = [placeholder, ...values]
+          .map((value) => `<option value="${value}">${value}</option>`)
+          .join("");
+      }
+
+      function uniqueSorted(key) {
+        return [...new Set(notes.flatMap((note) => note[key]))]
+          .filter(Boolean)
+          .sort();
+      }
+
+      function setupFilters() {
+        populateSelect(sourceFilter, uniqueSorted("source"));
+        populateSelect(typeFilter, uniqueSorted("type"));
+        populateSelect(fieldFilter, uniqueSorted("field"));
+        populateSelect(techniqueFilter, uniqueSorted("technique"));
+        populateSelect(proofFilter, uniqueSorted("proofMethod"));
+      }
+
+      function matchesFilters(note) {
+        const q = state.search.trim().toLowerCase();
+        const matchesSearch =
+          !q ||
+          note.title.toLowerCase().includes(q) ||
+          note.field.some((f) => f.toLowerCase().includes(q)) ||
+          note.source.some((s) => s.toLowerCase().includes(q));
+
+        return (
+          matchesSearch &&
+          FACETS.every(
+            (key) => state[key] === "All" || note[key].includes(state[key]),
+          )
+        );
+      }
+
+      // Tags for one specific version (link) of a note, so multi-version
+      // notes can swap their tags when you switch versions.
+      function metaRow(note, link) {
+        return [
+          ...note.source,
+          ...note.field,
+          ...(link.technique || []),
+          ...(link.proofMethod || []),
+        ]
+          .filter(Boolean)
+          .map((value) => `<span>${value}</span>`)
+          .join('<span aria-hidden="true">&middot;</span>');
+      }
+
+      // The notes currently shown, so the version switcher can look them up.
+      let currentVisible = [];
+
+      function cardHTML(note, index) {
+        const badge = note.type.length
+          ? `<span class="shrink-0 text-xs font-medium text-blue-600">${note.type.join(", ")}</span>`
+          : "";
+
+        // Multi-version notes get a switcher; single ones just link out.
+        const switcher =
+          note.links.length > 1
+            ? `<div class="version-switch">${note.links
+                .map(
+                  (l, j) =>
+                    `<button type="button" class="version-btn${j === 0 ? " is-active" : ""}" data-card="${index}" data-index="${j}">${l.label}</button>`,
+                )
+                .join("")}</div>`
+            : "";
+
+        const active = note.links[0];
+
+        return `
+          <article class="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-500" data-card="${index}">
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-base font-semibold text-slate-900">${note.title}</h3>
+              ${badge}
+            </div>
+            ${switcher}
+            <div class="note-meta mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-400">${metaRow(note, active)}</div>
+            <a
+              href="${active.file}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="note-view mt-5 inline-flex items-center text-sm font-medium text-blue-600 hover:underline"
+            >
+              View &rarr;
+            </a>
+          </article>
+        `;
+      }
+
+      function renderNotes() {
+        const visible = notes.filter(matchesFilters);
+        currentVisible = visible;
+        resultsCount.textContent = `Showing ${visible.length} of ${notes.length} notes`;
+
+        if (!visible.length) {
+          notesGrid.innerHTML = `
+            <div class="md:col-span-2 xl:col-span-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm text-slate-500">
+              No notes match those filters yet. Try widening the search.
+            </div>
+          `;
+          return;
+        }
+
+        notesGrid.innerHTML = visible
+          .map((note, i) => cardHTML(note, i))
+          .join("");
+
+        // Re-render any LaTeX in the titles (e.g. $\sqrt{2}$).
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise([notesGrid]);
+        }
+      }
+
+      function bindEvents() {
+        searchInput.addEventListener("input", (event) => {
+          state.search = event.target.value;
+          renderNotes();
+        });
+
+        [
+          sourceFilter,
+          typeFilter,
+          fieldFilter,
+          techniqueFilter,
+          proofFilter,
+        ].forEach((select) => {
+          select.addEventListener("change", (event) => {
+            state[event.target.dataset.filterKey] = event.target.value;
+            renderNotes();
+          });
+        });
+
+        clearFilters.addEventListener("click", () => {
+          state.search = "";
+          FACETS.forEach((key) => (state[key] = "All"));
+          searchInput.value = "";
+          [
+            sourceFilter,
+            typeFilter,
+            fieldFilter,
+            techniqueFilter,
+            proofFilter,
+          ].forEach((select) => (select.value = "All"));
+          renderNotes();
+        });
+
+        // Switch versions on a multi-version note; tags + link update in place.
+        notesGrid.addEventListener("click", (event) => {
+          const btn = event.target.closest(".version-btn");
+          if (!btn) return;
+
+          const card = btn.closest("article");
+          const note = currentVisible[Number(btn.dataset.card)];
+          const link = note.links[Number(btn.dataset.index)];
+
+          card
+            .querySelectorAll(".version-btn")
+            .forEach((b) => b.classList.toggle("is-active", b === btn));
+          card.querySelector(".note-meta").innerHTML = metaRow(note, link);
+          card.querySelector(".note-view").setAttribute("href", link.file);
+        });
+
+        // Toggle the results grid in and out of view.
+        toggleResults.addEventListener("click", () => {
+          const hidden = notesGrid.classList.toggle("is-hidden");
+          toggleResults.textContent = hidden ? "Show results" : "Hide results";
+          toggleResults.setAttribute("aria-pressed", String(hidden));
+        });
+      }
+
+      bindEvents();
+
+      function initNotes(data) {
+        notes = data.map(normalize);
+        setupFilters();
+        renderNotes();
+      }
+
+      // Fallback data embedded in the page (works even from file://).
+      function inlineNotes() {
+        return JSON.parse(document.getElementById("notesData").textContent);
+      }
+
+      // On the live site (http/https) fetch data.json so it stays the source of
+      // truth; if that fails — or the page is opened from disk — use the inline
+      // copy so the notes always render.
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        fetch("data.json")
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to load data.json");
+            return response.json();
+          })
+          .then(initNotes)
+          .catch(() => initNotes(inlineNotes()));
+      } else {
+        initNotes(inlineNotes());
+      }
+    </script>
+  </body>
+</html>
