@@ -44,7 +44,9 @@
   .srow{margin:12px 0 4px;text-align:left}
   .srow label{display:block;margin-bottom:5px;font-weight:700}
   #ctl{font-size:12.5px;line-height:1.7;font-weight:400}
-  #fov{width:100%;accent-color:#141414}
+  #fov,#sens{width:100%;accent-color:#141414}
+  #tp{display:flex;flex-wrap:wrap;gap:5px}
+  #tp .modebtn{margin:0;font-size:12px;padding:5px 9px}
   .modebtn{font-family:inherit;font-size:13px;padding:6px 10px;margin:2px 4px 2px 0;border:2.5px solid #141414;
            border-radius:8px;background:#fff;color:#141414;cursor:pointer;box-shadow:2px 2px 0 #141414}
   .modebtn.on{background:#141414;color:#fff}
@@ -54,10 +56,20 @@
   #resume:active,.modebtn:active{transform:translate(2px,2px);box-shadow:none}
   #rback{position:fixed;inset:0;z-index:8;display:none;background:rgba(252,252,249,.6)}
 
-  /* ---- the reading overlay: text, documents, pictures, and the catalogue ---- */
+  /* ---- the reading overlay: text, documents, pictures, shelf lists, filters ---- */
   #reader{top:50%;left:50%;transform:translate(-50%,-50%);display:none;width:min(560px,92vw);
           z-index:9;padding:14px 18px 10px}
-  #reader.wide{width:min(1000px,95vw)}
+  #reader.wide{width:min(1500px,96vw)}
+  /* documents get the whole window — the PDF is vector, so more room is literally
+     more resolution */
+  #reader.full{width:100vw;height:100vh;max-width:none;top:0;left:0;transform:none;
+               border-radius:0;border-width:0;box-shadow:none;padding:10px 12px 8px;
+               display:flex;flex-direction:column}
+  #reader.full #rtitle{margin:2px 150px 4px 4px;font-size:17px}
+  #reader.full #rmeta{margin-bottom:6px}
+  #reader.full #rbody.doc{flex:1;height:auto;max-height:none}
+  #reader.full .rframe{border-width:2px;border-radius:4px}
+  #reader.full #rhint{margin-top:6px}
   #rclose,#rbackbtn{position:absolute;top:8px;border:2.5px solid #141414;border-radius:8px;background:#fff;
           font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;box-shadow:2px 2px 0 #141414;
           height:32px;line-height:1;color:#141414;padding:0}
@@ -70,7 +82,7 @@
   .tag{border:2px solid #141414;border-radius:999px;padding:1px 9px;background:#fff}
   #rbody{white-space:pre-wrap;font-size:14.5px;line-height:1.55;max-height:56vh;overflow-y:auto;
          padding-right:6px;overscroll-behavior:contain}
-  #rbody.doc{white-space:normal;height:68vh;max-height:68vh;padding:0;overflow:hidden;
+  #rbody.doc{white-space:normal;height:82vh;max-height:82vh;padding:0;overflow:hidden;
              display:flex;flex-direction:column}
   .rframe{flex:1;min-height:0;border:2.5px solid #141414;border-radius:8px;overflow:auto;background:#fff}
   .rframe iframe{width:100%;height:100%;border:0;display:block}
@@ -88,6 +100,28 @@
   .crow:active{transform:translate(2px,2px);box-shadow:none}
   .crow.on{background:#141414;color:#fff}
   .crow.on em{opacity:.7}
+  /* the shelf list, laid out like a desktop of files */
+  #rbody.desk{white-space:normal;max-height:62vh;padding:4px}
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:14px}
+  .dfile{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px 8px;
+         background:transparent;border:2.5px solid transparent;border-radius:10px;cursor:pointer;
+         font-family:inherit;color:#141414;text-align:center}
+  .dfile:hover{border-color:#141414;background:#fff}
+  .dfile:active{transform:translate(1px,1px)}
+  .dthumb{position:relative;width:104px;height:134px;background:#fff;border:2.5px solid #141414;
+          border-radius:3px;box-shadow:2px 2px 0 #141414;flex:none;overflow:hidden}
+  .dthumb iframe{position:absolute;top:0;left:0;width:832px;height:1072px;border:0;
+                 transform:scale(0.125);transform-origin:0 0;pointer-events:none;background:#fff}
+  .dthumb .dcode{position:absolute;top:0;left:0;width:832px;margin:0;padding:34px;
+                 font-family:ui-monospace,Menlo,monospace;font-size:15px;line-height:1.45;
+                 white-space:pre;transform:scale(0.125);transform-origin:0 0;pointer-events:none}
+  .dthumb[data-stack]::after{content:"";position:absolute;right:-7px;bottom:-7px;width:22px;height:26px;
+          background:#fff;border:2.5px solid #141414;border-radius:2px;z-index:-1}
+  .dname{font-size:11.5px;line-height:1.25;word-break:break-word}
+  .shutbtn{display:block;width:100%;font-family:inherit;font-size:13px;padding:7px 10px;
+           margin-bottom:12px;border:2.5px solid #141414;border-radius:8px;background:#8f3a30;
+           color:#fff;cursor:pointer;box-shadow:2px 2px 0 #141414;font-weight:700}
+  .shutbtn:active{transform:translate(2px,2px);box-shadow:none}
   .rtabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
   .rtab{font-family:inherit;font-size:12.5px;padding:4px 9px;border:2.5px solid #141414;border-radius:8px;
         background:#fff;cursor:pointer;color:#141414;box-shadow:2px 2px 0 #141414}
@@ -104,12 +138,11 @@
          gap:12px;align-items:center}
   #rhint a{color:#141414;font-weight:700}
   #ver{position:fixed;left:10px;bottom:6px;font-size:11px;opacity:.45;z-index:3;color:#141414;pointer-events:none}
-  @media (max-width:720px){ #loc{font-size:12px} #rbody.doc{height:60vh;max-height:60vh} }
+  @media (max-width:720px){ #rbody.doc{height:68vh;max-height:68vh} }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="loc" class="panel">The Atrium</div>
 <div id="ver">v18</div>
 <div id="toast" class="panel"></div>
 <div id="stick"><div id="knob"></div></div>
@@ -131,16 +164,27 @@
 <div id="settings" class="panel">
   <h2>SETTINGS <span style="font-size:12px;opacity:.5">v18</span></h2>
   <div class="srow">
-    <label>Field of view: <span id="fovVal">70</span>&deg;</label>
-    <input id="fov" type="range" min="30" max="110" step="1" value="70">
+    <label>Field of view: <span id="fovVal">110</span>&deg; across</label>
+    <input id="fov" type="range" min="45" max="130" step="1" value="110">
+  </div>
+  <div class="srow">
+    <label>Look sensitivity: <span id="sensVal">1.00</span>&times;</label>
+    <input id="sens" type="range" min="0.2" max="3" step="0.05" value="1">
+  </div>
+  <div class="srow">
+    <label>Perspective</label>
+    <button class="modebtn on" data-vert="0.55">2-point</button>
+    <button class="modebtn" data-vert="0">3-point</button>
+  </div>
+  <div class="srow">
+    <label>Travel</label>
+    <div id="tp"></div>
   </div>
   <div class="srow">
     <label>Controls</label>
     <div id="ctl">walk <b>WASD</b> &middot; jump <b>SPACE</b> &middot; sprint <b>SHIFT</b><br>
-      grab / read / place <b>E</b> or <b>click</b> &middot; drop <b>Q</b><br>
-      where am I? <b>P</b></div>
+      grab / read / place <b>E</b> or <b>click</b> &middot; drop <b>Q</b></div>
   </div>
-  <button id="respawn" class="modebtn" style="width:100%">reset position</button>
   <button id="resume">BACK TO THE GAME</button>
 </div>
 
@@ -161,6 +205,116 @@ camera.rotation.order = 'YXZ';
 
 const INK = 0x141414;
 function flatMat(c){ return new THREE.MeshBasicMaterial({color:c, polygonOffset:true, polygonOffsetFactor:1, polygonOffsetUnits:1}); }
+
+/* ---- procedural grain. Everything here is still flat-shaded ink-on-paper; these
+       only break up the big surfaces so the library reads as old stone and oak
+       instead of coloured card. ---- */
+function makeTex(draw, rep){
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  draw(c.getContext('2d'), 256);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(rep, rep);
+  t.anisotropy = 4;
+  return t;
+}
+const stoneTex = makeTex((x, S) => {          // ashlar courses: cut blocks, not spots
+  x.fillStyle = '#fff'; x.fillRect(0, 0, S, S);
+  const rows = 6, h = S / rows;
+  for (let r = 0; r < rows; r++){
+    const off = (r % 2) * h * 1.1;            // running bond
+    for (let c = -1; c < 5; c++){
+      const w = S / 4, bx = off + c * w, by = r * h;
+      const g = (232 + Math.random() * 23) | 0;
+      x.fillStyle = 'rgb(' + g + ',' + g + ',' + g + ')';
+      x.fillRect(bx + 1.4, by + 1.4, w - 2.8, h - 2.8);
+    }
+    x.strokeStyle = 'rgba(150,150,150,0.55)'; x.lineWidth = 1.6;
+    x.beginPath(); x.moveTo(0, r * h); x.lineTo(S, r * h); x.stroke();
+  }
+  for (let i = 0; i < 260; i++){              // a little pitting in the stone
+    const g = (214 + Math.random() * 30) | 0;
+    x.fillStyle = 'rgba(' + g + ',' + g + ',' + g + ',0.5)';
+    x.beginPath(); x.arc(Math.random() * S, Math.random() * S, 0.8 + Math.random() * 2, 0, 6.284); x.fill();
+  }
+}, 2);
+const woodTex = makeTex((x, S) => {                        // long oak grain
+  x.fillStyle = '#fff'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 90; i++){
+    x.strokeStyle = 'rgba(96,70,44,' + (0.05 + Math.random() * 0.16).toFixed(3) + ')';
+    x.lineWidth = 0.5 + Math.random() * 1.8;
+    x.beginPath();
+    const y0 = Math.random() * S;
+    x.moveTo(0, y0);
+    for (let px = 0; px <= S; px += 12)
+      x.lineTo(px, y0 + Math.sin(px * 0.028 + i) * 3.4 + (Math.random() - 0.5) * 2);
+    x.stroke();
+  }
+}, 2);
+const flagTex = makeTex((x, S) => {                        // worn flagstones
+  x.fillStyle = '#fff'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 900; i++){
+    const g = (222 + Math.random() * 33) | 0;
+    x.fillStyle = 'rgba(' + g + ',' + g + ',' + g + ',0.32)';
+    x.beginPath(); x.arc(Math.random() * S, Math.random() * S, 2 + Math.random() * 7, 0, 6.284); x.fill();
+  }
+  x.strokeStyle = 'rgba(105,105,105,0.40)'; x.lineWidth = 2;
+  for (let i = 0; i <= 2; i++){
+    const p = i * S / 2;
+    x.beginPath(); x.moveTo(p, 0); x.lineTo(p, S); x.stroke();
+    x.beginPath(); x.moveTo(0, p); x.lineTo(S, p); x.stroke();
+  }
+}, 1.6);
+/* the house proper is a different building from the library: pale plaster and
+   a warm plank floor, so crossing the corridor reads as leaving somewhere. */
+const plasterTex = makeTex((x, S) => {
+  x.fillStyle = '#fff'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 900; i++){
+    const g = (238 + Math.random() * 17) | 0;
+    x.fillStyle = 'rgba(' + g + ',' + g + ',' + g + ',0.34)';
+    x.beginPath(); x.arc(Math.random()*S, Math.random()*S, 3 + Math.random()*11, 0, 6.284); x.fill();
+  }
+}, 2);
+const plankTex = makeTex((x, S) => {
+  x.fillStyle = '#fff'; x.fillRect(0, 0, S, S);
+  const rows = 5, h = S / rows;
+  for (let r = 0; r < rows; r++){
+    const g = (231 + Math.random() * 24) | 0;
+    x.fillStyle = 'rgb(' + g + ',' + g + ',' + g + ')';
+    x.fillRect(0, r * h + 1.2, S, h - 2.4);
+    for (let i = 0; i < 26; i++){                       // grain along the plank
+      x.strokeStyle = 'rgba(150,118,86,' + (0.05 + Math.random()*0.14).toFixed(3) + ')';
+      x.lineWidth = 0.5 + Math.random() * 1.4;
+      const y0 = r * h + 2 + Math.random() * (h - 4);
+      x.beginPath(); x.moveTo(0, y0);
+      for (let px = 0; px <= S; px += 18) x.lineTo(px, y0 + Math.sin(px * 0.03 + i) * 1.6);
+      x.stroke();
+    }
+    x.strokeStyle = 'rgba(140,110,80,0.5)'; x.lineWidth = 1.4;
+    x.beginPath(); x.moveTo(0, r * h); x.lineTo(S, r * h); x.stroke();
+  }
+}, 3);
+
+function texMat(c, map){
+  return new THREE.MeshBasicMaterial({color:c, map, polygonOffset:true,
+                                      polygonOffsetFactor:1, polygonOffsetUnits:1});
+}
+
+/* ---- carved mathematics: gold glyphs cut into the stone ---- */
+const GLYPH_FONT = '"Apple Symbols","Segoe UI Symbol","Times New Roman",Georgia,serif';
+function makeGlyph(ch, w, color){
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const x = c.getContext('2d');
+  x.fillStyle = color || '#d9b45e';
+  x.font = '600 168px ' + GLYPH_FONT;
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText(ch, 128, 134);
+  const t = new THREE.CanvasTexture(c); t.anisotropy = 4;
+  return new THREE.Mesh(new THREE.PlaneGeometry(w, w),
+                        new THREE.MeshBasicMaterial({map:t, transparent:true}));
+}
+const GLYPHS = ['ℵ', '∞', '∑', '∫', 'π', '√', 'Ω', 'Φ', '∂'];
 const meshMat   = flatMat(0xffffff);
 const yellowMat = flatMat(0xf3d95c);
 const PAL = {                       // chunky-cartoon prop colors (the walls stay white)
@@ -186,11 +340,51 @@ const LIB = {
   sand:  flatMat(0xe0c9a0),
   plum:  flatMat(0x9c7396),
   shelf: flatMat(0xc08a52),
-  back:  flatMat(0xf3ead6)
+  back:  flatMat(0xf3ead6),
+  /* the room itself. Dark slate, so the shelves and the gold spines are the only
+     bright things in it. Change these three hexes to retint the whole library. */
+  wall:  texMat(0x53585f, stoneTex),
+  floor: texMat(0x43474d, flagTex),
+  ceil:  texMat(0x676d76, stoneTex),
+  oak:     texMat(0x6b4a2f, woodTex),       // dark oak: the case, the big shelves, the railing
+  oakDark: texMat(0x4e3421, woodTex),       // the recess behind the books
+  oakLite: texMat(0x86603f, woodTex),       // catches the light: balusters, capitals
+  door:    texMat(0x8f3a30, woodTex),       // oxblood, the same family as the rug
+  doorDim: texMat(0x732d26, woodTex),
+  iron:    flatMat(0x2f3238),
+  brass:   flatMat(0xd9b45e),
+  rugDeep: flatMat(0x8f4032),
+  well:    texMat(0x2b2e34, stoneTex),       // the lining of the shaft
+  wellEnd: flatMat(0x1d2025),
+  wax:     flatMat(0xece0c4),                // candles
+  flame:   flatMat(0xf0b93f)
 };
-const BOOK_MATS = [LIB.brick, LIB.sand, LIB.olive, LIB.plum];
+/* the raised bands every bound book carries: the spine's own colour, darkened,
+   the way the brass band sits against the gold of the real work */
+function shade(hex, k){
+  const c = v => Math.max(0, Math.min(255, Math.round(v * k)));
+  return (c((hex >> 16) & 255) << 16) | (c((hex >> 8) & 255) << 8) | c(hex & 255);
+}
+
+const HOUSE = {
+  wall:  texMat(0xefe4cf, plasterTex),
+  floor: texMat(0xc39a6b, plankTex),
+  ceil:  texMat(0xf7f1e4, plasterTex),
+  trim:  texMat(0x9b7248, woodTex)
+};
+
+/* the spines of the real work: aged gold leaf, banded a few shades down —
+   the same relationship every other book on the shelf has */
+const WORK_COLOR = 0xa8863c;
+const WORK_MAT = flatMat(WORK_COLOR);
+const WORK_BAND = flatMat(shade(WORK_COLOR, 1.42));
+/* antique leather: five muted tones that sit together, so the gold spines of the
+   real work are the only thing on a shelf that shouts */
+const BOOK_COLORS = [0x8c3b32, 0xa8703c, 0x4a6146, 0x3f4a63, 0x6b4a63];
+const BOOK_MATS = BOOK_COLORS.map(c => flatMat(c));
+const BAND_MATS = BOOK_COLORS.map(c => flatMat(shade(c, 1.42)));   // lighter than the spine
+const PAGE_MAT = flatMat(0xe8e0cc);                                // the page block
 const lineMat = new THREE.LineBasicMaterial({color:INK});
-const leafMat = new THREE.LineBasicMaterial({color:0x4c7a3d});
 
 const aabbs = [];       // solid boxes: {x0,x1,z0,z1,y0,y1,land}
 const segs  = [];       // solid wall segments: {ax,az,bx,bz,ht,y0,y1}
@@ -272,31 +466,31 @@ function cut(s0, g0, g1){
   }
   return out;
 }
-function wallX(z, a, b, doors, h){          // wall running along X at fixed z
+function wallX(z, a, b, doors, h, mat){      // wall running along X at fixed z
   h = h || 3.2;
   let s0 = [[a, b]];
   for (const c of (doors || [])){
     s0 = cut(s0, c - DOOR_W/2, c + DOOR_W/2);
-    box(DOOR_W, h - DOOR_H, T, c, DOOR_H + (h - DOOR_H)/2, z, {solid:true});   // header (you can bonk your head)
+    box(DOOR_W, h - DOOR_H, T, c, DOOR_H + (h - DOOR_H)/2, z, {solid:true, mat});  // header (you can bonk your head)
   }
   for (const s of s0) if (s[1] - s[0] > 0.02)
-    box(s[1]-s[0], h, T, (s[0]+s[1])/2, h/2, z, {solid:true});
+    box(s[1]-s[0], h, T, (s[0]+s[1])/2, h/2, z, {solid:true, mat});
 }
-function wallZ(x, a, b, doors, h){          // wall running along Z at fixed x
+function wallZ(x, a, b, doors, h, mat){     // wall running along Z at fixed x
   h = h || 3.2;
   let s0 = [[a, b]];
   for (const c of (doors || [])){
     s0 = cut(s0, c - DOOR_W/2, c + DOOR_W/2);
-    box(T, h - DOOR_H, DOOR_W, x, DOOR_H + (h - DOOR_H)/2, c, {solid:true});
+    box(T, h - DOOR_H, DOOR_W, x, DOOR_H + (h - DOOR_H)/2, c, {solid:true, mat});
   }
   for (const s of s0) if (s[1] - s[0] > 0.02)
-    box(T, h, s[1]-s[0], x, h/2, (s[0]+s[1])/2, {solid:true});
+    box(T, h, s[1]-s[0], x, h/2, (s[0]+s[1])/2, {solid:true, mat});
 }
 /* a wall between two arbitrary points (the hexagon needs these) */
-function segWall(ax, az, bx, bz, h, t){
+function segWall(ax, az, bx, bz, h, t, mat){
   const dx = bx - ax, dz = bz - az, L = Math.hypot(dx, dz);
   const g = new THREE.BoxGeometry(L, h, t);
-  const m = new THREE.Mesh(g, meshMat);
+  const m = new THREE.Mesh(g, mat || meshMat);
   m.position.set((ax+bx)/2, h/2, (az+bz)/2);
   m.rotation.y = Math.atan2(-dz, dx);
   scene.add(m); occluders.push(m);
@@ -308,14 +502,14 @@ function segWall(ax, az, bx, bz, h, t){
 }
 
 /* ============ hand-written labels (auto-shrink to fit) ============ */
-function makeLabel(text, w, fontPx){
+function makeLabel(text, w, fontPx, color){
   const c = document.createElement('canvas'); c.width = 1024; c.height = 150;
   const ctx = c.getContext('2d');
-  ctx.fillStyle = '#141414';
+  ctx.fillStyle = color || '#141414';
   let f = (fontPx || 64) + 2;
   do {
     f -= 2;
-    ctx.font = '700 ' + f + 'px "Comic Sans MS","Comic Neue","Segoe Print",cursive';
+    ctx.font = '600 ' + f + 'px Georgia,"Times New Roman",serif';
   } while (ctx.measureText(text).width > c.width - 60 && f > 16);
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(text, 512, 80);
@@ -353,19 +547,6 @@ const CONTENT = {
     body: 'Hi, I\'m Jessy Wang, a senior at Laurel Springs School with a passion for math, AI, and neuroscience. My goal is to become a research scientist and create practical AI tools that make a real difference in people\'s lives. I believe technology should be used to simplify complex tasks and make them more accessible to everyone. Whether I\'m working on a research project, helping students understand new concepts, or developing educational software, my primary goal remains the same: to use technology to drive positive change and help people achieve their goals.\n\nI have a strong foundation in math, physics, and computer science, which helps me tackle tough problems in a logical and curious way. Some of the accolades I\'ve earned include a perfect score on the F=ma exam (ranked 1st among 6,682 participants), qualifying for several prestigious math and science competitions such as the USAMO, USAPhO, and USNCO, and reaching gold in the USACO Gold Division. What\'s really exciting for me, though, is applying this analytical way of thinking to my research at UPMC. I\'m working on using artificial intelligence to improve medical imaging, which has the potential to make a big impact on healthcare and scientific discovery. By combining machine learning with quantum tractography, I\'m exploring new ways to analyze and understand medical images, which could lead to better patient outcomes and new insights into the human body.\n\nI\'m passionate about helping others achieve their goals, beyond just my research work. After achieving a 1540 on the SAT, I was chosen as a volunteer tutor with Schoolhouse, where I dedicate several hours weekly to guiding students from varied backgrounds. This experience taught me that the most effective solution isn\'t always the most complex — it\'s the one that\'s easy for people to grasp, use, and benefit from. That realization motivated me to create the projects in this house, aiming to make learning more enjoyable, tailored, and accessible. These projects include arithmetic games, ear-training tools, and chess applications, all designed with the user in mind. My goal is to continue developing AI systems that solve real problems and empower those who use them, long after they\'re implemented.'
   },
 
-  directory: {
-    title: 'directory',
-    body: 'NORTH — the library of babel (all my math work)\nWEST — writings · EAST — ideas\nSOUTH-WEST — about me · SOUTH-EAST — honors & awards\n\nthe orange door on the north wall leads out to the rest of the site:\nresearch, projects, résumé, socials\n\ncontrols\nwalk WASD · jump SPACE · sprint SHIFT\nlook — click once to capture the mouse\ngrab / read / place — E or click\ndrop — Q · menu — ESC'
-  },
-
-  /* the way out to the flat version of the site */
-  frontDoor: {
-    title: 'the rest of the site',
-    body: 'Through this door is the scrolling version of jwang2007.github.io — research, projects, résumé, the searchable notes index, and links to LinkedIn and GitHub.\n\nEverything in this house is over there too, just in a page you can read on any device.',
-    link: 'portfolio.html',
-    linkText: 'open the portfolio ↗'
-  },
-
   /* ---------------------------------------------------------------
      THE WORK. One entry per thing you have written up.
        title  – what the spine says when you aim at it
@@ -374,7 +555,7 @@ const CONTENT = {
        shelf  – which of the four library walls it lives on:
                 'number theory' | 'calculus' | 'probability & logic'
                 | 'physics, code & other'   (missing -> the last one)
-     The rest are just labels; they show as tags and group the catalogue.
+     The rest are just labels; they show as tags and drive the filter galleries.
      --------------------------------------------------------------- */
   work: [
     /* ---- number theory ---- */
@@ -468,49 +649,65 @@ const CONTENT = {
       body: 'Sticky notes live in CONTENT.ideas — add one and it appears on the board.' }
   ],
 
+  /* the way out to the flat version of the site */
+  frontDoor: {
+    title: 'the rest of the site',
+    body: 'Through this door is the scrolling version of jwang2007.github.io — research, projects, résumé, the searchable notes index, and links to LinkedIn and GitHub.\n\nEverything in this house is over there too, just in a page you can read on any device.',
+    link: 'portfolio.html',
+    linkText: 'open the portfolio ↗'
+  },
+
   /* ---------------------------------------------------------------
-     THE PICTURES ON THE TROPHY ROOM WALLS.
-       image – any file in images/ (swap these for real photos later)
-       body  – what you read when you click the frame
-     Add or remove entries; they fill the wall slots in order.
+     THE VIBECODED ROOM — one desk and screen per project, east of the
+     trophies. There are three desk spots; add an entry and it fills one.
      --------------------------------------------------------------- */
-  pictures: [
-    { title: 'Laurel Springs School',
-      body: '2022 — 2026\n\nGPA 4.0 · SAT 1540 · ACT 35 (Math 36, English 35, Reading 35)' },
-
-    { title: 'Citadel Pathways Program 2026',
-      image: 'images/citadel-pathways.jpg',
-      body: 'Invitational Participant.\n\nAll-expenses-paid, invitation-only program for top US high school juniors and seniors recognized for excellence in Math, Physics, and Computing Olympiads.\n\nLearned about quantitative trading, research, and technology through interactive simulations and mentorship from industry leaders.\n\n1 of 26 selected from a pool of ~15,000.' },
-
-    { title: 'Research Assistant — UPMC',
-      body: '2025 — now\n\n· Assist with research on implementing quantum tractography in neurosurgery.\n\n· Explore applications of neural networks for personalized treatment planning.\n\n· Study connections between computational modeling, medical imaging, and patient-specific medical decision-making.' },
-
-    { title: 'Honors & Awards',
-      body: 'F=ma Perfect Score — rank 1 / 6,682\n\nUSAMO Qualifier (2026)\n\nUSAPhO Qualifier — Distinction for Commendable Performance (2025–26)\n\nUSACO Gold Division (2025–26)\n\nUSNCO National Qualifier (2026) — CMU site' },
-
-    { title: 'Utica University AMC Scholarship',
-      image: 'images/MAA.jpg',
-      body: 'Placed 1st out of 100+ students.\n\nOne of 2 students out of 100+ to qualify for AIME.\n\nEarned DHR (Distinguished Honor Roll) on the AMC 12.\n\nAwarded the Professor Wayne Newman Palmer Scholarship ($5,000) for two credited classes at Utica University.\n\nInvited to deliver a speech at the awards ceremony; ceremony was later canceled due to weather conditions.' }
+  projects: [
+    { title: 'Classic Math Games',
+      link: 'classic-math-games.html', linkText: 'open classic-math-games ↗',
+      body: 'Arithmetic games — the drills I wanted when I was learning, made fast and playable.' },
+    { title: 'Pitch Trainer',
+      link: 'pitch-trainer.html', linkText: 'open pitch-trainer ↗',
+      body: 'An ear-training tool: intervals and pitches, drilled until they are obvious.' },
+    { title: 'Chess Line Visualizer',
+      link: 'chess-line-visualizer.html', linkText: 'open chess-line-visualizer ↗',
+      body: 'A board that draws a whole variation at once, so a line reads as one shape instead of a list of moves.' }
   ],
 
+  /* the single panel left on the trophy room wall */
+  pictures: [
+    { title: 'Honors & Awards',
+      body: 'F=ma Perfect Score — rank 1 / 6,682\n\nUSAMO Qualifier (2026)\n\nUSAPhO Qualifier — Distinction for Commendable Performance (2025–26)\n\nUSACO Gold Division (2025–26)\n\nUSNCO National Qualifier (2026) — CMU site\n\n———\n\nLAUREL SPRINGS SCHOOL · 2022 — 2026\nGPA 4.0 · SAT 1540 · ACT 35 (Math 36, English 35, Reading 35)\n\n———\n\nRESEARCH ASSISTANT · UPMC · 2025 — now\nAssist with research on implementing quantum tractography in neurosurgery.\nExplore applications of neural networks for personalized treatment planning.\nStudy connections between computational modeling, medical imaging, and patient-specific medical decision-making.' }
+  ],
+
+  /* ---------------------------------------------------------------
+     THE FOUR THINGS ON PLINTHS. Order matters: they are handed to the
+     medal, the shirt, the bottle and the hoodie, in that order.
+     `propText` is what gets printed on the garment itself.
+     --------------------------------------------------------------- */
   awards: [
-    { title: 'F=ma — perfect score',
-      body: 'Perfect score on the F=ma exam.\n\nRank 1 out of 6,682.' },
-    { title: 'Olympiad qualifications',
-      body: 'USAMO Qualifier (2026)\n\nUSAPhO Qualifier — Distinction for Commendable Performance (2025–26)\n\nUSACO Gold Division (2025–26)\n\nUSNCO National Qualifier (2026) — CMU site' },
     { title: 'Utica University AMC Scholarship',
-      body: 'Placed 1st out of 100+ students.\n\nOne of 2 students out of 100+ to qualify for AIME.\n\nEarned DHR (Distinguished Honor Roll) on the AMC 12.\n\nAwarded the Professor Wayne Newman Palmer Scholarship ($5,000) for two credited classes at Utica University.\n\nInvited to deliver a speech at the awards ceremony; ceremony was later canceled due to weather conditions.' }
+      body: 'Placed 1st out of 100+ students.\n\nOne of 2 students out of 100+ to qualify for AIME.\n\nEarned DHR (Distinguished Honor Roll) on the AMC 12.\n\nAwarded the Professor Wayne Newman Palmer Scholarship ($5,000) for two credited classes at Utica University.\n\nInvited to deliver a speech at the awards ceremony; ceremony was later canceled due to weather conditions.' },
+
+    { title: 'USAPhO Qualifier 2026',
+      propText: 'USAPhO 2026|Qualifier',
+      body: 'USAPhO Qualifier — Distinction for Commendable Performance (2025–26).\n\nQualified through the F=ma exam, on which I scored a perfect paper: rank 1 out of 6,682.' },
+
+    { title: 'USAMO Qualifier 2026',
+      propText: '',
+      body: 'USAMO Qualifier (2026).\n\nQualified through the AMC and AIME.' },
+
+    { title: 'Citadel Pathways Program 2026',
+      propText: 'CITADEL|Pathways',
+      image: 'images/citadel-pathways.jpg',
+      body: 'Invitational Participant.\n\nAll-expenses-paid, invitation-only program for top US high school juniors and seniors recognized for excellence in Math, Physics, and Computing Olympiads.\n\nLearned about quantitative trading, research, and technology through interactive simulations and mentorship from industry leaders.\n\n1 of 26 selected from a pool of ~15,000.' }
   ],
 
   babelPlaque: {
     title: 'about this room',
-    body: '“The Library is a sphere whose exact center is any one of its hexagons.”\n— Borges, The Library of Babel (1941)\n\nSix walls, four of them shelved, and a shaft that runs both ways past floors nobody has visited.\n\nThe gold spines are mine — every one opens the real write-up. The lectern by the south door holds the full catalogue.\n\nThis room holds everything. The lectern by the north door narrows it: pick a filter and the sealed door opens onto a gallery of only those pieces, which you can narrow again, and again, until nothing distinguishes what is left.'
+    body: '“The Library is a sphere whose exact center is any one of its hexagons.”\n— Borges, The Library of Babel (1941)\n\nSix walls, four of them shelved, and a shaft that runs both ways past floors nobody has visited.\n\nThe gold spines are mine — every one opens the real write-up, and the little case by the south door lists every piece this room holds.\n\nThis room holds everything. The lectern by the north door narrows it: pick a filter and the sealed door opens onto a gallery of only those pieces, which you can narrow again, and again, until nothing distinguishes what is left.'
   }
 };
 document.title = CONTENT.name + '’s house';
-
-/* the catalogue is a readable too — it just renders CONTENT.work as a list */
-const CATALOGUE = { title: 'the catalogue', catalogue: true };
 
 /* ============ readable things (books, plaques, notes, papers, pictures) ============ */
 const readables = [];
@@ -564,43 +761,48 @@ function hexPts(cx, cz, R){
 }
 
 /* floors (visual; the world floor at y=0 is the physics ground) */
-function floorSlab(w, d, x, z){ return box(w, 0.14, d, x, -0.07, z, {surface:true}); }
-floorSlab(18, 10, 0, 3);            // atrium
-floorSlab(7, 10, -12.5, 3);         // writings
-floorSlab(7, 10,  12.5, 3);         // ideas
-floorSlab(9, 7, -4.5, 11.5);        // about
-floorSlab(9, 7,  4.5, 11.5);        // trophies
-floorSlab(4.4, 4, 0, -4);           // corridor
+function floorSlab(w, d, x, z, mat){ return box(w, 0.14, d, x, -0.07, z, {surface:true, mat}); }
+floorSlab(18, 10, 0, 3, HOUSE.floor);   // atrium
+floorSlab(7, 10, -12.5, 3, HOUSE.floor);   // writings
+floorSlab(7, 10,  12.5, 3, HOUSE.floor);   // onions
+floorSlab(9, 7, -4.5, 11.5, HOUSE.floor);  // about
+floorSlab(9, 7,  4.5, 11.5, HOUSE.floor);  // honours
+floorSlab(7, 10, -19.5, 3, HOUSE.floor);    // vibecoded
+floorSlab(4.4, 4, 0, -4, LIB.floor);   // corridor — already library ground
 
 /* ceilings (visual slab + a collider so heads can bonk) */
-function ceiling(w, d, x, z, h){
-  box(w, 0.14, d, x, h + 0.07, z, {});
+function ceiling(w, d, x, z, h, mat){
+  box(w, 0.14, d, x, h + 0.07, z, {mat});
   aabbs.push({x0:x-w/2, x1:x+w/2, z0:z-d/2, z1:z+d/2, y0:h, y1:h+0.14, land:false});
 }
-ceiling(18, 10, 0, 3, ATR_H);
-ceiling(4.4, 4, 0, -4, ATR_H);
-ceiling(7, 10, -12.5, 3, ROOM_H);
-ceiling(7, 10,  12.5, 3, ROOM_H);
-ceiling(9, 7, -4.5, 11.5, ROOM_H);
-ceiling(9, 7,  4.5, 11.5, ROOM_H);
+ceiling(18, 10, 0, 3, ATR_H, HOUSE.ceil);
+ceiling(4.4, 4, 0, -4, ATR_H, LIB.ceil);
+ceiling(7, 10, -12.5, 3, ROOM_H, HOUSE.ceil);
+ceiling(7, 10,  12.5, 3, ROOM_H, HOUSE.ceil);
+ceiling(9, 7, -4.5, 11.5, ROOM_H, HOUSE.ceil);
+ceiling(9, 7,  4.5, 11.5, ROOM_H, HOUSE.ceil);
+ceiling(7, 10, -19.5, 3, ROOM_H, HOUSE.ceil);
 
 /* walls */
-wallX(-2, -9, 9, [0], ATR_H);                 // atrium north (door to corridor)
-wallX( 8, -9, 9, [-4.5, 4.5], ATR_H);         // atrium south (about / trophies)
-wallZ(-9, -2, 8, [3], ATR_H);                 // atrium west (writings)
-wallZ( 9, -2, 8, [3], ATR_H);                 // atrium east (ideas)
-wallZ(-16, -2, 8, [], ROOM_H);                // writings outer
-wallX(-2, -16, -9, [], ROOM_H);
-wallX( 8, -16, -9, [], ROOM_H);
-wallZ(16, -2, 8, [], ROOM_H);                 // ideas outer
-wallX(-2, 9, 16, [], ROOM_H);
-wallX( 8, 9, 16, [], ROOM_H);
-wallX(15, -9, 9, [], ROOM_H);                 // south rooms back wall
-wallZ(-9, 8, 15, [], ROOM_H);
-wallZ( 9, 8, 15, [], ROOM_H);
-wallZ( 0, 8, 15, [], ROOM_H);                 // divider between about / trophies
-wallZ(-2.2, -6, -2, [], ATR_H);               // corridor
-wallZ( 2.2, -6, -2, [], ATR_H);
+wallX(-2, -9, 9, [0], ATR_H, HOUSE.wall);     // atrium north (door to corridor)
+wallX( 8, -9, 9, [-4.5, 4.5], ATR_H, HOUSE.wall);  // atrium south (about / trophies)
+wallZ(-9, -2, 8, [3], ATR_H, HOUSE.wall);     // atrium west (writings)
+wallZ( 9, -2, 8, [3], ATR_H, HOUSE.wall);     // atrium east (onions)
+wallZ(-16, -2, 8, [3], ROOM_H, HOUSE.wall);   // writings west: door into the vibecoded room
+wallX(-2, -16, -9, [], ROOM_H, HOUSE.wall);
+wallX( 8, -16, -9, [], ROOM_H, HOUSE.wall);
+wallZ(16, -2, 8, [], ROOM_H, HOUSE.wall);     // onion room outer
+wallX(-2, 9, 16, [], ROOM_H, HOUSE.wall);
+wallX( 8, 9, 16, [], ROOM_H, HOUSE.wall);
+wallX(15, -9, 9, [], ROOM_H, HOUSE.wall);     // south rooms back wall
+wallZ(-23, -2, 8, [], ROOM_H, HOUSE.wall);    // vibecoded room, west of Writings
+wallX(-2, -23, -16, [], ROOM_H, HOUSE.wall);
+wallX( 8, -23, -16, [], ROOM_H, HOUSE.wall);
+wallZ(-9, 8, 15, [], ROOM_H, HOUSE.wall);
+wallZ( 9, 8, 15, [], ROOM_H, HOUSE.wall);
+wallZ( 0, 8, 15, [], ROOM_H, HOUSE.wall);     // divider
+wallZ(-2.2, -6, -2, [], ATR_H, LIB.wall);     // corridor: the library begins here
+wallZ( 2.2, -6, -2, [], ATR_H, LIB.wall);
 
 /* ================================================================
    THE LIBRARY OF BABEL — a chain of hexagonal galleries running north.
@@ -617,9 +819,12 @@ const galleries = [];
 
 /* everything a gallery builds is appended to these registries, so a gallery is
    torn down by rewinding them to the lengths they had when it started */
+const fallers = [];                           // books tumbling down the shafts
+const spinners = [];                          // the gold solids turning over the lecterns
 function markState(){
   return {sc:scene.children.length, ab:aabbs.length, sg:segs.length,
-          oc:occluders.length, rd:readables.length};
+          oc:occluders.length, rd:readables.length, fl:fallers.length, sp:spinners.length,
+          fm:flames.length};
 }
 function truncTo(m){
   while (scene.children.length > m.sc){
@@ -629,14 +834,198 @@ function truncTo(m){
   }
   aabbs.length = m.ab; segs.length = m.sg;
   occluders.length = m.oc; readables.length = m.rd;
+  fallers.length = m.fl; spinners.length = m.sp; flames.length = m.fm;
 }
 
-/* pendant lamps */
-function lamp(x, z, yTop, drop, m){
+/* ---- a turned-baluster railing round the shaft: solid to walk into, but open
+       enough to watch the books go past ---- */
+function balustrade(ax, az, bx, bz){
+  const dx = bx - ax, dz = bz - az, L = Math.hypot(dx, dz);
+  const g = new THREE.Group();
+  g.position.set((ax + bx)/2, 0, (az + bz)/2);
+  g.rotation.y = Math.atan2(-dz, dx);          // local +x runs along the rail
+  scene.add(g);
+  part(g, new THREE.BoxGeometry(L, 0.10, 0.17), 0, 0.06, 0, 0,0,0, LIB.oak);       // foot rail
+  part(g, new THREE.BoxGeometry(L, 0.12, 0.21), 0, 1.00, 0, 0,0,0, LIB.oak);       // handrail
+  const n = Math.max(2, Math.round(L / 0.32)), posts = [];
+  for (let i = 0; i <= n; i++){
+    const x = -L/2 + L * i / n;
+    posts.push({w:0.065, h:0.84, d:0.065, x, y:0.53, z:0});
+    posts.push({w:0.10,  h:0.06, d:0.10,  x, y:0.17, z:0});     // turned collars
+    posts.push({w:0.10,  h:0.06, d:0.10,  x, y:0.89, z:0});
+  }
+  const mb = mergedBoxes(posts, LIB.oakLite);
+  g.add(mb.fill); g.add(mb.edge);
+  segs.push({ax, az, bx, bz, ht:0.09, y0:0, y1:1.06});           // you still cannot walk through
+}
+
+/* ---- books falling forever down the shaft. Pure atmosphere: no collision,
+       no raycast, they just tumble past and start again at the top. ---- */
+const FALL_TOP = 15.5, FALL_BOTTOM = -12.8;
+function fallingBooks(cz, n){
+  for (let i = 0; i < n; i++){
+    const g = new THREE.Group();
+    const w = 0.17 + rnd() * 0.10, h = 0.24 + rnd() * 0.12, d = 0.05 + rnd() * 0.04;
+    const geo = new THREE.BoxGeometry(w, h, d);
+    const ci = (rnd() * BOOK_MATS.length) | 0;
+    const m = new THREE.Mesh(geo, BOOK_MATS[ci]);
+    g.add(m);
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
+    g.add(e);
+    const bands = [];
+    for (const f of [0.27, -0.23])
+      bands.push({w:w * 1.05, h:h * 0.07 + 0.004, d:d * 1.06, x:0, y:h * f, z:0});
+    const bb = mergedBoxes(bands, BAND_MATS[ci]);
+    g.add(bb.fill); g.add(bb.edge);
+    const a = rnd() * Math.PI * 2, r = 0.35 + rnd() * 1.15;
+    g.position.set(Math.cos(a) * r, FALL_BOTTOM + rnd() * (FALL_TOP - FALL_BOTTOM), cz + Math.sin(a) * r);
+    g.rotation.set(rnd() * 6.28, rnd() * 6.28, rnd() * 6.28);
+    scene.add(g);
+    fallers.push({g, cz, v: 1.1 + rnd() * 1.9,
+                  sx: (rnd() - 0.5) * 1.6, sy: (rnd() - 0.5) * 1.2, sz: (rnd() - 0.5) * 1.6});
+  }
+}
+
+/* ---- and the mathematics itself, falling with them: gold sigils drifting down
+       the shaft, turning to face you, breathing light. Whatever built this place
+       is still pouring it in. ---- */
+function fallingGlyphs(cz, n){
+  for (let i = 0; i < n; i++){
+    const gl = makeGlyph(GLYPHS[(i * 3 + (n | 0)) % GLYPHS.length], 0.38 + rnd() * 0.44, '#f4dd9b');
+    gl.material.depthWrite = false;
+    const a = rnd() * 6.28, r = rnd() * 1.35;
+    gl.position.set(Math.cos(a) * r, FALL_BOTTOM + rnd() * (FALL_TOP - FALL_BOTTOM), cz + Math.sin(a) * r);
+    scene.add(gl);
+    fallers.push({g: gl, cz, v: 0.35 + rnd() * 0.65, glyph: true, ph: rnd() * 6.28,
+                  s0: gl.scale.x, sx:0, sy:0, sz:0});
+  }
+}
+
+/* ---- the little antique case: click it for everything on this room's shelves ---- */
+function littleCase(cz, entry){
+  const g = new THREE.Group();
+  g.position.set(-2.4, 0, cz + 5.72);
+  g.rotation.y = Math.PI;                     // stands against the south wall, facing the room
+  scene.add(g);
+  const W = 1.44, H = 1.72, D = 0.46;
+  part(g, new THREE.BoxGeometry(W + 0.16, 0.16, D + 0.09), 0, 0.08, 0, 0,0,0, LIB.oakDark);  // plinth
+  part(g, new THREE.BoxGeometry(W - 0.26, H, 0.05), 0, 0.16 + H/2, -D/2 + 0.03, 0,0,0, LIB.oakDark);
+  for (const sx of [-1, 1]){                                             // carved pilasters
+    part(g, new THREE.BoxGeometry(0.13, H, D), sx * (W/2 - 0.065), 0.16 + H/2, 0, 0,0,0, LIB.oak);
+    part(g, new THREE.BoxGeometry(0.17, 0.12, D + 0.04), sx * (W/2 - 0.065), 0.30, 0, 0,0,0, LIB.oakLite);
+    part(g, new THREE.BoxGeometry(0.17, 0.12, D + 0.04), sx * (W/2 - 0.065), 1.74, 0, 0,0,0, LIB.oakLite);
+  }
+  /* Four shelves, and the top one has clear air above it — the old design put a
+     frieze across the opening so the top row could never have been pulled out. */
+  const SH = [0.30, 0.66, 1.02, 1.38];                                  // shelf boards
+  for (const y of SH) part(g, new THREE.BoxGeometry(W - 0.24, 0.05, D - 0.06), 0, y, 0.01, 0,0,0, LIB.oak);
+  part(g, new THREE.BoxGeometry(W - 0.24, 0.05, D - 0.06), 0, 1.74, 0.01, 0,0,0, LIB.oak);   // top board
+  part(g, new THREE.BoxGeometry(W + 0.20, 0.13, D + 0.12), 0, 1.83, 0, 0,0,0, LIB.oak);      // cornice
+  part(g, new THREE.BoxGeometry(0.30, 0.13, 0.07), 0, 1.95, 0.02, 0,0,0, LIB.oakLite);       // crest
+  part(g, new THREE.BoxGeometry(0.12, 0.07, 0.07), 0, 2.04, 0.02, 0,0,0, LIB.oakLite);
+  /* rows of dark leather spines, each banded */
+  const rows = BOOK_MATS.map(() => []);
+  const caseBands = BOOK_MATS.map(() => []);
+  const casePages = [];
+  for (const y of SH){
+    let x = -(W/2 - 0.20);
+    while (x < W/2 - 0.22){
+      if (rnd() < 0.09){ x += 0.05 + rnd() * 0.06; continue; }
+      const bw = 0.035 + rnd() * 0.045, bh = 0.17 + rnd() * 0.10;
+      const bx = x + bw/2, by = y + 0.025 + bh/2, tilt = (rnd() < 0.12 ? (rnd() - 0.5) * 0.28 : 0);
+      const ci = (rnd() * rows.length) | 0;
+      rows[ci].push({w:bw, h:bh, d:0.24, x:bx, y:by, z:0.03, rz:tilt});
+      for (const f of [0.28, -0.24])
+        caseBands[ci].push({w:bw * 1.07, h:bh * 0.06 + 0.006, d:0.252, x:bx, y:by + bh * f, z:0.03, rz:tilt});
+      for (const e of [1, -1])
+        casePages.push({w:bw * 0.94, h:0.020, d:0.236, x:bx, y:by + e * (bh/2 - 0.010), z:0.03, rz:tilt});
+      x += bw + 0.008;
+    }
+  }
+  rows.forEach((r, i) => {
+    if (!r.length) return;
+    const mb = mergedBoxes(r, BOOK_MATS[i]);
+    g.add(mb.fill); g.add(mb.edge);
+  });
+  caseBands.forEach((list, bi) => {
+    if (!list.length) return;
+    const cb2 = mergedBoxes(list, BAND_MATS[bi]);
+    g.add(cb2.fill); g.add(cb2.edge);
+  });
+  if (casePages.length){
+    const pb2 = mergedBoxes(casePages, PAGE_MAT);
+    g.add(pb2.fill); g.add(pb2.edge);
+  }
+  aabbs.push({x0:-2.4 - W/2, x1:-2.4 + W/2, z0:cz + 5.72 - D/2 - 0.06, z1:cz + 5.72 + D/2 + 0.06,
+              y0:0, y1:2.2, land:true});
+  markGroupRead(g, entry);
+  return g;
+}
+
+/* ---- candle flame: a tapered bright body inside an additive halo that
+       breathes and flickers, and always turns its face to you ---- */
+const flames = [];
+const glowTex = makeTex((x, S) => {
+  const g = x.createRadialGradient(S/2, S/2, 0, S/2, S/2, S/2);
+  g.addColorStop(0.00, 'rgba(255,244,205,1)');
+  g.addColorStop(0.18, 'rgba(255,206,110,0.85)');
+  g.addColorStop(0.45, 'rgba(240,150,45,0.32)');
+  g.addColorStop(1.00, 'rgba(190,90,20,0)');
+  x.fillStyle = g; x.fillRect(0, 0, S, S);
+}, 1);
+glowTex.wrapS = glowTex.wrapT = THREE.ClampToEdgeWrapping;
+const glowMat = new THREE.MeshBasicMaterial({map: glowTex, transparent: true,
+                                             blending: THREE.AdditiveBlending, depthWrite: false});
+const FLAME_GEO = new THREE.LatheGeometry([
+  [0.000, 0.000], [0.020, 0.012], [0.028, 0.040], [0.024, 0.075],
+  [0.014, 0.105], [0.005, 0.128], [0.000, 0.140]
+].map(p => new THREE.Vector2(p[0], p[1])), 10);
+const flameCore = new THREE.MeshBasicMaterial({color: 0xffe9a8});
+function flame(parent, x, y, z){
+  const body = new THREE.Mesh(FLAME_GEO, flameCore);
+  body.position.set(x, y, z);
+  parent.add(body);
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.42), glowMat);
+  halo.position.set(x, y + 0.06, z);
+  parent.add(halo);
+  flames.push({body, halo, ph: rnd() * 6.28, y0: y});
+  return body;
+}
+
+/* an iron chandelier of candles, hung on a chain */
+function chandelier(x, z, yTop, drop, n, R){
+  n = n || 6; R = R || 0.46;
   scene.add(linesFlat([[x, yTop, z], [x, yTop - drop, z]]));
   const g = new THREE.Group(); g.position.set(x, yTop - drop, z); scene.add(g);
-  part(g, new THREE.CylinderGeometry(0.16, 0.24, 0.16, 8), 0, -0.08, 0, 0, 0, 0, m || LIB.ochre);
-  part(g, new THREE.IcosahedronGeometry(0.07, 0), 0, -0.22, 0, 0, 0, 0, yellowMat);
+  part(g, new THREE.CylinderGeometry(0.05, 0.05, 0.13, 6), 0, 0.02, 0, 0,0,0, LIB.iron);   // boss
+  part(g, new THREE.TorusGeometry(R, 0.028, 5, 14), 0, -0.10, 0, Math.PI/2, 0, 0, LIB.iron);
+  const spokes = [], cups = [], wax = [];
+  for (let i = 0; i < n; i++){
+    const a = i / n * Math.PI * 2, cx = Math.cos(a) * R, cz = Math.sin(a) * R;
+    const h = 0.20 + (i % 3) * 0.05;
+    spokes.push({w:R, h:0.025, d:0.025, x:cx/2, y:-0.04, z:cz/2, ry:-a});
+    cups.push({w:0.11, h:0.035, d:0.11, x:cx, y:-0.075, z:cz});
+    wax.push({w:0.065, h:h, d:0.065, x:cx, y:-0.05 + h/2, z:cz});
+    flame(g, cx, -0.05 + h + 0.005, cz);
+  }
+  const add = (list, mat) => { const mb = mergedBoxes(list, mat); g.add(mb.fill); g.add(mb.edge); };
+  add(spokes, LIB.iron); add(cups, LIB.iron); add(wax, LIB.wax);
+  return g;
+}
+/* a single candle on a wall bracket */
+function sconce(x, y, z, face){
+  const g = new THREE.Group();
+  g.position.set(x, y, z);
+  if (face === '+x') g.rotation.y =  Math.PI/2;
+  if (face === '-x') g.rotation.y = -Math.PI/2;
+  if (face === '-z') g.rotation.y =  Math.PI;
+  scene.add(g);
+  part(g, new THREE.BoxGeometry(0.05, 0.30, 0.05), 0, 0, 0.02, 0,0,0, LIB.iron);      // back plate
+  part(g, new THREE.BoxGeometry(0.04, 0.04, 0.22), 0, -0.10, 0.14, 0,0,0, LIB.iron);  // arm
+  part(g, new THREE.CylinderGeometry(0.06, 0.045, 0.03, 8), 0, -0.07, 0.24, 0,0,0, LIB.iron);
+  part(g, new THREE.CylinderGeometry(0.028, 0.032, 0.20, 6), 0, 0.04, 0.24, 0,0,0, LIB.wax);
+  flame(g, 0, 0.145, 0.24);
+  return g;
 }
 
 /* a flat hexagonal ring (floor, ceiling, rug): outer radius R, hole radius r */
@@ -655,6 +1044,29 @@ function hexRing(R, r, thick){
   const geo = new THREE.ExtrudeGeometry(s, {depth: thick, bevelEnabled: false});
   geo.rotateX(Math.PI / 2);                   // shape XY -> world XZ, thickness going down
   return geo;
+}
+function hexCap(R, thick){                    // a solid hexagonal slab, no hole
+  const s = new THREE.Shape();
+  const o = hexPts(0, 0, R);
+  s.moveTo(o[0][0], o[0][1]);
+  for (let i = 1; i < 6; i++) s.lineTo(o[i][0], o[i][1]);
+  s.closePath();
+  const geo = new THREE.ExtrudeGeometry(s, {depth: thick, bevelEnabled: false});
+  geo.rotateX(Math.PI / 2);
+  return geo;
+}
+/* one face of the shaft lining: scenery only, never a collider */
+function wellPanel(ax, az, bx, bz, y0, y1){
+  const dx = bx - ax, dz = bz - az, L = Math.hypot(dx, dz), h = y1 - y0;
+  const geo = new THREE.BoxGeometry(L, h, 0.10);
+  const m = new THREE.Mesh(geo, LIB.well);
+  m.position.set((ax + bx) / 2, (y0 + y1) / 2, (az + bz) / 2);
+  m.rotation.y = Math.atan2(-dz, dx);
+  scene.add(m); occluders.push(m);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
+  e.position.copy(m.position); e.rotation.copy(m.rotation);
+  scene.add(e);
+  return m;
 }
 function ringPiece(geo, y, cz, mat, surface){
   const m = new THREE.Mesh(geo, mat);
@@ -684,7 +1096,7 @@ function buildShelfWall(A, B, subject, works, fill){
   scene.add(g);
   function cb(w,h,d,x,y,z,mm){
     const geo = new THREE.BoxGeometry(w,h,d);
-    const m = new THREE.Mesh(geo, mm || LIB.shelf); m.position.set(x,y,z);
+    const m = new THREE.Mesh(geo, mm || LIB.oak); m.position.set(x,y,z);
     m.userData.surface = true;
     g.add(m); occluders.push(m);
     const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
@@ -694,7 +1106,7 @@ function buildShelfWall(A, B, subject, works, fill){
   cb(0.1, H, D, -(W/2 - 0.05), H/2, 0);
   cb(0.1, H, D,  (W/2 - 0.05), H/2, 0);
   cb(W, 0.1, D, 0, H - 0.05, 0);
-  cb(W, H, 0.05, 0, H/2, -D/2 + 0.03, LIB.back);
+  cb(W, H, 0.05, 0, H/2, -D/2 + 0.03, LIB.oakDark);   // dark recess, like the little case
   const SHELF_Y = [0.16, 0.98, 1.80, 2.62, 3.44, 4.26];
   for (const sy of SHELF_Y) cb(W - 0.2, 0.08, D - 0.08, 0, sy, 0);
 
@@ -706,6 +1118,8 @@ function buildShelfWall(A, B, subject, works, fill){
      been narrowed, the emptier it stands — so the gold spines stay findable. */
   const gap = 0.10 + (1 - (fill === undefined ? 1 : fill)) * 0.55;
   const buckets = BOOK_MATS.map(() => []);
+  const spineBands = BOOK_MATS.map(() => []);
+  const pages = [];
   for (let si = 0; si < SHELF_Y.length; si++){
     const top = SHELF_Y[si] + 0.04;
     let x = -(W/2 - 0.28);
@@ -716,8 +1130,14 @@ function buildShelfWall(A, B, subject, works, fill){
       for (const r of reserved) if (r[0] === si && Math.abs(x - r[1]) < 0.30) skip = true;
       if (!skip){
         const bh = 0.26 + rnd()*0.17;
-        buckets[(rnd() * buckets.length) | 0].push({w:bw, h:bh, d:0.26, x:x + bw/2, y:top + bh/2, z:0.02,
-                   rz:(rnd() < 0.14 ? (rnd() - 0.5) * 0.3 : 0)});
+        const bx = x + bw/2, by = top + bh/2, tilt = (rnd() < 0.14 ? (rnd() - 0.5) * 0.3 : 0);
+        const ci = (rnd() * buckets.length) | 0;
+        buckets[ci].push({w:bw, h:bh, d:0.26, x:bx, y:by, z:0.02, rz:tilt});
+        /* two raised bands across the spine, so it reads as a bound book */
+        for (const f of [0.28, -0.24])
+          spineBands[ci].push({w:bw * 1.06, h:bh * 0.055 + 0.008, d:0.272, x:bx, y:by + bh * f, z:0.02, rz:tilt});
+        for (const e of [1, -1])
+          pages.push({w:bw * 0.94, h:0.026, d:0.256, x:bx, y:by + e * (bh/2 - 0.013), z:0.02, rz:tilt});
       }
       x += bw + 0.012;
     }
@@ -727,25 +1147,35 @@ function buildShelfWall(A, B, subject, works, fill){
     const mb = mergedBoxes(buckets[bi], BOOK_MATS[bi]);
     g.add(mb.fill); g.add(mb.edge); occluders.push(mb.fill);
   }
+  spineBands.forEach((list, bi) => {
+    if (!list.length) return;
+    const sb = mergedBoxes(list, BAND_MATS[bi]);
+    g.add(sb.fill); g.add(sb.edge);
+  });
+  if (pages.length){
+    const pb = mergedBoxes(pages, PAGE_MAT);
+    g.add(pb.fill); g.add(pb.edge);
+  }
 
-  /* the yellow spines: one per piece of work */
+  /* the gold spines: one per piece of work, banded in brass */
+  const gilt = [];
   mine.forEach((w, i) => {
     const slot = reserved[i];
     const geo = new THREE.BoxGeometry(0.11, 0.40, 0.30);
-    const m = new THREE.Mesh(geo, yellowMat);
+    const m = new THREE.Mesh(geo, WORK_MAT);
     m.position.set(slot[1], SHELF_Y[slot[0]] + 0.04 + 0.20, 0.06);
     m.rotation.z = ((i % 3) - 1) * 0.055;
     g.add(m);
     const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
     e.position.copy(m.position); e.rotation.copy(m.rotation);
     g.add(e);
-    markRead([m], w);
+    for (const dy of [0.13, -0.11])
+      gilt.push({w:0.118, h:0.032, d:0.312, x:m.position.x, y:m.position.y + dy, z:0.06});
   });
-
-  /* the subject, written on the wall above the shelf */
-  const lbl = makeLabel(subject, 2.7, 70);
-  lbl.position.set(0, H + 0.42, -0.19);        // just in front of the wall, above the shelf
-  g.add(lbl);
+  if (gilt.length){
+    const gb = mergedBoxes(gilt, WORK_BAND);
+    g.add(gb.fill); g.add(gb.edge);
+  }
 
   if ((works || []).length > SLOT_ORDER.length)
     console.warn('shelf "' + subject + '" has more works than slots; ' +
@@ -798,22 +1228,27 @@ function galleryName(chain){
 /* ---- the sealed door filling a gallery's north doorway ---- */
 function buildSeal(G){
   const zc = G.nz, grp = new THREE.Group();
+  grp.position.set(0, 0, zc);
   scene.add(grp);
   const geo = new THREE.BoxGeometry(1.92, 2.22, 0.10);
-  const m = new THREE.Mesh(geo, LIB.plum);
-  m.position.set(0, 1.11, zc);
+  const m = new THREE.Mesh(geo, LIB.door);
+  m.position.set(0, 1.11, 0);
   grp.add(m); occluders.push(m);
   const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
   e.position.copy(m.position); grp.add(e);
-  for (const sx of [-0.16, 0.16]){
-    const sg = new THREE.BoxGeometry(0.06, 0.06, 0.06);
-    const sm = new THREE.Mesh(sg, yellowMat);
-    sm.position.set(sx, 1.11, zc + 0.07); grp.add(sm);
-    const se = new THREE.LineSegments(new THREE.EdgesGeometry(sg), lineMat);
-    se.position.copy(sm.position); grp.add(se);
+  /* four sunken panels */
+  for (const px of [-0.44, 0.44]) for (const py of [0.62, 1.62])
+    part(grp, new THREE.BoxGeometry(0.70, 0.82, 0.03), px, py, 0.055, 0,0,0, LIB.doorDim);
+  /* iron bands, hammered studs, and a ring to pull on */
+  for (const by of [0.30, 1.11, 1.94]){
+    part(grp, new THREE.BoxGeometry(1.94, 0.11, 0.045), 0, by, 0.06, 0,0,0, LIB.iron);
+    const studs = [];
+    for (let i = -3; i <= 3; i++) studs.push({w:0.055, h:0.055, d:0.03, x:i * 0.29, y:by, z:0.086});
+    const sb = mergedBoxes(studs, LIB.brass);
+    grp.add(sb.fill); grp.add(sb.edge);
   }
-  const lbl = makeLabel('gallery ∞', 1.0, 80);
-  lbl.position.set(0, 2.55, zc + 0.07); grp.add(lbl);
+  part(grp, new THREE.TorusGeometry(0.13, 0.022, 6, 16), 0.62, 1.11, 0.10, 0, 0, 0, LIB.brass);
+
   const ab = {x0:-0.96, x1:0.96, z0:zc - 0.07, z1:zc + 0.07, y0:0, y1:2.22, land:false};
   aabbs.push(ab);
   const entry = {
@@ -843,37 +1278,51 @@ function buildGallery(depth, works, chain){
   galleries[depth] = G;
 
   const V = hexPts(0, cz, HEX_R);
-  wallX(nz, -3.5, 3.5, [0], LIB_H);                        // north, with a doorway
-  segWall(V[0][0], V[0][1], V[1][0], V[1][1], LIB_H, T);   // 4 diagonal walls
-  segWall(V[2][0], V[2][1], V[3][0], V[3][1], LIB_H, T);
-  segWall(V[3][0], V[3][1], V[4][0], V[4][1], LIB_H, T);
-  segWall(V[5][0], V[5][1], V[0][0], V[0][1], LIB_H, T);
+  wallX(nz, -3.5, 3.5, [0], LIB_H, LIB.wall);                        // north, with a doorway
+  segWall(V[0][0], V[0][1], V[1][0], V[1][1], LIB_H, T, LIB.wall);   // 4 diagonal walls
+  segWall(V[2][0], V[2][1], V[3][0], V[3][1], LIB_H, T, LIB.wall);
+  segWall(V[3][0], V[3][1], V[4][0], V[4][1], LIB_H, T, LIB.wall);
+  segWall(V[5][0], V[5][1], V[0][0], V[0][1], LIB_H, T, LIB.wall);
 
   /* floor and ceiling: rings with the shaft hole in the middle */
   const ring = hexRing(HEX_R, HOLE_R, 0.14);
-  ringPiece(ring, 0, cz, meshMat, true);
-  ringPiece(ring, LIB_H + 0.14, cz, meshMat, false);
+  ringPiece(ring, 0, cz, LIB.floor, true);
+  ringPiece(ring, LIB_H + 0.14, cz, LIB.ceil, false);
   aabbs.push({x0:-HEX_R, x1:HEX_R, z0:nz, z1:cz + SQ3_2*HEX_R,
               y0:LIB_H, y1:LIB_H + 0.14, land:false});
 
-  /* the shaft: a wireframe hexagonal well running both ways, fading into fog */
-  const shaftP = hexPts(0, cz, HOLE_R);
-  const vl = [];
-  for (const p of shaftP){ vl.push([p[0], -13, p[1]], [p[0], 16, p[1]]); }
-  scene.add(linesFlat(vl));
-  for (const y of [-12.8, -9.6, -6.4, -3.2, 9.2, 12.4, 15.6]) loopLine(shaftP, y);
+  /* The well. It is lined in dark stone and shut at both ends, so a gallery is
+     sealed: you can no longer see the wireframe of the next room's shaft through
+     the floor, which was giving the whole trick away. The mathematics that used
+     to be on the walls is written down the inside of it instead. */
+  const WT = -13.4, WB = 17.2;                            // how far the lining runs
+  const HP = hexPts(0, cz, HOLE_R);
+  for (let k = 0; k < 6; k++){
+    const a = HP[k], b = HP[(k + 1) % 6];
+    wellPanel(a[0], a[1], b[0], b[1], WT, 0);                       // below the floor
+    wellPanel(a[0], a[1], b[0], b[1], LIB_H + 0.14, WB);            // above the ceiling
+  }
+  ringPiece(hexCap(HOLE_R + 0.06, 0.12), WT, cz, LIB.wellEnd, false);
+  ringPiece(hexCap(HOLE_R + 0.06, 0.12), WB, cz, LIB.wellEnd, false);
+
 
   /* rug, and a low railing so you have to mean it to fall in */
-  ringPiece(hexRing(5.2, 2.75, 0.03), 0.03, cz, depth % 2 ? LIB.olive : LIB.brick, true);
+  ringPiece(hexRing(5.2, 2.75, 0.03), 0.03, cz, depth % 2 ? LIB.rugDeep : LIB.brick, true);
   const RP = hexPts(0, cz, RAIL_R);
   for (let k = 0; k < 6; k++){
     const a = RP[k], b = RP[(k + 1) % 6];
-    segWall(a[0], a[1], b[0], b[1], 1.05, 0.12);
+    balustrade(a[0], a[1], b[0], b[1]);
   }
 
-  lamp(-3.4, cz + 1.6, LIB_H, 1.7, LIB.ochre);
-  lamp( 3.4, cz + 1.6, LIB_H, 1.7, LIB.brick);
-  lamp( 0,   cz - 3.4, LIB_H, 1.7, LIB.olive);
+  /* candlelight: two chandeliers over the well, and sconces on the flat walls */
+  /* mirrored about x = 0, which is the room's only axis of symmetry */
+  for (const sx of [-1, 1]){
+    chandelier(sx * 3.1, cz + 1.7, LIB_H, 1.5, 6, 0.44);
+    chandelier(sx * 3.1, cz - 1.7, LIB_H, 1.5, 6, 0.44);
+    sconce(sx * 2.9, 2.35, cz + SQ3_2*HEX_R - T/2 - 0.03, '-z');
+    sconce(sx * 2.9, 2.35, nz + T/2 + 0.03, '+z');
+  }
+  chandelier(0, cz - 4.5, LIB_H, 2.2, 8, 0.58);
 
   /* the shelves. Each work gets a fresh entry object so the same piece can sit
      on a shelf in several rooms at once and each copy keeps its own position. */
@@ -887,7 +1336,8 @@ function buildGallery(depth, works, chain){
 
   /* the plaque saying what this room is */
   const pz = nz + T/2 + 0.035;
-  const plaque = box(0.95, 0.65, 0.05, 2.55, 1.7, pz, {});
+  box(1.09, 0.79, 0.05, 2.55, 1.7, pz, {mat: LIB.oak});          // oak surround
+  const plaque = box(0.93, 0.63, 0.06, 2.55, 1.7, pz + 0.02, {mat: LIB.back});
   markRead([plaque], {
     title: G.name,
     body: (depth === 0
@@ -898,19 +1348,47 @@ function buildGallery(depth, works, chain){
           ' on these shelves.' +
           (depth ? '\n\nThe way back south leads to ' + galleryName(chain.slice(0, -1)) + '.' : '')
   });
-  hang(makeLabel('read me', 0.6, 90), 2.55, 1.24, pz + 0.03, '+z');
 
-  /* the lectern that opens the next room */
+  /* The reading lectern: a carved oak stand with the room's ledger open on it,
+     and above it a slowly turning solid of gold — the hand that built the place
+     still deciding what the next room is going to be about. */
   const fg = new THREE.Group();
   fg.position.set(2.05, 0, cz - 4.55); fg.rotation.y = -0.55;
   scene.add(fg);
-  part(fg, new THREE.BoxGeometry(0.09, 1.05, 0.09), 0, 0.52, 0, 0, 0, 0, PAL.dark);
-  const fb = part(fg, new THREE.BoxGeometry(1.05, 0.72, 0.06), 0, 1.32, 0, -0.25, 0, 0, LIB.ochre);
-  markRead([fb], {title: 'choose a filter', filters: true, depth});
-  const fl = makeLabel('choose a filter', 0.86, 96);
-  fl.position.set(0, 1.32, 0.05); fl.rotation.x = -0.25;
-  fg.add(fl);
+  part(fg, new THREE.BoxGeometry(0.62, 0.10, 0.52), 0, 0.05, 0, 0,0,0, LIB.oakDark);   // stepped foot
+  part(fg, new THREE.BoxGeometry(0.46, 0.07, 0.38), 0, 0.13, 0, 0,0,0, LIB.oak);
+  part(fg, new THREE.BoxGeometry(0.13, 0.92, 0.13), 0, 0.62, 0, 0,0,0, LIB.oak);       // column
+  part(fg, new THREE.BoxGeometry(0.19, 0.08, 0.19), 0, 0.26, 0, 0,0,0, LIB.oakLite);   // collars
+  part(fg, new THREE.BoxGeometry(0.19, 0.08, 0.19), 0, 1.00, 0, 0,0,0, LIB.oakLite);
+  part(fg, new THREE.BoxGeometry(0.92, 0.06, 0.54), 0, 1.10, 0, -0.34, 0, 0, LIB.oak); // slanted desk
+  part(fg, new THREE.BoxGeometry(0.96, 0.05, 0.07), 0, 1.02, 0.235, -0.34, 0, 0, LIB.oakLite);
+  /* the open ledger */
+  for (const sx of [-1, 1]){
+    part(fg, new THREE.BoxGeometry(0.40, 0.035, 0.44), sx * 0.21, 1.155, 0.012, -0.34, 0, sx * 0.03, LIB.back);
+  }
+  part(fg, new THREE.BoxGeometry(0.05, 0.05, 0.44), 0, 1.16, 0.012, -0.34, 0, 0, LIB.doorDim);
+  const rules = [];
+  for (let i = 0; i < 7; i++)
+    for (const sx of [-1, 1])
+      rules.push({w:0.30, h:0.006, d:0.012, x:sx * 0.21, y:1.176, z:0.012, rx:-0.34});
+  const rb = mergedBoxes(rules, LIB.iron);
+  fg.add(rb.fill); fg.add(rb.edge);
+  const fb = part(fg, new THREE.BoxGeometry(0.86, 0.02, 0.50), 0, 1.175, 0.012, -0.34, 0, 0, LIB.back);
+  fb.visible = false;                                  // an invisible, easy click target over the pages
+  markGroupRead(fg, {title: 'the ledger', filters: true, depth});
+  /* the turning solid, hanging in the air above the desk */
+  const solid = new THREE.Group();
+  solid.position.set(0, 1.95, 0);
+  fg.add(solid);
+  part(solid, new THREE.OctahedronGeometry(0.17, 0), 0, 0, 0, 0, 0, 0, LIB.brass);
+  const halo = makeGlyph(GLYPHS[depth % GLYPHS.length], 0.30, '#d9b45e');
+  halo.position.set(0, 0.34, 0);
+  solid.add(halo);
+  spinners.push({o: solid, s: 0.5, b: halo, y0: 1.95});
 
+  littleCase(cz, {title: 'what is on these shelves', shelfList: true, depth});
+  fallingBooks(cz, 11);
+  fallingGlyphs(cz, 14);
   buildSeal(G);
 
   /* lock in world positions for everything this room just added */
@@ -924,6 +1402,20 @@ function disposeFrom(depth){
   if (depth >= galleries.length || depth < 1) return;
   truncTo(galleries[depth].mark);
   galleries.length = depth;
+}
+/* shut a gallery: tear down everything past this room and seal its door again */
+function closeGallery(depth){
+  const G = galleries[depth];
+  if (!G || !G.next) return;
+  disposeFrom(depth + 1);
+  G.next = null;
+  buildSeal(G);
+  scene.updateMatrixWorld(true);
+  const e = G.seal.entry;
+  if (!e._pos){ e._pos = new THREE.Vector3(); }
+  e._anchor.getWorldPosition(e._pos);
+  showToast('the north door is sealed again');
+  renderReading(reading);              // the lectern list redraws with the door shut
 }
 function openFilter(depth, opt){
   const G = galleries[depth];
@@ -939,23 +1431,49 @@ function openFilter(depth, opt){
             ' (' + kept.length + (kept.length === 1 ? ' piece)' : ' pieces)'));
 }
 
-wallX(-6, -3.5, 3.5, [0], LIB_H);               // the library's south wall, onto the corridor
+wallX(-6, -3.5, 3.5, [0], LIB_H, LIB.wall);     // the library's south wall, onto the corridor
 buildGallery(0, CONTENT.work, []);
 
-/* the catalogue lectern, just inside the library door */
-const catG = new THREE.Group();
-catG.position.set(1.35, 0, -7.7); catG.rotation.y = -0.6; scene.add(catG);
-part(catG, new THREE.BoxGeometry(0.09, 1.05, 0.09), 0, 0.52, 0, 0, 0, 0, PAL.dark);
-const catBoard = part(catG, new THREE.BoxGeometry(1.0, 0.7, 0.06), 0, 1.32, 0, -0.25, 0, 0, LIB.sand);
-markRead([catBoard], CATALOGUE);
-const catLbl = makeLabel('the catalogue', 0.82, 96);
-catLbl.position.set(0, 1.32, 0.05); catLbl.rotation.x = -0.25;
-catG.add(catLbl);
+/* ---- an oak doorframe with the door standing open, swung back against the wall.
+       `swing` is which side it hinges on, `face` which way the leaf opens. ---- */
+function openDoorway(z, swing){
+  const HW = DOOR_W/2, HH = DOOR_H;
+  /* Every face here is deliberately offset from the wall it sits in. The jambs
+     used to share the x plane of the doorway cut and the lintel's underside sat
+     exactly on the header's underside — two coplanar surfaces, which is what was
+     shimmering. Nothing below is flush with anything. */
+  for (const sx of [-1, 1])                                   // jambs
+    box(0.16, HH + 0.22, 0.31, sx * (HW + 0.05), (HH + 0.22)/2, z, {mat: LIB.oak});
+  box(DOOR_W + 0.26, 0.18, 0.31, 0, HH + 0.05, z, {mat: LIB.oak});          // lintel, dropped 0.04
+  box(DOOR_W + 0.42, 0.10, 0.39, 0, HH + 0.22, z, {mat: LIB.oakLite});      // dripstone
+  /* the leaf, hinged open about 70° so you walk straight past it */
+  const leaf = new THREE.Group();
+  leaf.position.set(swing * HW, 0, z);
+  leaf.rotation.y = swing * 1.05;
+  scene.add(leaf);
+  part(leaf, new THREE.BoxGeometry(DOOR_W - 0.06, HH - 0.06, 0.07),
+       swing * (DOOR_W - 0.06)/2, (HH - 0.06)/2, 0, 0,0,0, LIB.door);
+  for (const py of [0.62, 1.55])                                            // sunken panels
+    part(leaf, new THREE.BoxGeometry(DOOR_W - 0.42, 0.72, 0.03),
+         swing * (DOOR_W - 0.06)/2, py, 0.042, 0,0,0, LIB.doorDim);
+  for (const by of [0.35, 1.85]){                                           // iron straps
+    part(leaf, new THREE.BoxGeometry(DOOR_W - 0.10, 0.09, 0.035),
+         swing * (DOOR_W - 0.06)/2, by, 0.05, 0,0,0, LIB.iron);
+  }
+  part(leaf, new THREE.TorusGeometry(0.09, 0.018, 5, 12),
+       swing * (DOOR_W - 0.30), 1.10, 0.07, 0,0,0, LIB.brass);
+  return leaf;
+}
+openDoorway(-2, -1);        // atrium into the corridor
+openDoorway(-6,  1);        // corridor into the library
 
-/* and a second one on the corridor wall, so you meet it on the way in */
-const corrBoard = box(0.06, 0.62, 0.9, -2.09, 1.62, -4, {mat: LIB.ochre});
-markRead([corrBoard], CATALOGUE);
-hang(makeLabel('the catalogue', 0.78, 90), -2.045, 1.62, -4, '+x');
+/* the corridor in: oak wainscot, and mathematics cut into the stone */
+for (const sx of [-1, 1]){
+  const x = sx * 2.11;
+  box(0.05, 0.95, 3.9, x, 0.48, -4, {mat: LIB.oak});          // wainscot
+  box(0.06, 0.09, 3.9, x, 0.98, -4, {mat: LIB.oakLite});      // its capping rail
+  sconce(x - sx * 0.04, 2.05, -3.4, sx > 0 ? '-x' : '+x');
+}
 
 /* ============ furniture ============ */
 function table(cx, cz, w, d, h, topMat){
@@ -970,45 +1488,122 @@ function table(cx, cz, w, d, h, topMat){
   }
   aabbs.push({x0:cx-w/2, x1:cx+w/2, z0:cz-d/2, z1:cz+d/2, y0:0, y1:h, land:true});
 }
-function chair(cx, cz, ry, m){
-  m = m || PAL.teal;
-  const g = new THREE.Group(); g.position.set(cx, 0, cz); g.rotation.y = ry || 0; scene.add(g);
-  part(g, new THREE.BoxGeometry(0.52, 0.1, 0.52), 0, 0.42, 0, 0, 0, 0, m);
-  part(g, new THREE.CylinderGeometry(0.06, 0.1, 0.38, 8), 0, 0.19, 0, 0, 0, 0, PAL.dark);
-  part(g, new THREE.BoxGeometry(0.52, 0.55, 0.08), 0, 0.73, -0.22, -0.08, 0, 0, m);
-  aabbs.push({x0:cx-0.26, x1:cx+0.26, z0:cz-0.26, z1:cz+0.26, y0:0, y1:0.47, land:true});
-}
 function plinth(cx, cz, capMat){
   const body = box(0.56, 0.85, 0.56, cx, 0.425, cz, {mat: PAL.cream});
   const cap  = box(0.68, 0.06, 0.68, cx, 0.88, cz, {surface:true, mat: capMat || PAL.red});
   aabbs.push({x0:cx-0.34, x1:cx+0.34, z0:cz-0.34, z1:cz+0.34, y0:0, y1:0.91, land:true});
   return [body, cap];
 }
-function crate(cx, cz, h){
-  const s = 0.85;
-  box(s, h, s, cx, h/2, cz, {solid:true, surface:true, mat: PAL.wood});
-  const hw = s/2 * 1.002, xo = s/2 - 0.05, l = [];
-  for (const sz of [-1,1]){
-    l.push([cx-xo, 0.04, cz+sz*hw], [cx+xo, h-0.04, cz+sz*hw]);
-    l.push([cx-xo, h-0.04, cz+sz*hw], [cx+xo, 0.04, cz+sz*hw]);
+/* ================================================================
+   ONIONS — deliberately not in the house style. No ink outline, no flat
+   fill: a smooth lathed bulb with real normals, a papery skin texture and
+   a waxy specular, lit by the only two lights in the scene. Every other
+   material here is MeshBasicMaterial and ignores light entirely, so these
+   lamps touch nothing but the onions.
+   ================================================================ */
+scene.add(new THREE.AmbientLight(0xffffff, 0.66));
+const onionSun = new THREE.DirectionalLight(0xffffff, 0.85);
+onionSun.position.set(0.45, 1, 0.32);
+scene.add(onionSun);
+
+const onionTex = makeTex((x, S) => {
+  x.fillStyle = '#9d6d95'; x.fillRect(0, 0, S, S);
+  for (let i = 0; i < 240; i++){                 // papery striations running pole to pole
+    const px = Math.random() * S, light = Math.random() > 0.48;
+    x.strokeStyle = light ? 'rgba(214,186,209,' + (0.12 + Math.random() * 0.34).toFixed(3) + ')'
+                          : 'rgba(88,50,84,'   + (0.12 + Math.random() * 0.34).toFixed(3) + ')';
+    x.lineWidth = 0.5 + Math.random() * 3.4;
+    x.beginPath(); x.moveTo(px, 0);
+    for (let y = 0; y <= S; y += 14) x.lineTo(px + Math.sin(y * 0.021 + i) * 2.6, y);
+    x.stroke();
   }
-  for (const sx of [-1,1]){
-    l.push([cx+sx*hw, 0.04, cz-xo], [cx+sx*hw, h-0.04, cz+xo]);
-    l.push([cx+sx*hw, h-0.04, cz-xo], [cx+sx*hw, 0.04, cz+xo]);
+  for (let i = 0; i < 40; i++){                  // a few dry flecks
+    x.fillStyle = 'rgba(226,206,222,' + (0.10 + Math.random() * 0.3).toFixed(3) + ')';
+    x.beginPath(); x.arc(Math.random()*S, Math.random()*S, 1 + Math.random()*3, 0, 6.284); x.fill();
   }
-  scene.add(linesFlat(l));
+}, 1);
+const onionMat = new THREE.MeshPhongMaterial({map: onionTex, shininess: 30, specular: 0x4a4a4a});
+const shootMat = new THREE.MeshPhongMaterial({color: 0x6f8f4a, shininess: 14, specular: 0x2a2a2a});
+
+/* the silhouette of an onion, spun into a surface of revolution */
+const ONION_GEO = (() => {
+  const pts = [
+    [0.000, 0.000], [0.075, 0.012], [0.155, 0.055], [0.235, 0.130], [0.283, 0.225],
+    [0.292, 0.330], [0.262, 0.425], [0.196, 0.505], [0.116, 0.565], [0.055, 0.615],
+    [0.028, 0.675], [0.012, 0.735], [0.000, 0.760]
+  ].map(p => new THREE.Vector2(p[0], p[1]));
+  return new THREE.LatheGeometry(pts, 22);
+})();
+const SHOOT_GEO = new THREE.CylinderGeometry(0.006, 0.030, 0.46, 6, 1, false);
+
+/* merge many transformed copies into one buffer: keeps a heap to two draw calls */
+function mergeGeos(items){
+  let vc = 0, ic = 0;
+  for (const it of items){ vc += it.geo.attributes.position.count; ic += it.geo.index.count; }
+  const pos = new Float32Array(vc * 3), nor = new Float32Array(vc * 3), uv = new Float32Array(vc * 2);
+  const idx = new Uint32Array(ic);
+  const v = new THREE.Vector3(), nm = new THREE.Matrix3();
+  let vo = 0, io = 0;
+  for (const it of items){
+    const g = it.geo, p = g.attributes.position, n = g.attributes.normal, t = g.attributes.uv;
+    nm.getNormalMatrix(it.m);
+    for (let i = 0; i < p.count; i++){
+      v.fromBufferAttribute(p, i).applyMatrix4(it.m);
+      pos[(vo+i)*3] = v.x; pos[(vo+i)*3+1] = v.y; pos[(vo+i)*3+2] = v.z;
+      v.fromBufferAttribute(n, i).applyMatrix3(nm).normalize();
+      nor[(vo+i)*3] = v.x; nor[(vo+i)*3+1] = v.y; nor[(vo+i)*3+2] = v.z;
+      if (t){ uv[(vo+i)*2] = t.getX(i); uv[(vo+i)*2+1] = t.getY(i); }
+    }
+    for (let i = 0; i < g.index.count; i++) idx[io + i] = g.index.getX(i) + vo;
+    vo += p.count; io += g.index.count;
+  }
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  out.setAttribute('normal',   new THREE.BufferAttribute(nor, 3));
+  out.setAttribute('uv',       new THREE.BufferAttribute(uv, 2));
+  out.setIndex(new THREE.BufferAttribute(idx, 1));
+  return out;
 }
-function plant(cx, cz){
-  const g = new THREE.Group(); g.position.set(cx, 0, cz); scene.add(g);
-  part(g, new THREE.CylinderGeometry(0.14, 0.11, 0.24, 8), 0, 0.12, 0, 0, 0, 0, PAL.orange);
-  const l = [];
-  for (let i = 0; i < 5; i++){
-    const a = i/5 * Math.PI*2 + 0.4;
-    const ex = Math.cos(a)*0.17, ez = Math.sin(a)*0.17;
-    l.push([0, 0.22, 0], [ex*0.6, 0.46, ez*0.6]);
-    l.push([ex*0.6, 0.46, ez*0.6], [ex, 0.62 + (i % 2)*0.12, ez]);
+
+const _om = new THREE.Matrix4(), _oq = new THREE.Quaternion(), _oe = new THREE.Euler(), _ov = new THREE.Vector3();
+function onionMatrices(x, y, z, s, bulbs, shoots){
+  _oe.set((rnd() - 0.5) * 0.45, rnd() * 6.28, (rnd() - 0.5) * 0.45);
+  _oq.setFromEuler(_oe);
+  _om.compose(new THREE.Vector3(x, y, z), _oq, _ov.set(s, s, s));
+  bulbs.push({geo: ONION_GEO, m: _om.clone()});
+  const n = 1 + ((rnd() * 3) | 0);
+  for (let i = 0; i < n; i++){
+    const a = rnd() * 6.28, lean = 0.18 + rnd() * 0.5;
+    const e = new THREE.Euler(Math.cos(a) * lean, rnd() * 6.28, Math.sin(a) * lean);
+    const m = new THREE.Matrix4().compose(
+      new THREE.Vector3(x, y + 0.74 * s, z),
+      new THREE.Quaternion().setFromEuler(e),
+      new THREE.Vector3(s, s * (0.7 + rnd() * 0.7), s));
+    shoots.push({geo: SHOOT_GEO, m});
   }
-  g.add(linesFlat(l, leafMat));
+}
+/* one onion on its own (the readable ones in the onion room) */
+function onion(x, y, z, s){
+  const bulbs = [], shoots = [];
+  onionMatrices(0, 0, 0, s || 1, bulbs, shoots);
+  const g = new THREE.Group();
+  g.position.set(x, y || 0, z);
+  g.add(new THREE.Mesh(mergeGeos(bulbs), onionMat));
+  g.add(new THREE.Mesh(mergeGeos(shoots), shootMat));
+  scene.add(g);
+  return g;
+}
+/* a heap of them, merged down to two draw calls */
+function onionPile(cx, cz, n, spread){
+  const bulbs = [], shoots = [];
+  for (let i = 0; i < n; i++){
+    const a = rnd() * 6.28, r = Math.sqrt(rnd()) * spread, d = r / spread;
+    const lift = Math.min(0.55, (1 - d) * (1 - d) * spread * 0.28) * rnd();
+    onionMatrices(cx + Math.cos(a) * r, lift, cz + Math.sin(a) * r,
+                  0.46 + rnd() * 0.22, bulbs, shoots);
+  }
+  scene.add(new THREE.Mesh(mergeGeos(bulbs), onionMat));
+  scene.add(new THREE.Mesh(mergeGeos(shoots), shootMat));
 }
 
 /* a framed picture on a wall: white mat, ink frame, image fitted inside */
@@ -1061,12 +1656,11 @@ function framedPicture(entry, x, y, z, face, W, H){
 }
 
 /* atrium */
-box(3.6, 0.03, 2.6, 0, 0.015, 3, {surface:true, mat: PAL.teal});      // rug
-loopLine([[-1.5, 2.0], [1.5, 2.0], [1.5, 4.0], [-1.5, 4.0]], 0.038);
-lamp(0, 3, ATR_H, 0.9, PAL.red);
-plant(-8.2, 7.2); plant(8.2, -1.2);
-table(2.6, 5.9, 0.9, 0.6, 0.72);                      // little side table
-crate(5.6, 6.9, 0.55); crate(7.0, 5.85, 1.10); crate(8.05, 7.05, 1.65);  // parkour to the cheese
+chandelier(0, 3, ATR_H, 0.7, 5, 0.34);
+onionPile(-7.6, 6.9, 22, 1.5);                        // the corners fill up with onions
+onionPile( 7.6, 6.6, 18, 1.3);
+onionPile(-7.9, -0.9, 12, 1.0);
+onionPile( 7.9, -0.9, 14, 1.1);
 /* the front door: the way out to the flat site */
 const FD_X = -4.6, FD_Z = -1.885;
 const fdm = box(2.1, 2.5, 0.06, FD_X, 1.25, FD_Z, {mat: PAL.orange});
@@ -1076,22 +1670,19 @@ scene.add(linesFlat([[FD_X - 0.92, 0.35, FD_Z + 0.035], [FD_X + 0.92, 0.35, FD_Z
                      [FD_X - 0.92, 0.35, FD_Z + 0.035], [FD_X - 0.92, 1.55, FD_Z + 0.035],
                      [FD_X + 0.92, 0.35, FD_Z + 0.035], [FD_X + 0.92, 1.55, FD_Z + 0.035]]));
 box(0.11, 0.11, 0.07, FD_X + 0.78, 1.05, FD_Z + 0.05, {mat: yellowMat});     // the handle
-box(1.5, 0.03, 0.8, FD_X, 0.015, -1.15, {surface:true, mat: PAL.cork});      // doormat
 hang(makeLabel('the rest of the site →', 1.9, 60), FD_X, 2.86, FD_Z + 0.05, '+z');
 
-const dirG = new THREE.Group(); dirG.position.set(-2.5, 0, 5.4); dirG.rotation.y = 0.5; scene.add(dirG);
-part(dirG, new THREE.BoxGeometry(0.07, 1.05, 0.07), 0, 0.52, 0, 0, 0, 0, PAL.dark);
-const dirBoard = part(dirG, new THREE.BoxGeometry(0.9, 0.62, 0.05), 0, 1.3, 0, -0.15, 0, 0, PAL.wood);
-markRead([dirBoard], CONTENT.directory);
-const dirLbl = makeLabel('directory', 0.72, 96);
-dirLbl.position.set(0, 1.3, 0.035); dirLbl.rotation.x = -0.15;
-dirG.add(dirLbl);
+/* a low oak bench and a skirting rail, and that is all the atrium needs */
+box(18, 0.12, 0.06, 0, 0.06, -1.93, {mat: HOUSE.trim});
+box(18, 0.12, 0.06, 0, 0.06, 7.93, {mat: HOUSE.trim});
+box(0.06, 0.12, 10, -8.93, 0.06, 3, {mat: HOUSE.trim});
+box(0.06, 0.12, 10, 8.93, 0.06, 3, {mat: HOUSE.trim});
 
 /* writings */
 table(-13.7, 0.9, 1.5, 0.85, 0.78);
 table(-13.7, 4.3, 1.5, 0.85, 0.78);
-chair(-12.7, 0.9, -Math.PI/2, PAL.red);
-chair(-12.7, 4.3, -Math.PI/2, PAL.teal);
+onionPile(-11.0, 6.6, 16, 1.3);                       // and the writing room's corners too
+onionPile(-14.6, -0.9, 11, 1.0);
 function paperSheet(x, z, y, ry, entry, scribbles){
   const g = new THREE.Group(); g.position.set(x, y + 0.008, z); g.rotation.y = ry || 0; scene.add(g);
   const geo = new THREE.BoxGeometry(0.30, 0.014, 0.40);
@@ -1114,181 +1705,244 @@ paperSheet(-11.4, 6.4, 0, 1.15, CONTENT.writings[2]);
 paperSheet(-13.9, 1.15, 0.78, 0.9, null);               // loose blank sheets
 paperSheet(-13.5, 4.05, 0.78, -1.4, null);
 
-/* ideas: corkboard of sticky notes */
-table(12.2, 5.6, 1.2, 0.8, 0.75);
-const ib = new THREE.Group(); ib.position.set(15.86, 1.7, 3); ib.rotation.y = -Math.PI/2; scene.add(ib);
-part(ib, new THREE.BoxGeometry(2.7, 1.6, 0.06), 0, 0, 0, 0, 0, 0, PAL.cork);
-const NOTE_MATS = [yellowMat, PAL.pink, PAL.blue, PAL.green, PAL.orange];
-const notePos = [];
+/* ideas: the onion room. Nothing but onions, floor to floor. */
+onionPile(12.5, 3.0, 40, 2.5);
+onionPile(10.5, 6.4, 26, 1.7);
+onionPile(14.4, 6.6, 22, 1.5);
+onionPile(11.0, -0.4, 24, 1.6);
+onionPile(14.6, 0.2, 20, 1.4);
+onionPile(15.0, 3.6, 16, 1.2);
+onionPile(10.0, 1.4, 14, 1.1);
+/* five of them have been thinking. Aim at one and it will tell you what about. */
+const IDEA_SPOTS = [[12.5, 3.0], [10.9, 5.6], [14.0, 5.9], [11.4, 0.4], [14.4, 1.3]];
 CONTENT.ideas.forEach((idea, i) => {
-  const geo = new THREE.BoxGeometry(0.36, 0.36, 0.035);
-  const m = new THREE.Mesh(geo, NOTE_MATS[i % NOTE_MATS.length]);
-  const px = -0.95 + (i % 3) * 0.95 + (rnd() - 0.5) * 0.14;
-  const py =  0.36 - Math.floor(i / 3) * 0.72 + (rnd() - 0.5) * 0.10;
-  m.position.set(px, py, 0.05);
-  m.rotation.z = (rnd() - 0.5) * 0.24;
-  ib.add(m);
-  const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
-  e.position.copy(m.position); e.rotation.copy(m.rotation); ib.add(e);
-  markRead([m], idea);
-  notePos.push([px, py]);
+  const p = IDEA_SPOTS[i % IDEA_SPOTS.length];
+  const g = onion(p[0], 0.62 + (i % 2) * 0.12, p[1], 1.25, 0);
+  markGroupRead(g, idea);
 });
-const deco = [];
-for (let i = 0; i < 7; i++){
-  const px = -1.15 + rnd() * 2.3, py = -0.6 + rnd() * 1.2;
-  let near = false;
-  for (const n of notePos) if (Math.abs(px - n[0]) < 0.42 && Math.abs(py - n[1]) < 0.42) near = true;
-  if (near){ i--; continue; }
-  deco.push({w:0.22, h:0.22, d:0.03, x:px, y:py, z:0.048, rz:(rnd() - 0.5) * 0.4});
-}
-const dBuckets = NOTE_MATS.map(() => []);
-deco.forEach((d, di) => dBuckets[di % NOTE_MATS.length].push(d));
-for (let bi = 0; bi < dBuckets.length; bi++){
-  if (!dBuckets[bi].length) continue;
-  const dn = mergedBoxes(dBuckets[bi], NOTE_MATS[bi]);
-  ib.add(dn.fill); ib.add(dn.edge); occluders.push(dn.fill);
-}
-const scr = [];
-for (const n of notePos.concat(deco.map(d => [d.x, d.y]))){
-  scr.push([n[0]-0.08, n[1]+0.04, 0.075], [n[0]+0.06, n[1]+0.04, 0.075]);
-  scr.push([n[0]-0.08, n[1]-0.03, 0.075], [n[0]+0.02 + rnd()*0.05, n[1]-0.03, 0.075]);
-}
-for (let i = 0; i < 3 && notePos.length > i + 1; i++)
-  scr.push([notePos[i][0], notePos[i][1], 0.07], [notePos[i+1][0], notePos[i+1][1], 0.07]);
-ib.add(linesFlat(scr));
 
-/* about me */
-table(-4.6, 11.9, 1.5, 0.95, 0.78);
-box(0.6, 0.03, 0.6, -4.6, 0.795, 11.9, {mat: PAL.cream});             // chessboard
-const sqList = [];
-for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++){
-  if ((i + j) % 2 === 0) continue;
-  sqList.push({w:0.06, h:0.006, d:0.06, x:-4.81 + i*0.06, y:0.813, z:11.69 + j*0.06});
-}
-const sqm = mergedBoxes(sqList, PAL.dark);
-scene.add(sqm.fill); scene.add(sqm.edge);
-function chessPiece(x, z, mat){
-  const g = new THREE.Group(); g.position.set(x, 0.81, z); scene.add(g);
-  part(g, new THREE.CylinderGeometry(0.018, 0.026, 0.07, 8), 0, 0.035, 0, 0, 0, 0, mat);
-}
-chessPiece(-4.75, 11.75, PAL.blue); chessPiece(-4.45, 12.05, PAL.red);
-chessPiece(-4.51, 11.81, PAL.red); chessPiece(-4.69, 11.99, PAL.blue);
+/* about me: an oak-framed panel, a bench, and room to stand */
+box(2.4, 0.10, 0.60, -4.6, 0.42, 12.9, {mat: HOUSE.trim});          // a bench along the back
+for (const sx of [-1, 1])
+  box(0.14, 0.42, 0.50, -4.6 + sx * 1.0, 0.21, 12.9, {mat: HOUSE.trim});
+aabbs.push({x0:-5.8, x1:-3.4, z0:12.6, z1:13.2, y0:0, y1:0.47, land:true});
+onionPile(-7.9, 9.4, 12, 1.0);
 
-/* wall art: stick figures, landscapes */
-function circlePts(cx, cy, r, n){
-  const p = [];
-  for (let i = 0; i <= n; i++){
-    const a = i/n * Math.PI*2;
-    p.push(new THREE.Vector3(cx + Math.cos(a)*r, cy + Math.sin(a)*r, 0));
-  }
-  return p;
+/* the About Me panel, framed in oak like the ones in the honours room */
+framedPicture(CONTENT.about, -8.86, 1.85, 11.5, '+x', 1.9, 1.35);
+
+/* ---- trophies: four things you actually won, each on its own plinth.
+       Click any of them (or its plinth) and the award reads out. ---- */
+const AW = {
+  gold:   flatMat(0xc9a227),
+  goldDk: flatMat(0x9a7b1c),
+  ribbon: flatMat(0x8f3a30),
+  shirt:  flatMat(0x2f5fa8),
+  ice:    flatMat(0x9fd4e8),
+  iceCap: flatMat(0x4a6f80),
+  hoodie: flatMat(0x1f2a3d),
+  hoodieD:flatMat(0x172032),
+  steel:  flatMat(0xb9c2c9)
+};
+
+/* text printed across a garment: split on | for a second line */
+function garmentText(g, txt, w, y, z, color){
+  if (!txt) return;
+  const lines = String(txt).split('|');
+  lines.forEach((ln, i) => {
+    const t = makeLabel(ln.trim(), w, 90, color);
+    t.position.set(0, y - i * w * 0.19, z);
+    g.add(t);
+  });
 }
-function polyline(g, pts){
-  g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(
-    pts.map(p => new THREE.Vector3(p[0], p[1], 0))), lineMat));
-}
-function stickFigure(){
-  const g = new THREE.Group();
-  g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(circlePts(0, 0.62, 0.115, 20)), lineMat));
-  polyline(g, [[0,0.505],[0,0.16]]);
-  polyline(g, [[-0.17,0.30],[0,0.42],[0.17,0.30]]);
-  polyline(g, [[-0.13,-0.06],[0,0.16],[0.13,-0.06]]);
+
+/* 1 — the Utica gold medal, hanging from its ribbon on a stand */
+function propMedal(x, z){
+  const g = new THREE.Group(); g.position.set(x, 0.91, z);
+  g.rotation.y = Math.PI;                       // face the door, not the back wall
+  scene.add(g);
+  part(g, new THREE.BoxGeometry(0.22, 0.04, 0.16), 0, 0.02, 0, 0,0,0, PAL.dark);      // foot
+  part(g, new THREE.CylinderGeometry(0.018, 0.022, 0.44, 6), 0, 0.24, -0.03, 0,0,0, PAL.dark);
+  part(g, new THREE.BoxGeometry(0.05, 0.19, 0.02), -0.05, 0.40, 0.005, 0, 0,  0.42, AW.ribbon);
+  part(g, new THREE.BoxGeometry(0.05, 0.19, 0.02),  0.05, 0.40, 0.005, 0, 0, -0.42, AW.ribbon);
+  part(g, new THREE.CylinderGeometry(0.105, 0.105, 0.022, 16), 0, 0.26, 0.02, Math.PI/2, 0, 0, AW.gold);
+  part(g, new THREE.TorusGeometry(0.105, 0.012, 5, 16), 0, 0.26, 0.02, 0,0,0, AW.goldDk);
+  const one = makeGlyph('1', 0.13, '#6b5313');
+  one.position.set(0, 0.26, 0.034); g.add(one);
   return g;
 }
-function portraitOfMe(){
-  const g = new THREE.Group();
-  const frameGeo = new THREE.PlaneGeometry(1.05, 1.3);
-  const back = new THREE.Mesh(frameGeo, meshMat);
-  g.add(back);
-  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(frameGeo), lineMat));
-  const f = stickFigure();
-  f.scale.setScalar(1.15);
-  f.position.set(0, -0.42, 0.003);
-  g.add(f);
-  return {group: g, mesh: back};
-}
-const meP = portraitOfMe();
-hang(meP.group, -8.91, 1.8, 11.5, '+x');
-markRead([meP.mesh], CONTENT.about);
-hang(makeLabel('me.', 0.4, 100), -8.91, 1.0, 11.5, '+x');
 
-/* trophies */
-function trophyCup(x, z){
-  const g = new THREE.Group(); g.position.set(x, 0.91, z); scene.add(g);
-  part(g, new THREE.CylinderGeometry(0.13, 0.15, 0.05, 10), 0, 0.025, 0, 0, 0, 0, yellowMat);
-  part(g, new THREE.CylinderGeometry(0.025, 0.035, 0.12, 8), 0, 0.11, 0, 0, 0, 0, yellowMat);
-  part(g, new THREE.CylinderGeometry(0.12, 0.05, 0.17, 10), 0, 0.255, 0, 0, 0, 0, yellowMat);
+/* 2 — the USAPhO qualifier shirt on a hanger */
+function propShirt(x, z, txt){
+  const g = new THREE.Group(); g.position.set(x, 0.91, z);
+  g.rotation.y = Math.PI;                       // face the door, not the back wall
+  scene.add(g);
+  part(g, new THREE.BoxGeometry(0.20, 0.04, 0.16), 0, 0.02, 0, 0,0,0, PAL.dark);
+  part(g, new THREE.CylinderGeometry(0.017, 0.02, 0.60, 6), 0, 0.32, -0.06, 0,0,0, PAL.dark);
+  part(g, new THREE.BoxGeometry(0.34, 0.02, 0.02), 0, 0.58, -0.06, 0,0,0, AW.steel);   // hanger bar
+  part(g, new THREE.TorusGeometry(0.035, 0.008, 4, 10), 0, 0.63, -0.06, 0,0,0, AW.steel);
+  part(g, new THREE.BoxGeometry(0.40, 0.42, 0.07), 0, 0.36, 0, 0,0,0, AW.shirt);       // body
+  part(g, new THREE.BoxGeometry(0.13, 0.13, 0.07), -0.25, 0.52, 0, 0,0, 0.5, AW.shirt); // sleeves
+  part(g, new THREE.BoxGeometry(0.13, 0.13, 0.07),  0.25, 0.52, 0, 0,0,-0.5, AW.shirt);
+  part(g, new THREE.BoxGeometry(0.12, 0.04, 0.075), 0, 0.565, 0, 0,0,0, AW.iceCap);     // collar
+  garmentText(g, txt, 0.34, 0.40, 0.040, '#f2f6ff');
   return g;
 }
-function trophyRook(x, z){
-  const g = new THREE.Group(); g.position.set(x, 0.91, z); scene.add(g);
-  part(g, new THREE.CylinderGeometry(0.11, 0.13, 0.06, 10), 0, 0.03, 0);
-  part(g, new THREE.CylinderGeometry(0.075, 0.095, 0.22, 10), 0, 0.17, 0);
-  part(g, new THREE.CylinderGeometry(0.105, 0.105, 0.05, 10), 0, 0.305, 0);
-  for (const o of [[-0.062, 0], [0.062, 0], [0, -0.062], [0, 0.062]])
-    part(g, new THREE.BoxGeometry(0.05, 0.055, 0.05), o[0], 0.357, o[1]);
-  return g;
-}
-function trophyMedal(x, z){
-  const g = new THREE.Group(); g.position.set(x, 0.91, z); scene.add(g);
-  part(g, new THREE.BoxGeometry(0.2, 0.05, 0.14), 0, 0.025, 0);
-  part(g, new THREE.BoxGeometry(0.05, 0.16, 0.02), -0.04, 0.21, -0.01, 0, 0,  0.4, PAL.red);
-  part(g, new THREE.BoxGeometry(0.05, 0.16, 0.02),  0.04, 0.21, -0.01, 0, 0, -0.4, PAL.red);
-  part(g, new THREE.CylinderGeometry(0.085, 0.085, 0.025, 14), 0, 0.13, 0.01, Math.PI/2, 0, 0, yellowMat);
-  return g;
-}
-const pl1 = plinth(2.4, 12.6, PAL.red);    markRead(pl1, CONTENT.awards[0]); markGroupRead(trophyCup(2.4, 12.6), CONTENT.awards[0]);
-const pl2 = plinth(4.5, 11.3, PAL.blue);   markRead(pl2, CONTENT.awards[1]); markGroupRead(trophyRook(4.5, 11.3), CONTENT.awards[1]);
-const pl3 = plinth(6.6, 12.6, PAL.purple); markRead(pl3, CONTENT.awards[2]); markGroupRead(trophyMedal(6.6, 12.6), CONTENT.awards[2]);
 
-/* the picture wall: back wall first, then the east wall, then the divider */
-const PIC_SLOTS = [
-  [1.95, 1.95, 14.86, '-z', 1.55, 1.15],
-  [4.50, 2.00, 14.86, '-z', 2.30, 1.45],      // the big one in the middle of the back wall
-  [7.05, 1.95, 14.86, '-z', 1.55, 1.15],
-  [8.86, 1.95, 10.45, '-x', 1.55, 1.15],
-  [8.86, 1.95, 13.10, '-x', 1.55, 1.15],
-  [0.13, 1.95, 10.45, '+x', 1.55, 1.15],
-  [0.13, 1.95, 13.10, '+x', 1.55, 1.15]
+/* 3 — the Jane Street bottle, for the USAMO */
+function propBottle(x, z){
+  const g = new THREE.Group(); g.position.set(x, 0.91, z);
+  g.rotation.y = Math.PI;                       // face the door, not the back wall
+  scene.add(g);
+  part(g, new THREE.CylinderGeometry(0.075, 0.075, 0.44, 14), 0, 0.22, 0, 0,0,0, AW.ice);
+  part(g, new THREE.CylinderGeometry(0.052, 0.075, 0.07, 14), 0, 0.475, 0, 0,0,0, AW.ice);
+  part(g, new THREE.CylinderGeometry(0.05, 0.05, 0.07, 14), 0, 0.545, 0, 0,0,0, AW.iceCap);
+  part(g, new THREE.TorusGeometry(0.052, 0.012, 4, 12), 0, 0.575, 0, Math.PI/2, 0, 0, AW.steel);
+  part(g, new THREE.CylinderGeometry(0.0765, 0.0765, 0.13, 14), 0, 0.25, 0, 0,0,0, meshMat);
+  const t = makeLabel('Jane Street', 0.14, 54, '#17384a');
+  t.position.set(0, 0.25, 0.079); g.add(t);
+  return g;
+}
+
+/* 4 — the Citadel hoodie */
+function propHoodie(x, z, txt){
+  const g = new THREE.Group(); g.position.set(x, 0.91, z);
+  g.rotation.y = Math.PI;                       // face the door, not the back wall
+  scene.add(g);
+  part(g, new THREE.BoxGeometry(0.20, 0.04, 0.16), 0, 0.02, 0, 0,0,0, PAL.dark);
+  part(g, new THREE.CylinderGeometry(0.017, 0.02, 0.58, 6), 0, 0.31, -0.07, 0,0,0, PAL.dark);
+  part(g, new THREE.BoxGeometry(0.34, 0.02, 0.02), 0, 0.56, -0.07, 0,0,0, AW.steel);
+  part(g, new THREE.BoxGeometry(0.44, 0.46, 0.10), 0, 0.34, 0, 0,0,0, AW.hoodie);        // body
+  part(g, new THREE.BoxGeometry(0.15, 0.15, 0.10), -0.28, 0.50, 0, 0,0, 0.45, AW.hoodie);
+  part(g, new THREE.BoxGeometry(0.15, 0.15, 0.10),  0.28, 0.50, 0, 0,0,-0.45, AW.hoodie);
+  part(g, new THREE.SphereGeometry(0.14, 7, 5), 0, 0.575, -0.05, 0,0,0, AW.hoodieD);     // hood
+  part(g, new THREE.BoxGeometry(0.26, 0.13, 0.045), 0, 0.20, 0.055, 0,0,0, AW.hoodieD);  // pocket
+  for (const sx of [-0.05, 0.05])                                                        // drawstrings
+    part(g, new THREE.CylinderGeometry(0.008, 0.008, 0.13, 4), sx, 0.47, 0.055, 0,0,0, AW.steel);
+  garmentText(g, txt, 0.36, 0.36, 0.058, '#dbe6f5');
+  return g;
+}
+
+const TROPHIES = [
+  [propMedal,  2.0, 12.55, AW.gold],
+  [propShirt,  4.0, 11.35, AW.shirt],
+  [propBottle, 6.1, 12.55, AW.ice],
+  [propHoodie, 7.9, 11.35, AW.hoodie]
 ];
-CONTENT.pictures.slice(0, PIC_SLOTS.length).forEach((p, i) => {
-  const s = PIC_SLOTS[i];
-  framedPicture(p, s[0], s[1], s[2], s[3], s[4], s[5]);
+TROPHIES.forEach((t, i) => {
+  const entry = CONTENT.awards[i];
+  if (!entry) return;
+  markRead(plinth(t[1], t[2], t[3]), entry);
+  markGroupRead(t[0](t[1], t[2], entry.propText), entry);
 });
+
+/* the one panel left on the wall */
+CONTENT.pictures.slice(0, 1).forEach(p => framedPicture(p, 4.5, 2.00, 14.86, '-z', 2.30, 1.45));
+
+/* ---- the workshop: three desks, three screens. Each screen paints the same
+       card the portfolio site shows for that project. ---- */
+function cardTex(kind){
+  return makeTex((x, S) => {
+    x.fillStyle = '#ffffff'; x.fillRect(0, 0, S, S);
+    const H = S * 0.62;                                   // the card's art panel
+    if (kind === 'math'){
+      x.fillStyle = '#2f2b8c'; x.fillRect(0, 0, S, H);
+      x.fillStyle = '#e3b93f';
+      x.beginPath(); x.arc(S*0.28, H*0.52, S*0.10, 0, 6.284); x.fill();
+      x.fillStyle = '#c0392b';
+      for (const d of [[0,-1],[0,1],[-1,0],[1,0]]){
+        x.beginPath();
+        x.moveTo(S*0.28 + d[0]*S*0.055, H*0.52 + d[1]*S*0.055);
+        x.lineTo(S*0.28 + d[1]*S*0.028, H*0.52 - d[0]*S*0.028);
+        x.lineTo(S*0.28 - d[0]*S*0.015, H*0.52 - d[1]*S*0.015);
+        x.lineTo(S*0.28 - d[1]*S*0.028, H*0.52 + d[0]*S*0.028);
+        x.closePath(); x.fill();
+      }
+      x.fillStyle = '#ffffff'; x.fillRect(S*0.42, H*0.36, S*0.16, S*0.16);
+      x.strokeStyle = '#e3b93f'; x.lineWidth = 3; x.strokeRect(S*0.42, H*0.36, S*0.16, S*0.16);
+      x.fillStyle = '#c0392b';
+      x.beginPath(); x.moveTo(S*0.50, H*0.40); x.lineTo(S*0.535, H*0.44); x.lineTo(S*0.50, H*0.48); x.lineTo(S*0.465, H*0.44); x.closePath(); x.fill();
+      x.fillStyle = '#2f6f3f';
+      x.beginPath(); x.moveTo(S*0.475, H*0.50); x.lineTo(S*0.505, H*0.535); x.lineTo(S*0.475, H*0.57); x.lineTo(S*0.445, H*0.535); x.closePath(); x.fill();
+      x.fillStyle = '#e3b93f'; x.fillRect(S*0.62, H*0.36, S*0.17, S*0.16);
+      x.fillStyle = '#ffffff'; x.font = '700 ' + (S*0.055|0) + 'px Helvetica,Arial,sans-serif';
+      x.textAlign = 'center'; x.fillText('2048', S*0.705, H*0.47);
+    } else if (kind === 'pitch'){
+      x.fillStyle = '#111111'; x.fillRect(0, 0, S, H);
+      const kw = S / 7, ky = H * 0.30, kh = H * 0.60;
+      for (let i = 0; i < 7; i++){
+        x.fillStyle = (i === 3) ? '#2f6fbf' : '#f2efe9';
+        x.fillRect(i * kw + 2, ky, kw - 4, kh);
+      }
+      x.fillStyle = '#111111';
+      for (const i of [0, 1, 3, 4, 5])
+        x.fillRect((i + 1) * kw - kw * 0.22, ky, kw * 0.44, kh * 0.62);
+      x.fillStyle = '#f2efe9'; x.font = '700 ' + (S*0.10|0) + 'px Helvetica,Arial,sans-serif';
+      x.textAlign = 'center'; x.fillText('♪', S*0.46, ky - H*0.06);
+      x.fillStyle = '#2f6fbf'; x.fillText('))', S*0.58, ky - H*0.06);
+    } else {
+      const n = 8, c = S / n, ch = H / 5;
+      for (let r = 0; r < 5; r++) for (let i = 0; i < n; i++){
+        x.fillStyle = ((r + i) % 2) ? '#8a7448' : '#e7ddc4';
+        x.fillRect(i * c, r * ch, c, ch);
+      }
+      x.fillStyle = '#141414'; x.font = '700 ' + (S*0.20|0) + 'px Georgia,serif';
+      x.textAlign = 'center'; x.fillText('♞', S*0.52, H*0.72);
+    }
+    x.fillStyle = '#ffffff'; x.fillRect(0, H, S, S - H);
+    x.fillStyle = '#141414'; x.textAlign = 'left';
+    x.font = '600 ' + (S*0.062|0) + 'px Helvetica,Arial,sans-serif';
+    x.fillText({math:'Classic Math Games', pitch:'Pitch Trainer', chess:'Chess Line Visualizer'}[kind],
+               S*0.06, H + (S - H) * 0.40);
+    x.fillStyle = '#1a56db';
+    x.font = '600 ' + (S*0.052|0) + 'px Helvetica,Arial,sans-serif';
+    x.fillText('View project →', S*0.06, H + (S - H) * 0.76);
+  }, 1);
+}
+const CARD_KINDS = ['math', 'pitch', 'chess'];
+const SCREEN_GLOW = flatMat(0x2a3d55);
+function workstation(x, z, ry, entry, kind){
+  const g = new THREE.Group();
+  g.position.set(x, 0, z); g.rotation.y = ry;
+  scene.add(g);
+  /* desk */
+  part(g, new THREE.BoxGeometry(1.5, 0.08, 0.72), 0, 0.74, 0, 0,0,0, HOUSE.trim);
+  for (const sx of [-1, 1])
+    part(g, new THREE.BoxGeometry(0.09, 0.74, 0.62), sx * 0.66, 0.37, 0, 0,0,0, HOUSE.trim);
+  part(g, new THREE.BoxGeometry(1.32, 0.06, 0.16), 0, 0.30, -0.24, 0,0,0, HOUSE.trim);
+  /* monitor */
+  part(g, new THREE.BoxGeometry(0.34, 0.03, 0.22), 0, 0.79, -0.10, 0,0,0, PAL.dark);
+  part(g, new THREE.BoxGeometry(0.07, 0.26, 0.07), 0, 0.92, -0.10, 0,0,0, PAL.dark);
+  part(g, new THREE.BoxGeometry(1.02, 0.64, 0.06), 0, 1.36, -0.10, 0,0,0, PAL.dark);
+  const card = new THREE.MeshBasicMaterial({map: cardTex(CARD_KINDS[kind % 3])});
+  part(g, new THREE.BoxGeometry(0.92, 0.54, 0.02), 0, 1.36, -0.055, 0,0,0, card);
+  /* keyboard + mouse */
+  part(g, new THREE.BoxGeometry(0.52, 0.03, 0.18), 0, 0.795, 0.16, 0,0,0, PAL.dark);
+  part(g, new THREE.BoxGeometry(0.09, 0.03, 0.13), 0.36, 0.795, 0.16, 0,0,0, PAL.dark);
+  markGroupRead(g, entry);
+  aabbs.push({x0:x - 0.85, x1:x + 0.85, z0:z - 0.45, z1:z + 0.45, y0:0, y1:0.82, land:true});
+  return g;
+}
+CONTENT.projects.forEach((pj, i) => {
+  const spots = [[-21.4, 1.2, Math.PI/2], [-21.4, 4.4, Math.PI/2], [-18.4, 7.0, Math.PI]];
+  const sp = spots[i % spots.length];
+  workstation(sp[0], sp[1], sp[2], pj, i);
+});
+onionPile(-17.6, 6.6, 12, 1.0);
+onionPile(-17.8, -0.6, 10, 0.9);
 
 /* ============ door signs ============ */
-hang(makeLabel('the library, this way', 1.7, 52), 0, 2.56, -1.91, '+z');
-hang(makeLabel('back to the atrium', 1.5, 56), 0, 2.6, -2.09, '-z');
-hang(makeLabel('the library of babel', 1.9, 62), 0, 2.6, -5.91, '+z');
-hang(makeLabel('back south', 1.3, 56), 0, 2.6, -6.09, '-z');
-hang(makeLabel('writings', 1.4, 76), -8.91, 2.6, 3, '+x');
-hang(makeLabel('ideas', 1.2, 76), 8.91, 2.6, 3, '-x');
-hang(makeLabel('about me', 1.4, 76), -4.5, 2.6, 7.91, '-z');
-hang(makeLabel('trophies', 1.4, 76), 4.5, 2.6, 7.91, '-z');
-hang(makeLabel('old cheese. DO NOT TOUCH.', 1.7, 46), 8.91, 2.35, 7.05, '-x');
+hang(makeLabel('THE LIBRARY', 1.5, 62), 0, 2.80, -1.90, '+z');
+hang(makeLabel('WRITINGS', 1.4, 66), -8.91, 2.6, 3, '+x');
+hang(makeLabel('THE WORKSHOP', 1.5, 60), -15.91, 2.6, 3, '+x');
+hang(makeLabel('THE ONION ROOM', 1.6, 58), 8.91, 2.6, 3, '-x');
+hang(makeLabel('ABOUT ME', 1.4, 66), -4.5, 2.6, 7.91, '-z');
+hang(makeLabel('HONORS & AWARDS', 1.7, 54), 4.5, 2.6, 7.91, '-z');
 
 /* ============ the items ============ */
-makeItem('cheese', 'the cheese', 8.05, 1.65, 7.05, g => {
-  part(g, new THREE.CylinderGeometry(0.3, 0.3, 0.14, 3), 0, 0.07, 0, 0, 0, 0, yellowMat);
-});
-makeItem('knight', 'knight', -4.2, 0.78, 11.55, g => {
-  part(g, new THREE.CylinderGeometry(0.07, 0.085, 0.045, 10), 0, 0.022, 0, 0, 0, 0, PAL.dark);
-  part(g, new THREE.BoxGeometry(0.075, 0.17, 0.06), 0, 0.125, 0.005, -0.16, 0, 0, PAL.dark);
-  part(g, new THREE.BoxGeometry(0.06, 0.055, 0.12), 0, 0.215, 0.05, -0.35, 0, 0, PAL.dark);
-});
 makeItem('pencil', 'pencil', -13.45, 0.78, 1.05, g => {
   part(g, new THREE.CylinderGeometry(0.03, 0.03, 0.42, 6), 0, 0.03, 0, Math.PI/2, 0, 0, PAL.orange);
   part(g, new THREE.ConeGeometry(0.03, 0.09, 6), 0, 0.03, 0.255, Math.PI/2, 0, 0, PAL.wood);
-});
-makeItem('mug', 'mug', 2.6, 0.72, 5.9, g => {
-  part(g, new THREE.CylinderGeometry(0.055, 0.05, 0.11, 10), 0, 0.055, 0, 0, 0, 0, PAL.red);
-});
-makeItem('bulb', 'lightbulb', 12.0, 0.75, 5.45, g => {
-  part(g, new THREE.IcosahedronGeometry(0.06, 0), 0, 0.095, 0, 0, 0, 0, yellowMat);
-  part(g, new THREE.CylinderGeometry(0.028, 0.032, 0.05, 8), 0, 0.025, 0);
-});
-makeItem('d20', 'd20', 12.55, 0.75, 5.8, g => {
-  part(g, new THREE.IcosahedronGeometry(0.085, 0), 0, 0.085, 0, 0, 0, 0, PAL.purple);
 });
 
 /* lock in world positions for aiming */
@@ -1338,7 +1992,8 @@ function updateAim(){
   let txt = '';
   if (t && t.kind === 'read')
     txt = (t.entry.link ? 'go to: '
-        : (t.entry.catalogue || t.entry.filters || t.entry.file || t.entry.files) ? 'open: '
+        : (t.entry.filters || t.entry.shelfList ||
+           t.entry.file || t.entry.files) ? 'open: '
         : 'read: ') + t.entry.title;
   else if (t && t.kind === 'item') txt = held ? 'hands full' : 'grab: ' + t.item.name;
   else if (t && t.kind === 'surface' && held) txt = 'place: ' + held.name;
@@ -1351,7 +2006,6 @@ function updateAim(){
      text      – anything with a .body
      document  – .file (or .files) : the real PDF, opened in-world
      picture   – .image
-     catalogue – the whole of CONTENT.work as a clickable list
    ============================================================== */
 const readerEl = document.getElementById('reader'), rback = document.getElementById('rback');
 const rtitle = document.getElementById('rtitle'), rbody = document.getElementById('rbody');
@@ -1426,34 +2080,51 @@ function showPicture(w){
   hintRow('', w.image);
 }
 
-/* --- the catalogue: everything in CONTENT.work, grouped by field --- */
-function showCatalogue(){
-  rbody.className = 'cat';
-  const groups = new Map();
-  CONTENT.work.forEach((w, i) => {
-    const k = (w.field && w.field[0]) || 'olympiad problems';
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(i);
+/* --- the little case: everything on this room's shelves, as a list --- */
+function showShelfList(en){
+  const G = galleries[en.depth];
+  rbody.className = 'desk';
+  if (!G){ rbody.textContent = 'This room is no longer here.'; return; }
+  rmeta.innerHTML = '<span class="tag">' + G.works.length +
+                    (G.works.length === 1 ? ' file' : ' files') + '</span>' +
+                    G.chain.map(c => '<span class="tag">' + esc(c.label + ': ' + c.value) + '</span>').join('');
+  /* Each tile is the document itself, shrunk: the real PDF rendered at
+     one-eighth scale inside a clipped frame. They load only as they scroll
+     into view, so opening the shelf does not fetch every proof at once. */
+  let html = '<div class="dgrid">';
+  G.works.forEach((w, i) => {
+    const files = w.files || [{file: w.file}];
+    const f = files[0].file || '';
+    const isPdf = /\.pdf$/i.test(f);
+    html += '<button class="dfile" data-i="' + i + '" title="' + esc(w.title) + '">' +
+              '<span class="dthumb"' + (files.length > 1 ? ' data-stack="1"' : '') + '>' +
+                (isPdf ? '<iframe data-src="' + esc(docURL(f)) +
+                         '#toolbar=0&navpanes=0&scrollbar=0&view=Fit" loading="lazy"' +
+                         ' tabindex="-1" aria-hidden="true"></iframe>'
+                       : '<pre class="dcode" data-src="' + esc(docURL(f)) + '"></pre>') +
+              '</span>' +
+              '<span class="dname">' + esc(w.title) + '</span>' +
+            '</button>';
   });
-  let html = '';
-  for (const [k, idx] of groups){
-    html += '<div class="cgh">' + esc(k.toLowerCase()) + ' · ' + idx.length + '</div><ul class="clist">';
-    for (const i of idx){
-      const w = CONTENT.work[i];
-      const sub = [].concat(w.source || [], w.technique || [], w.proofMethod || []).join(' · ');
-      html += '<li><button class="crow" data-i="' + i + '">' + esc(w.title) +
-              (sub ? '<em>' + esc(sub) + '</em>' : '') + '</button></li>';
+  rbody.innerHTML = html + '</div>';
+  const io = new IntersectionObserver((entries, obs) => {
+    for (const en2 of entries){
+      if (!en2.isIntersecting) continue;
+      const el = en2.target;
+      obs.unobserve(el);
+      if (el.tagName === 'IFRAME'){ el.src = el.dataset.src; }
+      else fetch(el.dataset.src).then(r => r.text())
+             .then(t => { el.textContent = t.slice(0, 4000); })
+             .catch(() => { el.textContent = ''; });
     }
-    html += '</ul>';
-  }
-  rbody.innerHTML = html;
+  }, {root: rbody, rootMargin: '220px'});
+  rbody.querySelectorAll('[data-src]').forEach(el => io.observe(el));
   rbody.onclick = e => {
-    const b = e.target.closest('.crow');
-    if (b) openReading(CONTENT.work[+b.dataset.i], true);
+    const b = e.target.closest('.dfile');
+    if (b) openReading(G.works[+b.dataset.i], true);
   };
-  rmeta.innerHTML = '<span class="tag">' + CONTENT.work.length + ' pieces</span>' +
-                    '<span class="tag">click one to read it</span>';
-  hintRow('');
+  readerEl.classList.add('wide');
+  hintRow('click a file to open it');
 }
 
 /* --- the lectern: which filter opens the next gallery --- */
@@ -1488,12 +2159,17 @@ function showFilters(en){
       html += '</ul>';
     }
   }
+  if (G.next)
+    html = '<button class="shutbtn">✕ shut the north door — ' +
+           esc(G.next.label + ': ' + G.next.value) + '</button>' + html;
   rbody.innerHTML = html;
   rbody.onclick = e => {
+    if (e.target.closest('.shutbtn')){ closeGallery(en.depth); return; }
     const b = e.target.closest('.crow');
     if (b) openFilter(en.depth, G.opts[+b.dataset.i]);
   };
-  hintRow('pick one and the door north opens onto it');
+  hintRow(G.next ? 'pick another, or shut the door to collapse what is beyond'
+                 : 'pick one and the door north opens onto it');
 }
 
 function renderReading(en){
@@ -1503,9 +2179,9 @@ function renderReading(en){
   rbody.innerHTML = '';
   rbody.onclick = null;
   rbody.scrollTop = 0;
-  readerEl.classList.remove('wide');
+  readerEl.classList.remove('wide', 'full');
   if (en.filters){ showFilters(en); return; }
-  if (en.catalogue){ showCatalogue(); return; }
+  if (en.shelfList){ showShelfList(en); return; }
   if (en.file || en.files){ rmeta.innerHTML = tagsOf(en); showDoc(en); return; }
   if (en.image){ showPicture(en); return; }
   rbody.textContent = en.body || '';
@@ -1540,7 +2216,7 @@ function closeReading(){
   rbody.className = '';
   rback.style.display = 'none';
   readerEl.style.display = 'none';
-  readerEl.classList.remove('wide');
+  readerEl.classList.remove('wide', 'full');
   rbackBtn.style.display = 'none';
   if (relockAfterRead){ relockAfterRead = false; tryLock(); }
 }
@@ -1677,9 +2353,7 @@ addEventListener('keydown', e => {
   keys[e.code] = true;
   if (e.code === 'KeyE' && !e.repeat) interact();
   if (e.code === 'KeyQ' && !e.repeat) dropHeld();
-  if (e.code === 'KeyP' && !e.repeat)
-    showToast('x ' + player.x.toFixed(1) + ' · z ' + player.z.toFixed(1) +
-              ' · yaw ' + Math.round(player.yaw * 180 / Math.PI) + '°');
+
 });
 addEventListener('keyup', e => { keys[e.code] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; mvx = 0; mvy = 0; dragging = false; });
@@ -1731,13 +2405,13 @@ addEventListener('mousemove', e => {
     if (reading || menuOpen()) return;
     const mx = Math.max(-60, Math.min(60, e.movementX || 0));
     const my = Math.max(-60, Math.min(60, e.movementY || 0));
-    player.yaw   -= mx * 0.0032;
-    player.pitch  = clampPitch(player.pitch - my * 0.0032);
+    player.yaw   -= mx * 0.0032 * sens;
+    player.pitch  = clampPitch(player.pitch - my * 0.0032 * sens);
     return;
   }
   if (!dragging || menuOpen() || reading) return;
-  player.yaw   -= (e.clientX - lx) * 0.0052;
-  player.pitch  = clampPitch(player.pitch - (e.clientY - ly) * 0.0052);
+  player.yaw   -= (e.clientX - lx) * 0.0052 * sens;
+  player.pitch  = clampPitch(player.pitch - (e.clientY - ly) * 0.0052 * sens);
   lx = e.clientX; ly = e.clientY;
 });
 addEventListener('mouseup', e => {
@@ -1778,8 +2452,8 @@ canvas.addEventListener('touchmove', e => {
       mvx = dx*k/cap; mvy = dy*k/cap;
       knob.style.transform = 'translate(' + dx*k + 'px,' + dy*k + 'px)';
     } else if (t.identifier === lookId){
-      player.yaw   -= (t.clientX - llx) * 0.006;
-      player.pitch  = clampPitch(player.pitch - (t.clientY - lly) * 0.006);
+      player.yaw   -= (t.clientX - llx) * 0.006 * sens;
+      player.pitch  = clampPitch(player.pitch - (t.clientY - lly) * 0.006 * sens);
       llx = t.clientX; lly = t.clientY;
     }
   }
@@ -1803,22 +2477,58 @@ btnUse.addEventListener('mousedown', e => { e.preventDefault(); interact(); });
 /* ============ settings menu (Esc opens it) ============ */
 const settingsEl = document.getElementById('settings');
 const fovSlider  = document.getElementById('fov'), fovVal = document.getElementById('fovVal');
-let baseFov = 70, fovCurrent = 70;
+const sensSlider = document.getElementById('sens'), sensVal = document.getElementById('sensVal');
+let baseFov = 110, fovCurrent = 110, sens = 1;
+document.querySelectorAll('[data-vert]').forEach(b => b.addEventListener('click', () => {
+  vertKeep = +b.dataset.vert;
+  document.querySelectorAll('[data-vert]').forEach(x => x.classList.toggle('on', x === b));
+}));
 
 function menuOpen(){ return settingsEl.style.display === 'block'; }
 function paused(){ return menuOpen() || !!reading; }
-function openMenu(){ settingsEl.style.display = 'block'; }
+function openMenu(){ buildTeleport(); settingsEl.style.display = 'block'; }
 function closeMenu(){ settingsEl.style.display = 'none'; }
 fovSlider.addEventListener('input', () => {
   baseFov = +fovSlider.value;
   fovVal.textContent = fovSlider.value;
 });
-document.getElementById('resume').addEventListener('click', () => { closeMenu(); tryLock(); });
-document.getElementById('respawn').addEventListener('click', () => {
-  player.x = 0; player.z = 5.2; player.y = 0; player.vy = 0;
-  player.yaw = 0; player.pitch = 0; camYs = 0;
-  closeMenu(); tryLock();
+sensSlider.addEventListener('input', () => {
+  sens = +sensSlider.value;
+  sensVal.textContent = sens.toFixed(2);
 });
+
+/* ---- the teleporter: every room in the house, plus every gallery you have
+       opened so far, rebuilt each time the menu appears ---- */
+const TP_ROOMS = [
+  ['The Atrium',   0,  5.2,  0],
+  ['Writings',   -11,  3.0,  Math.PI/2],
+  ['Ideas',       11,  3.0, -Math.PI/2],
+  ['About Me',  -4.5, 10.5,  Math.PI],
+  ['Honors',     4.5, 10.5,  Math.PI],
+  ['Workshop', -19.5,  3.0, -Math.PI/2]
+];
+function teleport(x, z, yaw){
+  player.x = x; player.z = z; player.y = 0; player.vy = 0;
+  player.yaw = yaw; player.pitch = 0; camYs = 0;
+  held = null;
+  closeMenu(); tryLock();
+  showToast('→ ' + region(x, z));
+}
+function buildTeleport(){
+  const el = document.getElementById('tp');
+  el.innerHTML = '';
+  const add = (name, x, z, yaw) => {
+    const b = document.createElement('button');
+    b.className = 'modebtn';
+    b.textContent = name;
+    b.addEventListener('click', () => teleport(x, z, yaw));
+    el.appendChild(b);
+  };
+  for (const r of TP_ROOMS) add(r[0], r[1], r[2], r[3]);
+  galleries.forEach((g, i) => add(i ? 'ℵ ' + g.chain.map(c => c.value).join(' · ') : 'The Library',
+                                  0, g.cz + 4.6, 0));
+}
+document.getElementById('resume').addEventListener('click', () => { closeMenu(); tryLock(); });
 
 document.addEventListener('pointerlockchange', () => {
   if (locked()){ everLocked = true; closeMenu(); }
@@ -1845,14 +2555,15 @@ function region(x, z){
   }
   if (z < -2)  return 'The Corridor';
   if (z < 8){
+    if (x < -16) return 'The Workshop';
     if (x < -9) return 'Writings';
-    if (x >  9) return 'Ideas';
+    if (x >  9) return 'The Onion Room';
     return 'The Atrium';
   }
-  return x < 0 ? 'About Me' : 'The Trophy Room';
+  return x < 0 ? 'About Me' : 'Honors & Awards';
 }
-const locEl = document.getElementById('loc'), toast = document.getElementById('toast');
-let lastRegion = '', toastTimer = 0;
+const toast = document.getElementById('toast');
+let toastTimer = 0;
 function showToast(t){
   toast.textContent = t; toast.style.opacity = 1;
   clearTimeout(toastTimer);
@@ -1863,7 +2574,12 @@ setTimeout(() => showToast('v18 · click to look around · WASD walks · the lib
 /* ============ main loop ============ */
 const clock = new THREE.Clock();
 const _look = new THREE.Vector3();
+const _hw = new THREE.Vector3();
 const _eul = new THREE.Euler(0, 0, 0, 'YXZ');
+/* 2-point holds the world's verticals parallel with a shift lens; 3-point is an
+   ordinary lens that really tilts. The menu switches between them. */
+let vertKeep = 0.55;
+
 const xh = document.getElementById('xh');
 function tick(){
   requestAnimationFrame(tick);
@@ -1884,12 +2600,23 @@ function tick(){
   if (L > 1){ f /= L; s /= L; }
 
   const sprintKey = keys.ShiftLeft || keys.ShiftRight;
-  const sp  = sprintKey ? 5.8 : 3.4;
-  const sin = Math.sin(player.yaw), cos = Math.cos(player.yaw);
-  const dx = ( s*cos - f*sin) * sp * dt;
-  const dz = (-f*cos - s*sin) * sp * dt;
-  if (!horizBlocked(player.x + dx, player.z, player.y)) player.x += dx;
-  if (!horizBlocked(player.x, player.z + dz, player.y)) player.z += dz;
+  const sp  = sprintKey ? 5.2 : 3.4;
+  /* forward is literally where the crosshair points, flattened to the floor;
+     right is forward turned 90°. W therefore always runs down the crosshair. */
+  const fwdX = -Math.sin(player.yaw), fwdZ = -Math.cos(player.yaw);
+  const rgtX =  Math.cos(player.yaw), rgtZ = -Math.sin(player.yaw);
+  const dx = (f * fwdX + s * rgtX) * sp * dt;
+  const dz = (f * fwdZ + s * rgtZ) * sp * dt;
+  /* Resolve in short sub-steps. Collision is settled one axis at a time, so a
+     single long step that clips a wall cancels that whole axis and throws you
+     90° off course — which is why sprinting used to veer away from the
+     crosshair far more than walking did. Small steps slide smoothly instead. */
+  const steps = Math.min(8, Math.max(1, Math.ceil(Math.hypot(dx, dz) / 0.05)));
+  const stepX = dx / steps, stepZ = dz / steps;
+  for (let i = 0; i < steps; i++){
+    if (!horizBlocked(player.x + stepX, player.z, player.y)) player.x += stepX;
+    if (!horizBlocked(player.x, player.z + stepZ, player.y)) player.z += stepZ;
+  }
 
   /* vertical: gravity, head bonks, landing on whatever is under you */
   player.vy -= GRAV * dt;
@@ -1919,8 +2646,12 @@ function tick(){
   /* dynamic FOV: widens slightly while sprinting */
   const moving = (f !== 0 || s !== 0);
   const sprinting = sprintKey && moving;
-  fovCurrent += (baseFov * (sprinting ? 1.12 : 1) - fovCurrent) * Math.min(1, dt * 9);
-  camera.fov = fovCurrent;
+  fovCurrent += (baseFov * (sprinting ? 1.06 : 1) - fovCurrent) * Math.min(1, dt * 9);
+  /* the slider is HORIZONTAL field of view, the way games quote it (Minecraft's
+     default 70 is horizontal). three.js wants the vertical angle, so convert
+     through the aspect ratio — setting 70 straight onto camera.fov renders about
+     100° across on a 16:9 window, and that is what made pitching look splayed. */
+  camera.fov = 2 * Math.atan(Math.tan(fovCurrent * Math.PI / 360) / camera.aspect) * 180 / Math.PI;
 
   /* first-person camera, plain and Minecraft-honest: yaw about world up, then pitch,
      built as a quaternion so the horizon can never roll. No shift lens — the camera
@@ -1930,9 +2661,16 @@ function tick(){
   const cp = Math.cos(player.pitch);
   _look.set(-Math.sin(player.yaw) * cp, Math.sin(player.pitch), -Math.cos(player.yaw) * cp);
   camera.position.set(player.x, 1.62 + camYs, player.z);
-  _eul.set(player.pitch, player.yaw, 0, 'YXZ');
+  /* 2-point uses a shift lens, which holds the world's verticals dead straight on
+     screen; every other mode lets the camera really tilt, like your eye does. */
+  const shift = vertKeep > 0.001 ? vertKeep * Math.tanh(player.pitch / vertKeep) : 0;
+  _eul.set(player.pitch - shift, player.yaw, 0, 'YXZ');
   camera.quaternion.setFromEuler(_eul);
   camera.updateProjectionMatrix();
+  if (shift){
+    camera.projectionMatrix.elements[9] = Math.tan(shift) / Math.tan(camera.fov * Math.PI / 360);
+    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+  }
 
   /* the carried item floats out in front of you, with a little lag */
   if (held){
@@ -1943,8 +2681,43 @@ function tick(){
     held.group.rotation.set(0, player.yaw, 0);
   }
 
-  const rgn = region(player.x, player.z);
-  if (rgn !== lastRegion){ lastRegion = rgn; locEl.textContent = rgn; }
+  /* the gold solids turn and drift, and the glyph above each stays upright */
+  const now = performance.now() / 1000;
+  for (const sp of spinners){
+    sp.o.rotation.y += sp.s * dt;
+    sp.o.rotation.x += sp.s * 0.35 * dt;
+    sp.o.position.y = sp.y0 + Math.sin(now * 0.8) * 0.05;
+    if (sp.b){ sp.b.rotation.x = -sp.o.rotation.x; sp.b.rotation.y = -sp.o.rotation.y; }
+  }
+
+  /* candlelight: every flame flickers on its own phase, and its halo faces you */
+  for (const f of flames){
+    const t = now * 8 + f.ph;
+    const k = 0.82 + 0.18 * Math.sin(t) + 0.09 * Math.sin(t * 2.7 + 1.3);
+    f.body.scale.set(0.85 + k * 0.2, k, 0.85 + k * 0.2);
+    f.halo.scale.setScalar(0.88 + k * 0.22);
+    f.halo.getWorldPosition(_hw);
+    f.halo.rotation.y = Math.atan2(camera.position.x - _hw.x, camera.position.z - _hw.z)
+                        - (f.halo.parent ? f.halo.parent.rotation.y : 0);
+  }
+
+  /* the books, and the mathematics, go on falling whether anyone is there or not */
+  for (const b of fallers){
+    const p = b.g.position;
+    p.y -= b.v * dt;
+    if (b.glyph){
+      b.g.rotation.y = Math.atan2(camera.position.x - p.x, camera.position.z - p.z);
+      const k = b.s0 * (0.86 + 0.14 * Math.sin(now * 1.7 + b.ph));
+      b.g.scale.set(k, k, 1);
+    } else {
+      b.g.rotation.x += b.sx * dt; b.g.rotation.y += b.sy * dt; b.g.rotation.z += b.sz * dt;
+    }
+    if (p.y < FALL_BOTTOM){
+      p.y = FALL_TOP;
+      const a = Math.random() * Math.PI * 2, r = (b.glyph ? 0 : 0.35) + Math.random() * 1.2;
+      p.x = Math.cos(a) * r; p.z = b.cz + Math.sin(a) * r;
+    }
+  }
 
   xh.style.display = inMenu ? 'none' : 'block';
   camera.updateMatrixWorld();
