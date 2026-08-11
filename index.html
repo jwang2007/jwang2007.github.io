@@ -17,7 +17,8 @@
   #c{position:fixed;inset:0;display:block;touch-action:none}
   .panel{position:fixed;z-index:5;background:#fff;border:2.5px solid #141414;border-radius:10px;
          box-shadow:3px 3px 0 #141414;padding:7px 12px;color:#141414;line-height:1.45}
-  #loc{top:12px;right:12px;font-size:14px}
+  #loc{top:12px;right:12px;font-size:14px;max-width:46vw;white-space:nowrap;
+       overflow:hidden;text-overflow:ellipsis}
   #toast{bottom:64px;left:50%;transform:translateX(-50%);font-size:15px;opacity:0;
          transition:opacity .35s;pointer-events:none;white-space:nowrap;z-index:6}
   #stick{position:fixed;z-index:6;width:96px;height:96px;border:2.5px dashed #141414;border-radius:50%;
@@ -85,6 +86,8 @@
         margin-bottom:7px;cursor:pointer;color:#141414;line-height:1.3}
   .crow em{display:block;font-style:normal;font-size:11px;opacity:.55;margin-top:2px}
   .crow:active{transform:translate(2px,2px);box-shadow:none}
+  .crow.on{background:#141414;color:#fff}
+  .crow.on em{opacity:.7}
   .rtabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
   .rtab{font-family:inherit;font-size:12.5px;padding:4px 9px;border:2.5px solid #141414;border-radius:8px;
         background:#fff;cursor:pointer;color:#141414;box-shadow:2px 2px 0 #141414}
@@ -173,7 +176,19 @@ const PAL = {                       // chunky-cartoon prop colors (the walls sta
   cork:   flatMat(0xd8b98a),
   cream:  flatMat(0xf5ead3)
 };
-const BOOK_MATS = [PAL.red, PAL.blue, PAL.green, yellowMat];
+/* the library keeps its own warm, papery palette — ink, brick, ochre, olive,
+   sand and plum. Nothing cyan: the gold spines have to be the brightest thing
+   on the shelf. */
+const LIB = {
+  brick: flatMat(0xb4573f),
+  ochre: flatMat(0xd9a441),
+  olive: flatMat(0x7f8f5a),
+  sand:  flatMat(0xe0c9a0),
+  plum:  flatMat(0x9c7396),
+  shelf: flatMat(0xc08a52),
+  back:  flatMat(0xf3ead6)
+};
+const BOOK_MATS = [LIB.brick, LIB.sand, LIB.olive, LIB.plum];
 const lineMat = new THREE.LineBasicMaterial({color:INK});
 const leafMat = new THREE.LineBasicMaterial({color:0x4c7a3d});
 
@@ -489,12 +504,7 @@ const CONTENT = {
 
   babelPlaque: {
     title: 'about this room',
-    body: '“The Library is a sphere whose exact center is any one of its hexagons.”\n— Borges, The Library of Babel (1941)\n\nSix walls, four of them shelved, and a shaft that runs both ways past floors nobody has visited.\n\nThe yellow spines are mine. Every one of them opens the real write-up. The lectern by the door holds the full catalogue.'
-  },
-
-  sealedDoor: {
-    title: 'the next gallery',
-    body: 'The Library goes on; this door opens when I build more rooms.\n\n(You can add one: copy any room in the file, give it a wall with a door, and write its books here.)'
+    body: '“The Library is a sphere whose exact center is any one of its hexagons.”\n— Borges, The Library of Babel (1941)\n\nSix walls, four of them shelved, and a shaft that runs both ways past floors nobody has visited.\n\nThe gold spines are mine — every one opens the real write-up. The lectern by the south door holds the full catalogue.\n\nThis room holds everything. The lectern by the north door narrows it: pick a filter and the sealed door opens onto a gallery of only those pieces, which you can narrow again, and again, until nothing distinguishes what is left.'
   }
 };
 document.title = CONTENT.name + '’s house';
@@ -592,96 +602,77 @@ wallZ( 0, 8, 15, [], ROOM_H);                 // divider between about / trophie
 wallZ(-2.2, -6, -2, [], ATR_H);               // corridor
 wallZ( 2.2, -6, -2, [], ATR_H);
 
-/* ============ the library of babel (hexagonal gallery) ============ */
-const V = hexPts(0, HEX_Z, HEX_R);
-wallX(-6, -3.5, 3.5, [0], LIB_H);             // hex south (door to corridor)
-wallX(HEX_N, -3.5, 3.5, [], LIB_H);           // hex north
-segWall(V[0][0], V[0][1], V[1][0], V[1][1], LIB_H, T);   // 4 diagonal walls
-segWall(V[2][0], V[2][1], V[3][0], V[3][1], LIB_H, T);
-segWall(V[3][0], V[3][1], V[4][0], V[4][1], LIB_H, T);
-segWall(V[5][0], V[5][1], V[0][0], V[0][1], LIB_H, T);
+/* ================================================================
+   THE LIBRARY OF BABEL — a chain of hexagonal galleries running north.
 
-/* hex floor + ceiling: a ring with the shaft hole in the middle */
-const shp = new THREE.Shape();
-const op = hexPts(0, 0, HEX_R);
-shp.moveTo(op[0][0], op[0][1]);
-for (let i = 1; i < 6; i++) shp.lineTo(op[i][0], op[i][1]);
-shp.closePath();
-const holePath = new THREE.Path();
-const hp = hexPts(0, 0, HOLE_R);
-holePath.moveTo(hp[5][0], hp[5][1]);
-for (let i = 4; i >= 0; i--) holePath.lineTo(hp[i][0], hp[i][1]);
-holePath.closePath();
-shp.holes.push(holePath);
-const ringGeo = new THREE.ExtrudeGeometry(shp, {depth: 0.14, bevelEnabled: false});
-ringGeo.rotateX(Math.PI / 2);                 // shape XY -> world XZ, thickness going down
-const ringEdges = new THREE.EdgesGeometry(ringGeo);
-const ringFloor = new THREE.Mesh(ringGeo, meshMat);
-ringFloor.position.set(0, 0, HEX_Z);
-ringFloor.userData.surface = true;
-scene.add(ringFloor); occluders.push(ringFloor);
-const rfE = new THREE.LineSegments(ringEdges, lineMat);
-rfE.position.copy(ringFloor.position); scene.add(rfE);
-const ringCeil = new THREE.Mesh(ringGeo, meshMat);
-ringCeil.position.set(0, LIB_H + 0.14, HEX_Z);
-scene.add(ringCeil); occluders.push(ringCeil);
-const rcE = new THREE.LineSegments(ringEdges, lineMat);
-rcE.position.copy(ringCeil.position); scene.add(rcE);
-aabbs.push({x0:-HEX_R, x1:HEX_R, z0:HEX_N, z1:-6, y0:LIB_H, y1:LIB_H+0.14, land:false});
+   Gallery 0 holds everything. Its north door is sealed until you stand at
+   the lectern and pick a filter (field: Calculus, source: Green Book, …).
+   Choosing one builds the next hexagon beyond that door holding only the
+   matching pieces, and that room has a lectern of its own. Filters that
+   would match nothing are never offered, so a room with no matches is
+   never built — and a room that cannot be narrowed keeps its door shut.
+   ================================================================ */
+const GAL_DZ = 2 * SQ3_2 * HEX_R;             // centre-to-centre spacing, sharing a wall
+const galleries = [];
 
-/* the shaft: a wireframe hexagonal well running both ways, fading into fog */
-const shaftP = hexPts(0, HEX_Z, HOLE_R);
-const vl = [];
-for (const p of shaftP){ vl.push([p[0], -13, p[1]], [p[0], 16, p[1]]); }
-scene.add(linesFlat(vl));
-for (const y of [-12.8, -9.6, -6.4, -3.2, 9.2, 12.4, 15.6]) loopLine(shaftP, y);
-/* a big hexagonal rug around the shaft */
-const rugShp = new THREE.Shape();
-const rop = hexPts(0, 0, 5.2);
-rugShp.moveTo(rop[0][0], rop[0][1]);
-for (let i = 1; i < 6; i++) rugShp.lineTo(rop[i][0], rop[i][1]);
-rugShp.closePath();
-const rugHole = new THREE.Path();
-const rhp = hexPts(0, 0, 2.75);
-rugHole.moveTo(rhp[5][0], rhp[5][1]);
-for (let i = 4; i >= 0; i--) rugHole.lineTo(rhp[i][0], rhp[i][1]);
-rugHole.closePath();
-rugShp.holes.push(rugHole);
-const rugGeo = new THREE.ExtrudeGeometry(rugShp, {depth: 0.03, bevelEnabled: false});
-rugGeo.rotateX(Math.PI / 2);
-const libRug = new THREE.Mesh(rugGeo, PAL.red);
-libRug.position.set(0, 0.03, HEX_Z);
-libRug.userData.surface = true;
-scene.add(libRug); occluders.push(libRug);
-const lrE = new THREE.LineSegments(new THREE.EdgesGeometry(rugGeo), lineMat);
-lrE.position.copy(libRug.position); scene.add(lrE);
-
-/* low railing around the shaft (Borges says a low railing; ours is high enough) */
-const RP = hexPts(0, HEX_Z, RAIL_R);
-for (let k = 0; k < 6; k++){
-  const a = RP[k], b = RP[(k+1) % 6];
-  segWall(a[0], a[1], b[0], b[1], 1.05, 0.12);
+/* everything a gallery builds is appended to these registries, so a gallery is
+   torn down by rewinding them to the lengths they had when it started */
+function markState(){
+  return {sc:scene.children.length, ab:aabbs.length, sg:segs.length,
+          oc:occluders.length, rd:readables.length};
+}
+function truncTo(m){
+  while (scene.children.length > m.sc){
+    const o = scene.children[scene.children.length - 1];
+    scene.remove(o);
+    o.traverse(x => { if (x.geometry) x.geometry.dispose(); });
+  }
+  aabbs.length = m.ab; segs.length = m.sg;
+  occluders.length = m.oc; readables.length = m.rd;
 }
 
 /* pendant lamps */
 function lamp(x, z, yTop, drop, m){
   scene.add(linesFlat([[x, yTop, z], [x, yTop - drop, z]]));
   const g = new THREE.Group(); g.position.set(x, yTop - drop, z); scene.add(g);
-  part(g, new THREE.CylinderGeometry(0.16, 0.24, 0.16, 8), 0, -0.08, 0, 0, 0, 0, m || PAL.teal);
+  part(g, new THREE.CylinderGeometry(0.16, 0.24, 0.16, 8), 0, -0.08, 0, 0, 0, 0, m || LIB.ochre);
   part(g, new THREE.IcosahedronGeometry(0.07, 0), 0, -0.22, 0, 0, 0, 0, yellowMat);
 }
-lamp(-3.4, HEX_Z + 1.6, LIB_H, 1.7, PAL.teal);
-lamp( 3.4, HEX_Z + 1.6, LIB_H, 1.7, PAL.red);
-lamp( 0,  HEX_Z - 3.4, LIB_H, 1.7, PAL.green);
-lamp( 0, 3, ATR_H, 0.9, PAL.red);
+
+/* a flat hexagonal ring (floor, ceiling, rug): outer radius R, hole radius r */
+function hexRing(R, r, thick){
+  const s = new THREE.Shape();
+  const o = hexPts(0, 0, R);
+  s.moveTo(o[0][0], o[0][1]);
+  for (let i = 1; i < 6; i++) s.lineTo(o[i][0], o[i][1]);
+  s.closePath();
+  const h = new THREE.Path();
+  const q = hexPts(0, 0, r);
+  h.moveTo(q[5][0], q[5][1]);
+  for (let i = 4; i >= 0; i--) h.lineTo(q[i][0], q[i][1]);
+  h.closePath();
+  s.holes.push(h);
+  const geo = new THREE.ExtrudeGeometry(s, {depth: thick, bevelEnabled: false});
+  geo.rotateX(Math.PI / 2);                   // shape XY -> world XZ, thickness going down
+  return geo;
+}
+function ringPiece(geo, y, cz, mat, surface){
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(0, y, cz);
+  if (surface) m.userData.surface = true;
+  scene.add(m); occluders.push(m);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
+  e.position.copy(m.position); scene.add(e);
+  return m;
+}
 
 /* ---- four shelved walls. Each one carries a subject, and every work on it
-       gets a yellow spine you can aim at and open. ---- */
+       gets a gold spine you can aim at and open. ---- */
 const SLOT_X = [-1.95, -0.98, 0, 0.98, 1.95];
 const SLOT_ORDER = [];                       // eye-level shelves get filled first
 for (const si of [1, 2, 0, 3]) for (const sx of SLOT_X) SLOT_ORDER.push([si, sx]);
 
-function buildShelfWall(A, B, subject, works){
+function buildShelfWall(A, B, subject, works, fill){
   const dx = B[0]-A[0], dz = B[1]-A[1], L = Math.hypot(dx, dz);
   const nx = -dz/L, nz = dx/L;                          // inward normal
   const mx = (A[0]+B[0])/2, mz = (A[1]+B[1])/2;
@@ -693,7 +684,7 @@ function buildShelfWall(A, B, subject, works){
   scene.add(g);
   function cb(w,h,d,x,y,z,mm){
     const geo = new THREE.BoxGeometry(w,h,d);
-    const m = new THREE.Mesh(geo, mm || PAL.wood); m.position.set(x,y,z);
+    const m = new THREE.Mesh(geo, mm || LIB.shelf); m.position.set(x,y,z);
     m.userData.surface = true;
     g.add(m); occluders.push(m);
     const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
@@ -703,7 +694,7 @@ function buildShelfWall(A, B, subject, works){
   cb(0.1, H, D, -(W/2 - 0.05), H/2, 0);
   cb(0.1, H, D,  (W/2 - 0.05), H/2, 0);
   cb(W, 0.1, D, 0, H - 0.05, 0);
-  cb(W, H, 0.05, 0, H/2, -D/2 + 0.03, PAL.cream);
+  cb(W, H, 0.05, 0, H/2, -D/2 + 0.03, LIB.back);
   const SHELF_Y = [0.16, 0.98, 1.80, 2.62, 3.44, 4.26];
   for (const sy of SHELF_Y) cb(W - 0.2, 0.08, D - 0.08, 0, sy, 0);
 
@@ -711,12 +702,15 @@ function buildShelfWall(A, B, subject, works){
   const mine = (works || []).slice(0, SLOT_ORDER.length);
   const reserved = SLOT_ORDER.slice(0, mine.length);
 
+  /* the nameless books that fill the rest of the shelf. The further a gallery has
+     been narrowed, the emptier it stands — so the gold spines stay findable. */
+  const gap = 0.10 + (1 - (fill === undefined ? 1 : fill)) * 0.55;
   const buckets = BOOK_MATS.map(() => []);
   for (let si = 0; si < SHELF_Y.length; si++){
     const top = SHELF_Y[si] + 0.04;
     let x = -(W/2 - 0.28);
     while (x < W/2 - 0.3){
-      if (rnd() < 0.10){ x += 0.16 + rnd()*0.15; continue; }
+      if (rnd() < gap){ x += 0.16 + rnd()*0.15; continue; }
       const bw = 0.06 + rnd()*0.09;
       let skip = false;
       for (const r of reserved) if (r[0] === si && Math.abs(x - r[1]) < 0.30) skip = true;
@@ -759,42 +753,209 @@ function buildShelfWall(A, B, subject, works){
   return {group:g, SHELF_Y};
 }
 
+/* ---- what the four walls of a room hold ---- */
 const SHELF_SUBJECTS = ['number theory', 'calculus', 'probability & logic', 'physics, code & other'];
-function worksOn(subject){
-  const last = SHELF_SUBJECTS[SHELF_SUBJECTS.length - 1];
-  return CONTENT.work.filter(w => (SHELF_SUBJECTS.indexOf(w.shelf) > -1 ? w.shelf : last) === subject);
+const ROMAN = ['i', 'ii', 'iii', 'iv'];
+function shelfOf(w){
+  return SHELF_SUBJECTS.indexOf(w.shelf) > -1 ? w.shelf : SHELF_SUBJECTS[SHELF_SUBJECTS.length - 1];
 }
-buildShelfWall(V[0], V[1], SHELF_SUBJECTS[0], worksOn(SHELF_SUBJECTS[0]));   // SE
-buildShelfWall(V[2], V[3], SHELF_SUBJECTS[1], worksOn(SHELF_SUBJECTS[1]));   // SW
-buildShelfWall(V[3], V[4], SHELF_SUBJECTS[2], worksOn(SHELF_SUBJECTS[2]));   // NW
-buildShelfWall(V[5], V[0], SHELF_SUBJECTS[3], worksOn(SHELF_SUBJECTS[3]));   // NE
+function splitAcrossWalls(works, depth){
+  if (depth === 0)                              // the whole library keeps its subject walls
+    return SHELF_SUBJECTS.map(s => ({label: s, works: works.filter(w => shelfOf(w) === s)}));
+  const per = Math.max(1, Math.ceil(works.length / 4));
+  return ROMAN.map((r, i) => {
+    const chunk = works.slice(i * per, (i + 1) * per);
+    return {label: chunk.length ? 'shelf ' + r : '', works: chunk};
+  });
+}
+
+/* ---- the facets a room can still be narrowed by ---- */
+const FACETS = [
+  {key:'field',       label:'field'},
+  {key:'source',      label:'source'},
+  {key:'type',        label:'type'},
+  {key:'technique',   label:'technique'},
+  {key:'proofMethod', label:'proof method'}
+];
+function facetOptions(works, chain){
+  const out = [];
+  for (const f of FACETS){
+    const counts = new Map();
+    for (const w of works) for (const v of (w[f.key] || [])) counts.set(v, (counts.get(v) || 0) + 1);
+    for (const [value, n] of counts){
+      if (n === works.length) continue;         // matches everything here: opens an identical room
+      if (chain.some(c => c.key === f.key && c.value === value)) continue;
+      out.push({key: f.key, label: f.label, value, n});
+    }
+  }
+  return out;                                   // n is always >= 1, so an empty room is never offered
+}
+function galleryName(chain){
+  return chain.length ? 'Gallery — ' + chain.map(c => c.value).join(' · ')
+                      : 'The Library of Babel';
+}
+
+/* ---- the sealed door filling a gallery's north doorway ---- */
+function buildSeal(G){
+  const zc = G.nz, grp = new THREE.Group();
+  scene.add(grp);
+  const geo = new THREE.BoxGeometry(1.92, 2.22, 0.10);
+  const m = new THREE.Mesh(geo, LIB.plum);
+  m.position.set(0, 1.11, zc);
+  grp.add(m); occluders.push(m);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), lineMat);
+  e.position.copy(m.position); grp.add(e);
+  for (const sx of [-0.16, 0.16]){
+    const sg = new THREE.BoxGeometry(0.06, 0.06, 0.06);
+    const sm = new THREE.Mesh(sg, yellowMat);
+    sm.position.set(sx, 1.11, zc + 0.07); grp.add(sm);
+    const se = new THREE.LineSegments(new THREE.EdgesGeometry(sg), lineMat);
+    se.position.copy(sm.position); grp.add(se);
+  }
+  const lbl = makeLabel('gallery ∞', 1.0, 80);
+  lbl.position.set(0, 2.55, zc + 0.07); grp.add(lbl);
+  const ab = {x0:-0.96, x1:0.96, z0:zc - 0.07, z1:zc + 0.07, y0:0, y1:2.22, land:false};
+  aabbs.push(ab);
+  const entry = {
+    title: 'the sealed door',
+    body: 'Beyond this door is the next gallery — but a gallery has to be about something.\n\nStand at the lectern behind you and choose a filter. Whichever one you pick, this door opens onto a hexagon holding only the pieces that match, and that room has a lectern of its own.\n\nFilters that match nothing are never offered, so there is no such thing as an empty gallery.'
+  };
+  markRead([m], entry);
+  G.seal = {grp, ab, mesh: m, entry};
+}
+function removeSeal(G){
+  if (!G.seal) return;
+  const s = G.seal;
+  scene.remove(s.grp);
+  s.grp.traverse(o => { if (o.geometry) o.geometry.dispose(); });
+  let i = aabbs.indexOf(s.ab);        if (i > -1) aabbs.splice(i, 1);
+  i = occluders.indexOf(s.mesh);      if (i > -1) occluders.splice(i, 1);
+  i = readables.indexOf(s.entry);     if (i > -1) readables.splice(i, 1);
+  G.seal = null;
+}
+
+/* ---- build one hexagonal gallery ---- */
+function buildGallery(depth, works, chain){
+  const cz = HEX_Z - depth * GAL_DZ;            // its centre
+  const nz = cz - SQ3_2 * HEX_R;                // its north wall (= the next room's south wall)
+  const G = {depth, cz, nz, works, chain, name: galleryName(chain),
+             mark: markState(), seal: null, next: null, opts: null};
+  galleries[depth] = G;
+
+  const V = hexPts(0, cz, HEX_R);
+  wallX(nz, -3.5, 3.5, [0], LIB_H);                        // north, with a doorway
+  segWall(V[0][0], V[0][1], V[1][0], V[1][1], LIB_H, T);   // 4 diagonal walls
+  segWall(V[2][0], V[2][1], V[3][0], V[3][1], LIB_H, T);
+  segWall(V[3][0], V[3][1], V[4][0], V[4][1], LIB_H, T);
+  segWall(V[5][0], V[5][1], V[0][0], V[0][1], LIB_H, T);
+
+  /* floor and ceiling: rings with the shaft hole in the middle */
+  const ring = hexRing(HEX_R, HOLE_R, 0.14);
+  ringPiece(ring, 0, cz, meshMat, true);
+  ringPiece(ring, LIB_H + 0.14, cz, meshMat, false);
+  aabbs.push({x0:-HEX_R, x1:HEX_R, z0:nz, z1:cz + SQ3_2*HEX_R,
+              y0:LIB_H, y1:LIB_H + 0.14, land:false});
+
+  /* the shaft: a wireframe hexagonal well running both ways, fading into fog */
+  const shaftP = hexPts(0, cz, HOLE_R);
+  const vl = [];
+  for (const p of shaftP){ vl.push([p[0], -13, p[1]], [p[0], 16, p[1]]); }
+  scene.add(linesFlat(vl));
+  for (const y of [-12.8, -9.6, -6.4, -3.2, 9.2, 12.4, 15.6]) loopLine(shaftP, y);
+
+  /* rug, and a low railing so you have to mean it to fall in */
+  ringPiece(hexRing(5.2, 2.75, 0.03), 0.03, cz, depth % 2 ? LIB.olive : LIB.brick, true);
+  const RP = hexPts(0, cz, RAIL_R);
+  for (let k = 0; k < 6; k++){
+    const a = RP[k], b = RP[(k + 1) % 6];
+    segWall(a[0], a[1], b[0], b[1], 1.05, 0.12);
+  }
+
+  lamp(-3.4, cz + 1.6, LIB_H, 1.7, LIB.ochre);
+  lamp( 3.4, cz + 1.6, LIB_H, 1.7, LIB.brick);
+  lamp( 0,   cz - 3.4, LIB_H, 1.7, LIB.olive);
+
+  /* the shelves. Each work gets a fresh entry object so the same piece can sit
+     on a shelf in several rooms at once and each copy keeps its own position. */
+  const split = splitAcrossWalls(works, depth);
+  const WALLS = [[V[0], V[1]], [V[2], V[3]], [V[3], V[4]], [V[5], V[0]]];
+  const fill = Math.max(0.15, 1 - depth * 0.35);
+  split.forEach((s, i) => {
+    buildShelfWall(WALLS[i][0], WALLS[i][1], s.label,
+                   s.works.map(w => Object.assign({}, w)), fill);
+  });
+
+  /* the plaque saying what this room is */
+  const pz = nz + T/2 + 0.035;
+  const plaque = box(0.95, 0.65, 0.05, 2.55, 1.7, pz, {});
+  markRead([plaque], {
+    title: G.name,
+    body: (depth === 0
+            ? CONTENT.babelPlaque.body
+            : 'This gallery holds only the pieces where ' +
+              chain.map(c => c.label + ' is ' + c.value).join(', and ') + '.') +
+          '\n\n' + works.length + (works.length === 1 ? ' piece' : ' pieces') +
+          ' on these shelves.' +
+          (depth ? '\n\nThe way back south leads to ' + galleryName(chain.slice(0, -1)) + '.' : '')
+  });
+  hang(makeLabel('read me', 0.6, 90), 2.55, 1.24, pz + 0.03, '+z');
+
+  /* the lectern that opens the next room */
+  const fg = new THREE.Group();
+  fg.position.set(2.05, 0, cz - 4.55); fg.rotation.y = -0.55;
+  scene.add(fg);
+  part(fg, new THREE.BoxGeometry(0.09, 1.05, 0.09), 0, 0.52, 0, 0, 0, 0, PAL.dark);
+  const fb = part(fg, new THREE.BoxGeometry(1.05, 0.72, 0.06), 0, 1.32, 0, -0.25, 0, 0, LIB.ochre);
+  markRead([fb], {title: 'choose a filter', filters: true, depth});
+  const fl = makeLabel('choose a filter', 0.86, 96);
+  fl.position.set(0, 1.32, 0.05); fl.rotation.x = -0.25;
+  fg.add(fl);
+
+  buildSeal(G);
+
+  /* lock in world positions for everything this room just added */
+  scene.updateMatrixWorld(true);
+  for (let i = G.mark.rd; i < readables.length; i++)
+    readables[i]._anchor.getWorldPosition(readables[i]._pos);
+  return G;
+}
+
+function disposeFrom(depth){
+  if (depth >= galleries.length || depth < 1) return;
+  truncTo(galleries[depth].mark);
+  galleries.length = depth;
+}
+function openFilter(depth, opt){
+  const G = galleries[depth];
+  if (!G || !opt) return;
+  const kept = G.works.filter(w => (w[opt.key] || []).indexOf(opt.value) > -1);
+  if (!kept.length) return;                     // never happens: options come from matches
+  disposeFrom(depth + 1);
+  removeSeal(G);
+  G.next = opt;
+  buildGallery(depth + 1, kept, G.chain.concat([{key:opt.key, label:opt.label, value:opt.value}]));
+  closeReading();
+  showToast('the north door opened — ' + opt.label + ': ' + opt.value +
+            ' (' + kept.length + (kept.length === 1 ? ' piece)' : ' pieces)'));
+}
+
+wallX(-6, -3.5, 3.5, [0], LIB_H);               // the library's south wall, onto the corridor
+buildGallery(0, CONTENT.work, []);
 
 /* the catalogue lectern, just inside the library door */
 const catG = new THREE.Group();
 catG.position.set(1.35, 0, -7.7); catG.rotation.y = -0.6; scene.add(catG);
 part(catG, new THREE.BoxGeometry(0.09, 1.05, 0.09), 0, 0.52, 0, 0, 0, 0, PAL.dark);
-const catBoard = part(catG, new THREE.BoxGeometry(1.0, 0.7, 0.06), 0, 1.32, 0, -0.25, 0, 0, PAL.teal);
+const catBoard = part(catG, new THREE.BoxGeometry(1.0, 0.7, 0.06), 0, 1.32, 0, -0.25, 0, 0, LIB.sand);
 markRead([catBoard], CATALOGUE);
 const catLbl = makeLabel('the catalogue', 0.82, 96);
 catLbl.position.set(0, 1.32, 0.05); catLbl.rotation.x = -0.25;
 catG.add(catLbl);
 
 /* and a second one on the corridor wall, so you meet it on the way in */
-const corrBoard = box(0.06, 0.62, 0.9, -2.09, 1.62, -4, {mat: PAL.teal});
+const corrBoard = box(0.06, 0.62, 0.9, -2.09, 1.62, -4, {mat: LIB.ochre});
 markRead([corrBoard], CATALOGUE);
 hang(makeLabel('the catalogue', 0.78, 90), -2.045, 1.62, -4, '+x');
-
-/* sealed door + plaque on the hex north wall */
-const SD_Z = HEX_N + T/2 + 0.035;
-const sdm = box(2.1, 2.5, 0.06, 0, 1.25, SD_Z, {mat: PAL.teal});
-markRead([sdm], CONTENT.sealedDoor);
-scene.add(linesFlat([[0, 0.02, SD_Z + 0.035], [0, 2.49, SD_Z + 0.035]]));
-box(0.05, 0.05, 0.05, -0.14, 1.25, SD_Z + 0.045, {mat: yellowMat});
-box(0.05, 0.05, 0.05,  0.14, 1.25, SD_Z + 0.045, {mat: yellowMat});
-hang(makeLabel('gallery ∞', 1.0, 80), 0, 2.95, SD_Z + 0.05, '+z');
-const bpm = box(0.95, 0.65, 0.05, 2.55, 1.7, SD_Z, {});
-markRead([bpm], CONTENT.babelPlaque);
-hang(makeLabel('read me', 0.6, 90), 2.55, 1.24, SD_Z + 0.03, '+z');
 
 /* ============ furniture ============ */
 function table(cx, cz, w, d, h, topMat){
@@ -902,6 +1063,7 @@ function framedPicture(entry, x, y, z, face, W, H){
 /* atrium */
 box(3.6, 0.03, 2.6, 0, 0.015, 3, {surface:true, mat: PAL.teal});      // rug
 loopLine([[-1.5, 2.0], [1.5, 2.0], [1.5, 4.0], [-1.5, 4.0]], 0.038);
+lamp(0, 3, ATR_H, 0.9, PAL.red);
 plant(-8.2, 7.2); plant(8.2, -1.2);
 table(2.6, 5.9, 0.9, 0.6, 0.72);                      // little side table
 crate(5.6, 6.9, 0.55); crate(7.0, 5.85, 1.10); crate(8.05, 7.05, 1.65);  // parkour to the cheese
@@ -1140,52 +1302,35 @@ const carryPos = new THREE.Vector3(), _carryT = new THREE.Vector3();
 const ray = new THREE.Raycaster(); ray.far = REACH;
 const CENTER = new THREE.Vector2(0, 0);
 
-/* ============ aiming: precise ray first, then a forgiving cone ============ */
+/* ============ aiming ============
+   Strictly what the crosshair is on. The centre ray decides; four more rays a
+   hair off centre (~1.5°) only make small things forgiving to hit. Nothing
+   outside that little patch of screen can ever be picked up, so the tooltip
+   always describes the thing under the crosshair.
+   ================================================================ */
 const aimtip = document.getElementById('aimtip');
-const _aim = new THREE.Vector3();
-const aimRay = new THREE.Raycaster();
+const AIM_PTS = [
+  new THREE.Vector2( 0,     0    ),
+  new THREE.Vector2( 0,     0.026),
+  new THREE.Vector2( 0,    -0.026),
+  new THREE.Vector2( 0.026, 0    ),
+  new THREE.Vector2(-0.026, 0    )
+];
 
 function aimedTarget(){
-  ray.far = REACH;
-  ray.setFromCamera(CENTER, camera);
-  const hits = ray.intersectObjects(occluders, false);
-  if (hits.length){
+  let surface = null;
+  for (const p of AIM_PTS){
+    ray.far = REACH;
+    ray.setFromCamera(p, camera);
+    const hits = ray.intersectObjects(occluders, false);
+    if (!hits.length) continue;
     const o = hits[0].object;
-    if (o.userData.read)    return {kind:'read', entry:o.userData.read};
-    if (o.userData.item)    return {kind:'item', item:o.userData.item};
-    if (o.userData.surface) return {kind:'surface', hit:hits[0]};
-    return null;                             // a wall — blocks everything behind it
+    if (o.userData.read) return {kind:'read', entry:o.userData.read};
+    if (o.userData.item) return {kind:'item', item:o.userData.item};
+    if (o.userData.surface && !surface) surface = {kind:'surface', hit:hits[0]};
+    /* a plain wall: it blocks this sample, but a neighbouring one may still land */
   }
-  /* aim assist: small things within a ~6 degree cone (with line of sight) count */
-  let best = null, bestAng = 0.105;
-  for (const it of items){
-    if (it === held) continue;
-    _aim.copy(it.group.position); _aim.y += 0.08;
-    _aim.sub(ray.ray.origin);
-    const d = _aim.length();
-    if (d > REACH) continue;
-    const a = ray.ray.direction.angleTo(_aim);
-    if (a < bestAng){ bestAng = a; best = {kind:'item', item:it, px:it.group.position.x, py:it.group.position.y + 0.08, pz:it.group.position.z, d}; }
-  }
-  for (const r of readables){
-    _aim.copy(r._pos).sub(ray.ray.origin);
-    const d = _aim.length();
-    if (d > REACH) continue;
-    const a = ray.ray.direction.angleTo(_aim);
-    if (a < bestAng){ bestAng = a; best = {kind:'read', entry:r, px:r._pos.x, py:r._pos.y, pz:r._pos.z, d}; }
-  }
-  if (best){
-    _aim.set(best.px, best.py, best.pz).sub(ray.ray.origin).normalize();
-    aimRay.set(ray.ray.origin, _aim);
-    aimRay.far = best.d + 0.25;
-    const vh = aimRay.intersectObjects(occluders, false);
-    if (vh.length){
-      const o = vh[0].object;
-      if (best.kind === 'item' && o.userData.item === best.item) return {kind:'item', item:best.item};
-      if (best.kind === 'read' && o.userData.read === best.entry) return {kind:'read', entry:best.entry};
-    }
-  }
-  return null;
+  return surface;
 }
 function updateAim(){
   if (paused()){ aimtip.style.display = 'none'; return; }
@@ -1193,7 +1338,7 @@ function updateAim(){
   let txt = '';
   if (t && t.kind === 'read')
     txt = (t.entry.link ? 'go to: '
-        : (t.entry.catalogue || t.entry.file || t.entry.files) ? 'open: '
+        : (t.entry.catalogue || t.entry.filters || t.entry.file || t.entry.files) ? 'open: '
         : 'read: ') + t.entry.title;
   else if (t && t.kind === 'item') txt = held ? 'hands full' : 'grab: ' + t.item.name;
   else if (t && t.kind === 'surface' && held) txt = 'place: ' + held.name;
@@ -1311,6 +1456,46 @@ function showCatalogue(){
   hintRow('');
 }
 
+/* --- the lectern: which filter opens the next gallery --- */
+function showFilters(en){
+  const G = galleries[en.depth];
+  rbody.className = 'cat';
+  if (!G){ rbody.textContent = 'This room is no longer here.'; return; }
+  const opts = facetOptions(G.works, G.chain);
+  G.opts = opts;
+  rmeta.innerHTML = '<span class="tag">' + G.works.length +
+                    (G.works.length === 1 ? ' piece' : ' pieces') + ' in this room</span>' +
+                    G.chain.map(c => '<span class="tag">' + esc(c.label + ': ' + c.value) + '</span>').join('');
+  let html = '';
+  if (!opts.length){
+    html = '<div class="warn">Nothing here narrows any further — every piece in this room ' +
+           'carries the same labels. The north door stays shut.</div>';
+  } else {
+    const byLabel = new Map();
+    opts.forEach((o, i) => {
+      if (!byLabel.has(o.label)) byLabel.set(o.label, []);
+      byLabel.get(o.label).push(i);
+    });
+    for (const [label, idx] of byLabel){
+      html += '<div class="cgh">' + esc(label) + '</div><ul class="clist">';
+      for (const i of idx){
+        const o = opts[i];
+        const on = G.next && G.next.key === o.key && G.next.value === o.value;
+        html += '<li><button class="crow' + (on ? ' on' : '') + '" data-i="' + i + '">' +
+                esc(o.value) + '<em>' + o.n + (o.n === 1 ? ' piece' : ' pieces') +
+                (on ? ' · the north door is open on this' : '') + '</em></button></li>';
+      }
+      html += '</ul>';
+    }
+  }
+  rbody.innerHTML = html;
+  rbody.onclick = e => {
+    const b = e.target.closest('.crow');
+    if (b) openFilter(en.depth, G.opts[+b.dataset.i]);
+  };
+  hintRow('pick one and the door north opens onto it');
+}
+
 function renderReading(en){
   rtitle.textContent = en.title;
   rmeta.innerHTML = '';
@@ -1319,6 +1504,7 @@ function renderReading(en){
   rbody.onclick = null;
   rbody.scrollTop = 0;
   readerEl.classList.remove('wide');
+  if (en.filters){ showFilters(en); return; }
   if (en.catalogue){ showCatalogue(); return; }
   if (en.file || en.files){ rmeta.innerHTML = tagsOf(en); showDoc(en); return; }
   if (en.image){ showPicture(en); return; }
@@ -1427,7 +1613,8 @@ const player = {x:0, z:5.2, y:0, vy:0, yaw:0, pitch:0, r:0.32};
 const PH = 1.7, STEPUP = 0.56, GRAV = 17, JUMPV = 5.6;
 let onGround = true, jumpQ = 0, camYs = 0;
 const keys = {};
-const clampPitch = p => Math.max(-1.56, Math.min(1.56, p));
+const PITCH_MAX = Math.PI/2 - 0.0005;             // straight down at your shoes, straight up at the lamp
+const clampPitch = p => Math.max(-PITCH_MAX, Math.min(PITCH_MAX, p));
 
 function overlapA(c, x, z, r){
   return x > c.x0 - r && x < c.x1 + r && z > c.z0 - r && z < c.z1 + r;
@@ -1454,8 +1641,14 @@ function horizBlocked(x, z, y){
   return false;
 }
 const SHAFT_N = [Math.PI/6, Math.PI/2, Math.PI*5/6].map(a => [Math.cos(a), Math.sin(a)]);
+function galleryAt(z){               // which gallery you are standing in, if any
+  const d = Math.round((HEX_Z - z) / GAL_DZ);
+  return (d >= 0 && d < galleries.length) ? galleries[d] : null;
+}
 function inShaft(x, z){              // inside the hexagonal shaft hole: there is no floor
-  const pz = z - HEX_Z;
+  const g = galleryAt(z);
+  if (!g) return false;
+  const pz = z - g.cz;
   for (const n of SHAFT_N)
     if (Math.abs(x * n[0] + pz * n[1]) > 1.87) return false;
   return true;
@@ -1646,7 +1839,10 @@ addEventListener('keydown', e => {
 
 /* ============ regions ============ */
 function region(x, z){
-  if (z < -6)  return 'The Library of Babel';
+  if (z < -6){
+    const g = galleryAt(z);
+    return g ? g.name : 'The Library of Babel';
+  }
   if (z < -2)  return 'The Corridor';
   if (z < 8){
     if (x < -9) return 'Writings';
@@ -1668,10 +1864,6 @@ setTimeout(() => showToast('v18 · click to look around · WASD walks · the lib
 const clock = new THREE.Clock();
 const _look = new THREE.Vector3();
 const _eul = new THREE.Euler(0, 0, 0, 'YXZ');
-/* how much look-up/down the shift lens absorbs before the camera really tilts.
-   0.55 keeps verticals dead straight for normal viewing; set to 0 for raw
-   Minecraft-style projection where verticals lean as soon as you pitch. */
-const VERT_KEEP = 0.55;
 const xh = document.getElementById('xh');
 function tick(){
   requestAnimationFrame(tick);
@@ -1714,7 +1906,8 @@ function tick(){
   else onGround = false;
   player.y = ny;
   if (player.y < -26){                 // fell down the library shaft
-    player.x = 0; player.z = HEX_Z + 4.4; player.y = 0; player.vy = 0; camYs = 0;
+    const g = galleryAt(player.z) || galleries[0];
+    player.x = 0; player.z = g.cz + 4.4; player.y = 0; player.vy = 0; camYs = 0;
     showToast('The Library is a sphere. You are not. (respawned)');
   }
   if (onGround && !inMenu && (keys.Space || performance.now() - jumpQ < 200)){
@@ -1729,22 +1922,17 @@ function tick(){
   fovCurrent += (baseFov * (sprinting ? 1.12 : 1) - fovCurrent) * Math.min(1, dt * 9);
   camera.fov = fovCurrent;
 
-  /* first-person camera. Orientation is built directly as yaw-about-world-up then
-     pitch (a quaternion), so the horizon can never roll. On top of that, VERT_KEEP
-     vertical correction: for everyday viewing angles the pitch is absorbed by a
-     "shift lens" (a sheared projection), which keeps the world's vertical lines
-     PERFECTLY vertical on screen. Only steep looks up/down smoothly hand over to a
-     real camera tilt — which is exactly when things look square head-on anyway. */
+  /* first-person camera, plain and Minecraft-honest: yaw about world up, then pitch,
+     built as a quaternion so the horizon can never roll. No shift lens — the camera
+     really tilts, so you can look at your own feet and straight up at the ceiling.
+     The screen centre is therefore exactly the look direction, which is what the
+     crosshair and the aim ray both rely on. */
   const cp = Math.cos(player.pitch);
   _look.set(-Math.sin(player.yaw) * cp, Math.sin(player.pitch), -Math.cos(player.yaw) * cp);
   camera.position.set(player.x, 1.62 + camYs, player.z);
-  const shift = VERT_KEEP > 0.001 ? VERT_KEEP * Math.tanh(player.pitch / VERT_KEEP) : 0;
-  const tilt  = player.pitch - shift;
-  _eul.set(tilt, player.yaw, 0, 'YXZ');
+  _eul.set(player.pitch, player.yaw, 0, 'YXZ');
   camera.quaternion.setFromEuler(_eul);
   camera.updateProjectionMatrix();
-  camera.projectionMatrix.elements[9] = Math.tan(shift) / Math.tan(camera.fov * Math.PI / 360);
-  camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
 
   /* the carried item floats out in front of you, with a little lag */
   if (held){
