@@ -59,7 +59,7 @@
   /* ---- the reading overlay: text, documents, pictures, shelf lists, filters ---- */
   #reader{top:50%;left:50%;transform:translate(-50%,-50%);display:none;width:min(560px,92vw);
           z-index:9;padding:14px 18px 10px}
-  #reader.wide{width:min(1500px,96vw)}
+  #reader.wide{width:min(940px,94vw)}
   /* documents get the whole window — the PDF is vector, so more room is literally
      more resolution */
   #reader.full{width:100vw;height:100vh;max-width:none;top:0;left:0;transform:none;
@@ -67,7 +67,8 @@
                display:flex;flex-direction:column}
   #reader.full #rtitle{margin:2px 150px 4px 4px;font-size:17px}
   #reader.full #rmeta{margin-bottom:6px}
-  #reader.full #rbody.doc{flex:1;height:auto;max-height:none}
+  #reader.full #rbody.doc{flex:1;height:auto;max-height:none;min-height:0}
+  #reader.full #rbody.desk{flex:1;max-height:none;min-height:0;overflow-y:auto}
   #reader.full .rframe{border-width:2px;border-radius:4px}
   #reader.full #rhint{margin-top:6px}
   #rclose,#rbackbtn{position:absolute;top:8px;border:2.5px solid #141414;border-radius:8px;background:#fff;
@@ -101,23 +102,25 @@
   .crow.on{background:#141414;color:#fff}
   .crow.on em{opacity:.7}
   /* the shelf list, laid out like a desktop of files */
-  #rbody.desk{white-space:normal;max-height:62vh;padding:4px}
-  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:14px}
+  #rbody.desk{white-space:normal;max-height:58vh;overflow-y:auto;padding:4px 6px 4px 4px}
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:14px}
   .dfile{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px 8px;
          background:transparent;border:2.5px solid transparent;border-radius:10px;cursor:pointer;
          font-family:inherit;color:#141414;text-align:center}
   .dfile:hover{border-color:#141414;background:#fff}
   .dfile:active{transform:translate(1px,1px)}
-  .dthumb{position:relative;width:104px;height:134px;background:#fff;border:2.5px solid #141414;
-          border-radius:3px;box-shadow:2px 2px 0 #141414;flex:none;overflow:hidden}
-  .dthumb iframe{position:absolute;top:0;left:0;width:832px;height:1072px;border:0;
-                 transform:scale(0.125);transform-origin:0 0;pointer-events:none;background:#fff}
-  .dthumb .dcode{position:absolute;top:0;left:0;width:832px;margin:0;padding:34px;
-                 font-family:ui-monospace,Menlo,monospace;font-size:15px;line-height:1.45;
-                 white-space:pre;transform:scale(0.125);transform-origin:0 0;pointer-events:none}
-  .dthumb[data-stack]::after{content:"";position:absolute;right:-7px;bottom:-7px;width:22px;height:26px;
-          background:#fff;border:2.5px solid #141414;border-radius:2px;z-index:-1}
-  .dname{font-size:11.5px;line-height:1.25;word-break:break-word}
+  .dicon{position:relative;width:54px;height:68px;background:#fff;border:2.5px solid #141414;
+         border-radius:3px;box-shadow:2px 2px 0 #141414;flex:none}
+  .dicon::before{content:"";position:absolute;top:-2px;right:-2px;width:17px;height:17px;
+                 background:#fcfcf9;border-left:2.5px solid #141414;border-bottom:2.5px solid #141414}
+  .dicon::after{content:attr(data-ext);position:absolute;left:-3px;bottom:7px;font-size:8px;
+                font-weight:700;letter-spacing:.5px;background:#8f3a30;color:#fff;padding:1px 4px;
+                border:2px solid #141414;border-radius:2px}
+  .dicon .dl{position:absolute;left:9px;height:2px;background:#141414;opacity:.32}
+  .dicon .dl:nth-child(1){top:26px;width:26px}
+  .dicon .dl:nth-child(2){top:33px;width:34px}
+  .dicon .dl:nth-child(3){top:40px;width:30px}
+  .dname{font-size:12.5px;line-height:1.3;word-break:break-word}
   .shutbtn{display:block;width:100%;font-family:inherit;font-size:13px;padding:7px 10px;
            margin-bottom:12px;border:2.5px solid #141414;border-radius:8px;background:#8f3a30;
            color:#fff;cursor:pointer;box-shadow:2px 2px 0 #141414;font-weight:700}
@@ -189,6 +192,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
 (function(){
 "use strict";
@@ -383,7 +387,6 @@ const WORK_BAND = flatMat(shade(WORK_COLOR, 1.42));
 const BOOK_COLORS = [0x8c3b32, 0xa8703c, 0x4a6146, 0x3f4a63, 0x6b4a63];
 const BOOK_MATS = BOOK_COLORS.map(c => flatMat(c));
 const BAND_MATS = BOOK_COLORS.map(c => flatMat(shade(c, 1.42)));   // lighter than the spine
-const PAGE_MAT = flatMat(0xe8e0cc);                                // the page block
 const lineMat = new THREE.LineBasicMaterial({color:INK});
 
 const aabbs = [];       // solid boxes: {x0,x1,z0,z1,y0,y1,land}
@@ -926,7 +929,6 @@ function littleCase(cz, entry){
   /* rows of dark leather spines, each banded */
   const rows = BOOK_MATS.map(() => []);
   const caseBands = BOOK_MATS.map(() => []);
-  const casePages = [];
   for (const y of SH){
     let x = -(W/2 - 0.20);
     while (x < W/2 - 0.22){
@@ -937,8 +939,6 @@ function littleCase(cz, entry){
       rows[ci].push({w:bw, h:bh, d:0.24, x:bx, y:by, z:0.03, rz:tilt});
       for (const f of [0.28, -0.24])
         caseBands[ci].push({w:bw * 1.07, h:bh * 0.06 + 0.006, d:0.252, x:bx, y:by + bh * f, z:0.03, rz:tilt});
-      for (const e of [1, -1])
-        casePages.push({w:bw * 0.94, h:0.020, d:0.236, x:bx, y:by + e * (bh/2 - 0.010), z:0.03, rz:tilt});
       x += bw + 0.008;
     }
   }
@@ -952,10 +952,6 @@ function littleCase(cz, entry){
     const cb2 = mergedBoxes(list, BAND_MATS[bi]);
     g.add(cb2.fill); g.add(cb2.edge);
   });
-  if (casePages.length){
-    const pb2 = mergedBoxes(casePages, PAGE_MAT);
-    g.add(pb2.fill); g.add(pb2.edge);
-  }
   aabbs.push({x0:-2.4 - W/2, x1:-2.4 + W/2, z0:cz + 5.72 - D/2 - 0.06, z1:cz + 5.72 + D/2 + 0.06,
               y0:0, y1:2.2, land:true});
   markGroupRead(g, entry);
@@ -1119,7 +1115,6 @@ function buildShelfWall(A, B, subject, works, fill){
   const gap = 0.10 + (1 - (fill === undefined ? 1 : fill)) * 0.55;
   const buckets = BOOK_MATS.map(() => []);
   const spineBands = BOOK_MATS.map(() => []);
-  const pages = [];
   for (let si = 0; si < SHELF_Y.length; si++){
     const top = SHELF_Y[si] + 0.04;
     let x = -(W/2 - 0.28);
@@ -1136,8 +1131,6 @@ function buildShelfWall(A, B, subject, works, fill){
         /* two raised bands across the spine, so it reads as a bound book */
         for (const f of [0.28, -0.24])
           spineBands[ci].push({w:bw * 1.06, h:bh * 0.055 + 0.008, d:0.272, x:bx, y:by + bh * f, z:0.02, rz:tilt});
-        for (const e of [1, -1])
-          pages.push({w:bw * 0.94, h:0.026, d:0.256, x:bx, y:by + e * (bh/2 - 0.013), z:0.02, rz:tilt});
       }
       x += bw + 0.012;
     }
@@ -1152,10 +1145,6 @@ function buildShelfWall(A, B, subject, works, fill){
     const sb = mergedBoxes(list, BAND_MATS[bi]);
     g.add(sb.fill); g.add(sb.edge);
   });
-  if (pages.length){
-    const pb = mergedBoxes(pages, PAGE_MAT);
-    g.add(pb.fill); g.add(pb.edge);
-  }
 
   /* the gold spines: one per piece of work, banded in brass */
   const gilt = [];
@@ -2033,7 +2022,7 @@ function hintRow(left, url){
 /* --- a document (PDF, or any other file shown as text) --- */
 function showDoc(w){
   const files = w.files || [{file: w.file, label: ''}];
-  readerEl.classList.add('wide');
+  readerEl.classList.add('wide', 'full');     // a document gets the whole window
   rbody.className = 'doc';
   rbody.innerHTML =
     (files.length > 1
@@ -2091,34 +2080,22 @@ function showShelfList(en){
   /* Each tile is the document itself, shrunk: the real PDF rendered at
      one-eighth scale inside a clipped frame. They load only as they scroll
      into view, so opening the shelf does not fetch every proof at once. */
+  /* Each tile is the first page of the real document, rasterised by pdf.js at
+     well above display resolution so it stays crisp. They render only as they
+     scroll into view. */
   let html = '<div class="dgrid">';
   G.works.forEach((w, i) => {
     const files = w.files || [{file: w.file}];
-    const f = files[0].file || '';
-    const isPdf = /\.pdf$/i.test(f);
+    const ext = ((files[0].file || '').split('.').pop() || '').toUpperCase();
     html += '<button class="dfile" data-i="' + i + '" title="' + esc(w.title) + '">' +
-              '<span class="dthumb"' + (files.length > 1 ? ' data-stack="1"' : '') + '>' +
-                (isPdf ? '<iframe data-src="' + esc(docURL(f)) +
-                         '#toolbar=0&navpanes=0&scrollbar=0&view=Fit" loading="lazy"' +
-                         ' tabindex="-1" aria-hidden="true"></iframe>'
-                       : '<pre class="dcode" data-src="' + esc(docURL(f)) + '"></pre>') +
+              '<span class="dicon" data-ext="' + esc(ext) + '"' +
+                (files.length > 1 ? ' data-stack="1"' : '') + '>' +
+                '<i class="dl"></i><i class="dl"></i><i class="dl"></i>' +
               '</span>' +
               '<span class="dname">' + esc(w.title) + '</span>' +
             '</button>';
   });
   rbody.innerHTML = html + '</div>';
-  const io = new IntersectionObserver((entries, obs) => {
-    for (const en2 of entries){
-      if (!en2.isIntersecting) continue;
-      const el = en2.target;
-      obs.unobserve(el);
-      if (el.tagName === 'IFRAME'){ el.src = el.dataset.src; }
-      else fetch(el.dataset.src).then(r => r.text())
-             .then(t => { el.textContent = t.slice(0, 4000); })
-             .catch(() => { el.textContent = ''; });
-    }
-  }, {root: rbody, rootMargin: '220px'});
-  rbody.querySelectorAll('[data-src]').forEach(el => io.observe(el));
   rbody.onclick = e => {
     const b = e.target.closest('.dfile');
     if (b) openReading(G.works[+b.dataset.i], true);
