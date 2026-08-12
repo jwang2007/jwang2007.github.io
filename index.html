@@ -62,9 +62,12 @@
   #reader.wide{width:min(940px,94vw)}
   /* documents get the whole window — the PDF is vector, so more room is literally
      more resolution */
+  /* the JS sets display:block inline when it opens the panel, and an inline style
+     beats a plain stylesheet rule — so this one has to be !important or the column
+     never becomes a flex container and the document frame collapses */
   #reader.full{width:100vw;height:100vh;max-width:none;top:0;left:0;transform:none;
                border-radius:0;border-width:0;box-shadow:none;padding:10px 12px 8px;
-               display:flex;flex-direction:column}
+               display:flex !important;flex-direction:column}
   #reader.full #rtitle{margin:2px 150px 4px 4px;font-size:17px}
   #reader.full #rmeta{margin-bottom:6px}
   #reader.full #rbody.doc{flex:1;height:auto;max-height:none;min-height:0}
