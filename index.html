@@ -679,6 +679,13 @@ const CONTENT = {
       body: 'A board that draws a whole variation at once, so a line reads as one shape instead of a list of moves.' }
   ],
 
+  /* the hologram on its projector in the middle of the workshop */
+  hologram: {
+    title: 'Gradient Explorer',
+    app: 'gradient-explorer.html',
+    body: 'f(x, y) = 1.5 sin x cos y, with its gradient field on the plane below.\n\nDrag the surface to turn it, and move x₀ and y₀ to watch ∇f swing round to point straight uphill — always perpendicular to the level curve it sits on, and vanishing at the critical points.'
+  },
+
   /* the single panel left on the trophy room wall */
   pictures: [
     { title: 'Honors & Awards',
@@ -1892,6 +1899,77 @@ function cardTex(kind){
   }, 1);
 }
 const CARD_KINDS = ['math', 'pitch', 'chess'];
+
+/* ---- the hologram: f(x, y) = 1.5 sin x cos y, actually built as geometry and
+       hung in the air over a projector. Turning it is the plinth's job; clicking
+       it opens the real thing, which you can drag and scrub. ---- */
+const HOLO = {
+  fill: new THREE.MeshBasicMaterial({color:0xe8b455, transparent:true, opacity:0.16,
+                                     side:THREE.DoubleSide, depthWrite:false,
+                                     blending:THREE.AdditiveBlending}),
+  wire: new THREE.LineBasicMaterial({color:0xf3cd7a, transparent:true, opacity:0.55,
+                                     blending:THREE.AdditiveBlending, depthWrite:false}),
+  beam: new THREE.MeshBasicMaterial({color:0xe8b455, transparent:true, opacity:0.07,
+                                     side:THREE.DoubleSide, depthWrite:false,
+                                     blending:THREE.AdditiveBlending}),
+  arrow: new THREE.LineBasicMaterial({color:0xef8a4a, transparent:true, opacity:0.75,
+                                      blending:THREE.AdditiveBlending, depthWrite:false})
+};
+function hologram(x, z, entry){
+  const g = new THREE.Group();
+  g.position.set(x, 0, z);
+  scene.add(g);
+  /* the projector it stands on */
+  part(g, new THREE.CylinderGeometry(0.42, 0.50, 0.10, 12), 0, 0.05, 0, 0,0,0, LIB.oakDark);
+  part(g, new THREE.CylinderGeometry(0.30, 0.38, 0.62, 12), 0, 0.41, 0, 0,0,0, LIB.oak);
+  part(g, new THREE.CylinderGeometry(0.40, 0.32, 0.09, 12), 0, 0.76, 0, 0,0,0, LIB.oakLite);
+  part(g, new THREE.TorusGeometry(0.30, 0.026, 6, 18), 0, 0.82, 0, Math.PI/2, 0, 0, LIB.brass);
+  const lens = part(g, new THREE.CylinderGeometry(0.24, 0.24, 0.02, 14), 0, 0.83, 0, 0,0,0, HOLO.fill);
+  lens.material = new THREE.MeshBasicMaterial({color:0xf3cd7a, transparent:true, opacity:0.5,
+                                               blending:THREE.AdditiveBlending, depthWrite:false});
+  /* the cone of light */
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.22, 0.52, 16, 1, true), HOLO.beam);
+  beam.position.set(0, 1.10, 0);
+  g.add(beam);
+
+  /* the surface itself: a lathe of the actual function, sampled on a grid */
+  const SPAN = 3.2, NS = 26, SX = 0.185, SY = 0.155;   // world metres per unit
+  const geo = new THREE.PlaneGeometry(2*SPAN*SX, 2*SPAN*SX, NS, NS);
+  geo.rotateX(-Math.PI/2);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++){
+    const u = pos.getX(i) / SX, v = pos.getZ(i) / SX;
+    pos.setY(i, 1.5 * Math.sin(u) * Math.cos(v) * SY);
+  }
+  pos.needsUpdate = true;
+  geo.computeVertexNormals();
+  const spin = new THREE.Group();
+  spin.position.set(0, 1.62, 0);
+  g.add(spin);
+  const surf = new THREE.Mesh(geo, HOLO.fill);
+  spin.add(surf);
+  spin.add(new THREE.LineSegments(new THREE.WireframeGeometry(geo), HOLO.wire));
+
+  /* the gradient field, sketched on the plane underneath it */
+  const gl = [];
+  for (let gx = -2.4; gx <= 2.45; gx += 1.2) for (let gy = -2.4; gy <= 2.45; gy += 1.2){
+    let vx = 1.5 * Math.cos(gx) * Math.cos(gy), vy = -1.5 * Math.sin(gx) * Math.sin(gy);
+    const m = Math.hypot(vx, vy);
+    if (m < 0.12) continue;
+    const k = Math.min(1, 1.4 / m) * 0.30;
+    const ax = gx * SX, az = gy * SX, bx = (gx + vx * k) * SX, bz = (gy + vy * k) * SX;
+    gl.push([ax, -0.30, az], [bx, -0.30, bz]);
+    const dx = bx - ax, dz = bz - az, d = Math.hypot(dx, dz) || 1;
+    gl.push([bx, -0.30, bz], [bx - (dx/d)*0.035 + (dz/d)*0.02, -0.30, bz - (dz/d)*0.035 - (dx/d)*0.02]);
+    gl.push([bx, -0.30, bz], [bx - (dx/d)*0.035 - (dz/d)*0.02, -0.30, bz - (dz/d)*0.035 + (dx/d)*0.02]);
+  }
+  spin.add(linesFlat(gl, HOLO.arrow));
+
+  markGroupRead(g, entry);
+  aabbs.push({x0:x - 0.5, x1:x + 0.5, z0:z - 0.5, z1:z + 0.5, y0:0, y1:0.86, land:true});
+  spinners.push({o: spin, s: 0.34, y0: 1.62, flat: true});
+  return g;
+}
 const SCREEN_GLOW = flatMat(0x2a3d55);
 function workstation(x, z, ry, entry, kind){
   const g = new THREE.Group();
@@ -1920,6 +1998,7 @@ CONTENT.projects.forEach((pj, i) => {
   const sp = spots[i % spots.length];
   workstation(sp[0], sp[1], sp[2], pj, i);
 });
+hologram(-19.4, 3.4, CONTENT.hologram);
 onionPile(-17.6, 6.6, 12, 1.0);
 onionPile(-17.8, -0.6, 10, 0.9);
 
@@ -2063,6 +2142,14 @@ function showDoc(w){
   load(0);
 }
 
+/* --- an embedded page: the real thing, running inside the house --- */
+function showApp(w){
+  readerEl.classList.add('wide', 'full');
+  rbody.className = 'doc';
+  rbody.innerHTML = '<div class="rframe"><iframe src="' + esc(w.app) + '" title="' + esc(w.title) + '"></iframe></div>';
+  hintRow('drag it to turn it · Esc closes', w.app);
+}
+
 /* --- a framed picture --- */
 function showPicture(w){
   rbody.className = 'pic';
@@ -2162,6 +2249,7 @@ function renderReading(en){
   readerEl.classList.remove('wide', 'full');
   if (en.filters){ showFilters(en); return; }
   if (en.shelfList){ showShelfList(en); return; }
+  if (en.app){ rmeta.innerHTML = ''; showApp(en); return; }
   if (en.file || en.files){ rmeta.innerHTML = tagsOf(en); showDoc(en); return; }
   if (en.image){ showPicture(en); return; }
   rbody.textContent = en.body || '';
@@ -2665,7 +2753,7 @@ function tick(){
   const now = performance.now() / 1000;
   for (const sp of spinners){
     sp.o.rotation.y += sp.s * dt;
-    sp.o.rotation.x += sp.s * 0.35 * dt;
+    if (!sp.flat) sp.o.rotation.x += sp.s * 0.35 * dt;
     sp.o.position.y = sp.y0 + Math.sin(now * 0.8) * 0.05;
     if (sp.b){ sp.b.rotation.x = -sp.o.rotation.x; sp.b.rotation.y = -sp.o.rotation.y; }
   }
